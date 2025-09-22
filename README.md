@@ -11,8 +11,20 @@ What is unsoundness (and soundness)?
 Type systems are considered sound when they can guarantee the absence of type errors at runtime.
 However, in Python, `TypeError`s can occur for various reasons, and the type system cannot prevent all of these cases.
 
-Most type checkers do a very good job of preventing this unsoundness, but there are still several cases where unsoundness
+Most type checkers do a very good job of preventing most unsoundness, but there are still several cases where unsoundness
 can occur and users can run into `TypeError`s.
+
+## References
+
+The Python type system is known to be partially unsound. And there have been some discussions about different examples of unsoundness.
+
+- [Discussion of examples of unsoundness](https://discuss.python.org/t/collecting-examples-of-unsoundness/97568)
+- [Collection of examples of unsoundness](https://github.com/JelleZijlstra/unsoundness)
+
+It is important to note these resources. But they are trying to accomplish something different.
+
+Examples are useful to show how unsoundness can occur in code,
+but what we are trying to do here is categorise the different types of unsoundness.
 
 ## Contributing
 
