@@ -1,7 +1,5 @@
 # Unsoundness Checker
 
-A tool for reporting possible typing unsoundness in Python
-
 There are a few aims of this repo:
 - To document unsoundness in the Python type system.
 - To provide a tool for detecting unsoundness in Python code.
