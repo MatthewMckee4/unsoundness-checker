@@ -2,8 +2,9 @@
 
 There are a few aims of this repo:
 - To document unsoundness in the Python type system.
-- To provide a tool for detecting unsoundness in Python code.
-- To also discuss why some type checkers don't detect certain unsoundness.
+- To discuss why some type checkers don't detect certain unsoundness.
+- To provide a tool for detecting (some) unsoundness in Python code.
+- To talk about the limitations of the tool.
 
 What is unsoundness (and soundness)?
 
