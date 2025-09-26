@@ -56,13 +56,12 @@ pub(crate) fn test(args: &CheckCommand) -> Result<ExitStatus> {
 
     let cwd = {
         let cwd = std::env::current_dir().context("Failed to get the current working directory")?;
-        SystemPathBuf::from_path_buf(cwd)
-                .map_err(|path| {
-                    anyhow!(
-                        "The current working directory `{}` contains non-Unicode characters. ty only supports Unicode paths.",
-                        path.display()
-                    )
-                })?
+        SystemPathBuf::from_path_buf(cwd).map_err(|path| {
+            anyhow!(
+                "The current working directory `{}` contains non-Unicode characters.",
+                path.display()
+            )
+        })?
     };
 
     let check_paths: Vec<_> = args

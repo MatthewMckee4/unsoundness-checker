@@ -54,13 +54,13 @@ pub fn setup_tracing(level: VerbosityLevel) -> TracingGuard {
             let level_filter = level.level_filter();
 
             let filter = EnvFilter::default().add_directive(
-                format!("karva={level_filter}")
+                format!("unsoundness-checker={level_filter}")
                     .parse()
                     .expect("Hardcoded directive to be valid"),
             );
 
             filter.add_directive(
-                format!("karva={level_filter}")
+                format!("unsoundness-checker={level_filter}")
                     .parse()
                     .expect("Hardcoded directive to be valid"),
             )
@@ -89,7 +89,7 @@ pub fn setup_tracing(level: VerbosityLevel) -> TracingGuard {
     } else {
         let subscriber = registry.with(
             tracing_subscriber::fmt::layer()
-                .event_format(KarvaFormat {
+                .event_format(InternalFormat {
                     display_level: true,
                     display_timestamp: level.is_extra_verbose(),
                     show_spans: false,
@@ -113,7 +113,7 @@ fn setup_profile<S>() -> (
 where
     S: Subscriber + for<'span> LookupSpan<'span>,
 {
-    if let Ok("1" | "true") = std::env::var("KARVA_LOG_PROFILE").as_deref() {
+    if let Ok("1" | "true") = std::env::var("UNSOUNDNESS_CHECKER_LOG_PROFILE").as_deref() {
         let (layer, guard) = tracing_flame::FlameLayer::with_file("tracing.folded")
             .expect("Flame layer to be created");
         (Some(layer), Some(guard))
@@ -126,13 +126,13 @@ pub struct TracingGuard {
     _flame_guard: Option<tracing_flame::FlushGuard<BufWriter<File>>>,
 }
 
-struct KarvaFormat {
+struct InternalFormat {
     display_timestamp: bool,
     display_level: bool,
     show_spans: bool,
 }
 
-impl<S, N> FormatEvent<S, N> for KarvaFormat
+impl<S, N> FormatEvent<S, N> for InternalFormat
 where
     S: Subscriber + for<'a> LookupSpan<'a>,
     N: for<'a> FormatFields<'a> + 'static,
@@ -204,15 +204,15 @@ where
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Default)]
 pub enum VerbosityLevel {
-    /// Default output level. Only shows Karva events up to the [`WARN`](tracing::Level::WARN).
+    /// Default output level. Only shows Unsounness Checker events up to the [`WARN`](tracing::Level::WARN).
     #[default]
     Default,
 
-    /// Enables verbose output. Emits Karva events up to the [`INFO`](tracing::Level::INFO).
+    /// Enables verbose output. Emits Unsounness Checker events up to the [`INFO`](tracing::Level::INFO).
     /// Corresponds to `-v`.
     Verbose,
 
-    /// Enables a more verbose tracing format and emits Karva events up to [`DEBUG`](tracing::Level::DEBUG).
+    /// Enables a more verbose tracing format and emits Unsounness Checker events up to [`DEBUG`](tracing::Level::DEBUG).
     /// Corresponds to `-vv`
     ExtraVerbose,
 

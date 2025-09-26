@@ -21,7 +21,7 @@ pub enum Command {
     /// Run tests.
     Check(CheckCommand),
 
-    /// Display Karva's version
+    /// Display the version
     Version,
 }
 
