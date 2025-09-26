@@ -130,8 +130,10 @@ from typing import Any
 def complex_function(
     required_param: str,
     any_param: Any,
-    optional_param: Any | None = None,
-    list_param: list[Any] | None = None
+    optional_param: Any | None,
+    list_param: list[Any] | None,
+    dict_param: dict[str, Any] | None,
+    nested: list[dict[str, list[set[tuple[str, Any]]]] | None]
 ) -> bool:
     return True
 ";
@@ -146,8 +148,8 @@ def complex_function(
     5 |     required_param: str,
     6 |     any_param: Any,
       |                ^^^
-    7 |     optional_param: Any | None = None,
-    8 |     list_param: list[Any] | None = None
+    7 |     optional_param: Any | None,
+    8 |     list_param: list[Any] | None,
       |
     info: rule `typing-any-used` is enabled by default
 
@@ -156,10 +158,10 @@ def complex_function(
       |
     5 |     required_param: str,
     6 |     any_param: Any,
-    7 |     optional_param: Any | None = None,
+    7 |     optional_param: Any | None,
       |                     ^^^
-    8 |     list_param: list[Any] | None = None
-    9 | ) -> bool:
+    8 |     list_param: list[Any] | None,
+    9 |     dict_param: dict[str, Any] | None,
       |
     info: rule `typing-any-used` is enabled by default
 
@@ -167,11 +169,35 @@ def complex_function(
       --> test.py:8:22
        |
      6 |     any_param: Any,
-     7 |     optional_param: Any | None = None,
-     8 |     list_param: list[Any] | None = None
+     7 |     optional_param: Any | None,
+     8 |     list_param: list[Any] | None,
        |                      ^^^
-     9 | ) -> bool:
-    10 |     return True
+     9 |     dict_param: dict[str, Any] | None,
+    10 |     nested: list[dict[str, list[set[tuple[str, Any]]]] | None]
+       |
+    info: rule `typing-any-used` is enabled by default
+
+    error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+      --> test.py:9:27
+       |
+     7 |     optional_param: Any | None,
+     8 |     list_param: list[Any] | None,
+     9 |     dict_param: dict[str, Any] | None,
+       |                           ^^^
+    10 |     nested: list[dict[str, list[set[tuple[str, Any]]]] | None]
+    11 | ) -> bool:
+       |
+    info: rule `typing-any-used` is enabled by default
+
+    error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+      --> test.py:10:48
+       |
+     8 |     list_param: list[Any] | None,
+     9 |     dict_param: dict[str, Any] | None,
+    10 |     nested: list[dict[str, list[set[tuple[str, Any]]]] | None]
+       |                                                ^^^
+    11 | ) -> bool:
+    12 |     return True
        |
     info: rule `typing-any-used` is enabled by default
     ");
