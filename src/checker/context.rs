@@ -1,0 +1,167 @@
+use std::cell::RefCell;
+
+use ruff_db::{
+    diagnostic::{
+        Annotation, Diagnostic, DiagnosticId, DiagnosticTag, IntoDiagnosticMessage, Severity, Span,
+        SubDiagnostic, SubDiagnosticSeverity,
+    },
+    files::File,
+};
+use ruff_text_size::{Ranged, TextRange};
+
+use crate::rule::{RuleId, RuleMetadata, RuleSelection, RuleSource};
+
+/// A type for collecting diagnostics for a given file.
+pub struct Context {
+    /// The file being checked.
+    file: File,
+    /// The diagnostics collected so far.
+    diagnostics: RefCell<Vec<Diagnostic>>,
+    /// The rule selection.
+    rule_selection: RuleSelection,
+}
+
+impl Context {
+    #[must_use]
+    pub const fn new(file: File, rule_selection: RuleSelection) -> Self {
+        Self {
+            file,
+            diagnostics: RefCell::new(Vec::new()),
+            rule_selection,
+        }
+    }
+
+    pub fn report_lint<'ctx, T: Ranged>(
+        &'ctx self,
+        rule: &'static RuleMetadata,
+        ranged: T,
+    ) -> Option<LintDiagnosticGuardBuilder<'ctx>> {
+        LintDiagnosticGuardBuilder::new(self, rule, ranged.range())
+    }
+
+    pub const fn rule_selection(&self) -> &RuleSelection {
+        &self.rule_selection
+    }
+
+    pub const fn file(&self) -> File {
+        self.file
+    }
+
+    pub fn into_diagnostics(self) -> Vec<Diagnostic> {
+        self.diagnostics.into_inner()
+    }
+}
+
+/// A builder for constructing a lint diagnostic guard.
+pub struct LintDiagnosticGuardBuilder<'ctx> {
+    ctx: &'ctx Context,
+    id: DiagnosticId,
+    severity: Severity,
+    source: RuleSource,
+    primary_span: Span,
+}
+
+impl<'ctx> LintDiagnosticGuardBuilder<'ctx> {
+    fn new(ctx: &'ctx Context, rule: &'static RuleMetadata, range: TextRange) -> Option<Self> {
+        let lint_id = RuleId::of(rule);
+        let (severity, source) = ctx.rule_selection().get(lint_id)?;
+
+        let id = DiagnosticId::Lint(rule.name());
+
+        let primary_span = Span::from(ctx.file()).with_range(range);
+        Some(LintDiagnosticGuardBuilder {
+            ctx,
+            id,
+            severity,
+            source,
+            primary_span,
+        })
+    }
+
+    /// Create a new lint diagnostic guard.
+    pub fn into_diagnostic(self, message: impl std::fmt::Display) -> LintDiagnosticGuard<'ctx> {
+        let mut diag = Diagnostic::new(self.id, self.severity, message);
+        // This is why `LintDiagnosticGuard::set_primary_message` exists.
+        // We add the primary annotation here (because it's required), but
+        // the optional message can be added later. We could accept it here
+        // in this `build` method, but we already accept the main diagnostic
+        // message. So the messages are likely to be quite confusable.
+        diag.annotate(Annotation::primary(self.primary_span.clone()));
+        LintDiagnosticGuard {
+            ctx: self.ctx,
+            source: self.source,
+            diag: Some(diag),
+        }
+    }
+}
+
+/// An abstraction for mutating a diagnostic through the lense of a lint.
+pub struct LintDiagnosticGuard<'ctx> {
+    ctx: &'ctx Context,
+    /// The diagnostic that we want to report.
+    ///
+    /// This is always `Some` until the `Drop` impl.
+    diag: Option<Diagnostic>,
+
+    source: RuleSource,
+}
+
+impl LintDiagnosticGuard<'_> {
+    pub fn set_primary_message(&mut self, message: impl IntoDiagnosticMessage) {
+        let ann = self.primary_annotation_mut().unwrap();
+        ann.set_message(message);
+    }
+
+    /// Adds a tag on the primary annotation for this diagnostic.
+    pub fn add_primary_tag(&mut self, tag: DiagnosticTag) {
+        let ann = self.primary_annotation_mut().unwrap();
+        ann.push_tag(tag);
+    }
+}
+
+impl std::ops::Deref for LintDiagnosticGuard<'_> {
+    type Target = Diagnostic;
+
+    fn deref(&self) -> &Diagnostic {
+        // OK because `self.diag` is only `None` within `Drop`.
+        self.diag.as_ref().unwrap()
+    }
+}
+
+/// Return a mutable borrow of the diagnostic in this guard.
+impl std::ops::DerefMut for LintDiagnosticGuard<'_> {
+    fn deref_mut(&mut self) -> &mut Diagnostic {
+        // OK because `self.diag` is only `None` within `Drop`.
+        self.diag.as_mut().unwrap()
+    }
+}
+
+/// Finishes use of this guard.
+///
+/// This will add the lint as a diagnostic to the typing context if
+/// appropriate. The diagnostic may be skipped, for example, if there is a
+/// relevant suppression.
+impl Drop for LintDiagnosticGuard<'_> {
+    fn drop(&mut self) {
+        // OK because the only way `self.diag` is `None`
+        // is via this impl, which can only run at most
+        // once.
+        let mut diag = self.diag.take().unwrap();
+
+        diag.sub(SubDiagnostic::new(
+            SubDiagnosticSeverity::Info,
+            match self.source {
+                RuleSource::Default => format!("rule `{}` is enabled by default", diag.id()),
+                RuleSource::Cli => format!("rule `{}` was selected on the command line", diag.id()),
+                RuleSource::File => {
+                    format!(
+                        "rule `{}` was selected in the configuration file",
+                        diag.id()
+                    )
+                }
+            },
+        ));
+
+        self.ctx.diagnostics.borrow_mut().push(diag);
+    }
+}

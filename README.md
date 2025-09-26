@@ -1,8 +1,8 @@
 # Unsoundness Checker
 
 There are a few aims of this repository:
-- To document unsoundness in the Python type system.
-- To discuss why some type checkers don't detect certain unsoundness.
+- To formally document unsoundness in the Python type system.
+- To discuss why type checkers don't detect certain unsoundness.
 - To provide a tool for detecting (some) unsoundness in Python code.
 - To talk about the limitations of the tool.
 
