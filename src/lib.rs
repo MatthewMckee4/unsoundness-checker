@@ -1,8 +1,10 @@
+pub(crate) use crate::context::Context;
 pub use crate::diagnostic::register_rules;
 use crate::rule::{RuleRegistry, RuleRegistryBuilder};
 
 pub mod checker;
 pub mod cli;
+pub(crate) mod context;
 pub(crate) mod diagnostic;
 pub(crate) mod rule;
 pub(crate) mod version;

@@ -2,8 +2,7 @@ use ruff_python_ast::Expr;
 use ruff_text_size::Ranged;
 
 use crate::{
-    checker::context::Context,
-    declare_rule,
+    Context, declare_rule,
     rule::{Level, RuleRegistryBuilder, RuleStatus},
 };
 

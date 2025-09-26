@@ -150,5 +150,29 @@ def complex_function(
     8 |     list_param: list[Any] | None = None
       |
     info: rule `typing-any-used` is enabled by default
+
+    error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+     --> test.py:7:21
+      |
+    5 |     required_param: str,
+    6 |     any_param: Any,
+    7 |     optional_param: Any | None = None,
+      |                     ^^^
+    8 |     list_param: list[Any] | None = None
+    9 | ) -> bool:
+      |
+    info: rule `typing-any-used` is enabled by default
+
+    error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+      --> test.py:8:22
+       |
+     6 |     any_param: Any,
+     7 |     optional_param: Any | None = None,
+     8 |     list_param: list[Any] | None = None
+       |                      ^^^
+     9 | ) -> bool:
+    10 |     return True
+       |
+    info: rule `typing-any-used` is enabled by default
     ");
 }
