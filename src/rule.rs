@@ -49,24 +49,24 @@ pub enum Level {
 
 impl Level {
     pub const fn is_error(self) -> bool {
-        matches!(self, Level::Error)
+        matches!(self, Self::Error)
     }
 
     pub const fn is_warn(self) -> bool {
-        matches!(self, Level::Warn)
+        matches!(self, Self::Warn)
     }
 
     pub const fn is_ignore(self) -> bool {
-        matches!(self, Level::Ignore)
+        matches!(self, Self::Ignore)
     }
 }
 
 impl fmt::Display for Level {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            Level::Ignore => f.write_str("ignore"),
-            Level::Warn => f.write_str("warn"),
-            Level::Error => f.write_str("error"),
+            Self::Ignore => f.write_str("ignore"),
+            Self::Warn => f.write_str("warn"),
+            Self::Error => f.write_str("error"),
         }
     }
 }
@@ -77,18 +77,18 @@ impl TryFrom<Level> for Severity {
     fn try_from(level: Level) -> Result<Self, ()> {
         match level {
             Level::Ignore => Err(()),
-            Level::Warn => Ok(Severity::Warning),
-            Level::Error => Ok(Severity::Error),
+            Level::Warn => Ok(Self::Warning),
+            Level::Error => Ok(Self::Error),
         }
     }
 }
 
 impl RuleMetadata {
-    pub fn name(&self) -> LintName {
+    pub const fn name(&self) -> LintName {
         self.name
     }
 
-    pub fn summary(&self) -> &str {
+    pub const fn summary(&self) -> &str {
         self.summary
     }
 
@@ -106,15 +106,15 @@ impl RuleMetadata {
         self.documentation_lines().join("\n")
     }
 
-    pub fn default_level(&self) -> Level {
+    pub const fn default_level(&self) -> Level {
         self.default_level
     }
 
-    pub fn status(&self) -> &RuleStatus {
+    pub const fn status(&self) -> &RuleStatus {
         &self.status
     }
 
-    pub fn file(&self) -> &str {
+    pub const fn file(&self) -> &str {
         self.file
     }
 }
@@ -157,59 +157,30 @@ pub enum RuleStatus {
 
 impl RuleStatus {
     pub const fn preview(since: &'static str) -> Self {
-        RuleStatus::Preview { since }
+        Self::Preview { since }
     }
 
     pub const fn stable(since: &'static str) -> Self {
-        RuleStatus::Stable { since }
+        Self::Stable { since }
     }
 
     pub const fn deprecated(since: &'static str, reason: &'static str) -> Self {
-        RuleStatus::Deprecated { since, reason }
+        Self::Deprecated { since, reason }
     }
 
     pub const fn removed(since: &'static str, reason: &'static str) -> Self {
-        RuleStatus::Removed { since, reason }
+        Self::Removed { since, reason }
     }
 
     pub const fn is_removed(&self) -> bool {
-        matches!(self, RuleStatus::Removed { .. })
+        matches!(self, Self::Removed { .. })
     }
 
     pub const fn is_deprecated(&self) -> bool {
-        matches!(self, RuleStatus::Deprecated { .. })
+        matches!(self, Self::Deprecated { .. })
     }
 }
 
-/// Declares a rule rule with the given metadata.
-///
-/// ```rust
-/// use crate::declare_rule;
-/// use crate::rule::{RuleStatus, Level};
-///
-/// declare_rule! {
-///     /// ## What it does
-///     /// Checks for usage of `typing.Any` in type annotations.
-///     ///
-///     /// ## Why is this bad?
-///     /// Using `typing.Any` in type annotations can lead to runtime errors.
-///     ///
-///     /// ## Examples
-///     /// ```python
-///     /// from typing import Any
-///     ///
-///     /// def foo(x: Any) -> Any:
-///     ///     return x + 1
-///     ///
-///     /// foo("1")
-///     /// ```
-///     pub(crate) static TYPING_ANY_USED = {
-///         summary: "detects usage of `typing.Any` in type annotations",
-///         status: RuleStatus::preview("1.0.0"),
-///         default_level: Level::Error,
-///     }
-/// }
-/// ```
 #[macro_export]
 macro_rules! declare_rule {
     (
@@ -244,7 +215,7 @@ pub struct RuleId {
 
 impl RuleId {
     pub const fn of(definition: &'static RuleMetadata) -> Self {
-        RuleId { definition }
+        Self { definition }
     }
 }
 
@@ -419,11 +390,9 @@ pub enum RuleEntry {
 }
 
 impl RuleEntry {
-    fn id(self) -> RuleId {
+    const fn id(self) -> RuleId {
         match self {
-            RuleEntry::Rule(id) => id,
-            RuleEntry::Removed(id) => id,
-            RuleEntry::Alias(id) => id,
+            Self::Rule(id) | Self::Removed(id) | Self::Alias(id) => id,
         }
     }
 }
@@ -431,9 +400,9 @@ impl RuleEntry {
 impl From<&'static RuleMetadata> for RuleEntry {
     fn from(metadata: &'static RuleMetadata) -> Self {
         if metadata.status.is_removed() {
-            RuleEntry::Removed(RuleId::of(metadata))
+            Self::Removed(RuleId::of(metadata))
         } else {
-            RuleEntry::Rule(RuleId::of(metadata))
+            Self::Rule(RuleId::of(metadata))
         }
     }
 }
@@ -474,7 +443,7 @@ impl RuleSelection {
             })
             .collect();
 
-        RuleSelection { rules }
+        Self { rules }
     }
 
     /// Returns an iterator over all enabled rules.

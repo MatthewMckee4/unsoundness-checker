@@ -9,14 +9,12 @@ use ruff_db::{
 };
 use ruff_text_size::{Ranged, TextRange};
 
-use crate::rule::{RuleId, RuleMetadata, RuleRegistry, RuleSelection, RuleSource};
+use crate::rule::{RuleId, RuleMetadata, RuleSelection, RuleSource};
 
 /// A type for collecting diagnostics for a given file.
 pub struct Context {
     /// The file being checked.
     file: File,
-    /// The rule registry.
-    rule_registry: RuleRegistry,
     /// The diagnostics collected so far.
     diagnostics: RefCell<Vec<Diagnostic>>,
     /// The rule selection.
@@ -24,10 +22,10 @@ pub struct Context {
 }
 
 impl Context {
-    pub fn new(file: File, rule_registry: RuleRegistry, rule_selection: RuleSelection) -> Self {
+    #[must_use]
+    pub const fn new(file: File, rule_selection: RuleSelection) -> Self {
         Self {
             file,
-            rule_registry,
             diagnostics: RefCell::new(Vec::new()),
             rule_selection,
         }
@@ -41,12 +39,16 @@ impl Context {
         LintDiagnosticGuardBuilder::new(self, rule, ranged.range())
     }
 
-    pub fn rule_selection(&self) -> &RuleSelection {
+    pub const fn rule_selection(&self) -> &RuleSelection {
         &self.rule_selection
     }
 
-    pub fn file(&self) -> File {
+    pub const fn file(&self) -> File {
         self.file
+    }
+
+    pub fn into_diagnostics(self) -> Vec<Diagnostic> {
+        self.diagnostics.into_inner()
     }
 }
 
@@ -85,13 +87,8 @@ pub struct LintDiagnosticGuardBuilder<'ctx> {
 }
 
 impl<'ctx> LintDiagnosticGuardBuilder<'ctx> {
-    fn new(
-        ctx: &'ctx Context,
-        rule: &'static RuleMetadata,
-        range: TextRange,
-    ) -> Option<LintDiagnosticGuardBuilder<'ctx>> {
+    fn new(ctx: &'ctx Context, rule: &'static RuleMetadata, range: TextRange) -> Option<Self> {
         let lint_id = RuleId::of(rule);
-        // Skip over diagnostics if the rule is disabled.
         let (severity, source) = ctx.rule_selection().get(lint_id)?;
 
         let id = DiagnosticId::Lint(rule.name());

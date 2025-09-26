@@ -1,9 +1,13 @@
-pub(crate) use crate::diagnostic::register_rules;
+pub use crate::diagnostic::register_rules;
 use crate::rule::{RuleRegistry, RuleRegistryBuilder};
 
-pub(crate) mod checker;
+pub mod checker;
+pub mod cli;
 pub(crate) mod diagnostic;
 pub(crate) mod rule;
+pub(crate) mod version;
+
+pub(crate) const NAME: &str = "Unsoundness Checker";
 
 /// Returns the default registry with all known semantic rules.
 pub(crate) fn default_rule_registry() -> &'static RuleRegistry {
