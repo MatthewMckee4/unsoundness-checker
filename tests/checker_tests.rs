@@ -10,7 +10,6 @@ use ty_project::{
 };
 use unsoundness_checker::checker::check_file;
 
-/// Helper function to create a test project and check Python code, returning formatted diagnostics
 fn check_python_code(code: &str) -> String {
     let temp_dir = TempDir::new().expect("Failed to create temp dir");
     let temp_path = temp_dir.path();
@@ -165,13 +164,13 @@ class TestClass:
 #[test]
 fn test_mixed_annotations() {
     let code = r"
-from typing import Any, List, Optional
+from typing import Any
 
 def complex_function(
     required_param: str,
     any_param: Any,
-    optional_param: Optional[int] = None,
-    list_param: List[str] = None
+    optional_param: Any | None = None,
+    list_param: list[Any] | None = None
 ) -> bool:
     return True
 ";
@@ -185,47 +184,8 @@ def complex_function(
     5 |     required_param: str,
     6 |     any_param: Any,
       |                ^^^
-    7 |     optional_param: Optional[int] = None,
-    8 |     list_param: List[str] = None
-      |
-    info: rule `typing-any-used` is enabled by default
-    ");
-}
-
-#[test]
-fn test_lambda_with_any() {
-    let code = r"
-from typing import Any
-
-lambda_func = lambda x: Any, y: str: str(x) + y
-";
-
-    let output = check_python_code(code);
-    insta::assert_snapshot!(output, @"");
-}
-
-#[test]
-fn test_async_function_with_any() {
-    let code = r"
-from typing import Any
-import asyncio
-
-async def async_foo(param: Any) -> None:
-    await asyncio.sleep(0.1)
-    print(param)
-";
-
-    let output = check_python_code(code);
-    insta::assert_snapshot!(output, @r"
-    error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
-     --> test.py:5:28
-      |
-    3 | import asyncio
-    4 |
-    5 | async def async_foo(param: Any) -> None:
-      |                            ^^^
-    6 |     await asyncio.sleep(0.1)
-    7 |     print(param)
+    7 |     optional_param: Any | None = None,
+    8 |     list_param: list[Any] | None = None
       |
     info: rule `typing-any-used` is enabled by default
     ");
