@@ -1,49 +1,4 @@
-use std::fs;
-
-use ruff_db::{
-    diagnostic::{DisplayDiagnosticConfig, DisplayDiagnostics},
-    system::{OsSystem, SystemPathBuf},
-};
-use tempfile::TempDir;
-use ty_project::{
-    Db, ProjectDatabase, ProjectMetadata, metadata::options::ProjectOptionsOverrides,
-};
-use unsoundness_checker::checker::check_file;
-
-fn check_python_code(code: &str) -> String {
-    let temp_dir = TempDir::new().expect("Failed to create temp dir");
-    let temp_path = temp_dir.path();
-
-    let python_file = temp_path.join("test.py");
-    fs::write(&python_file, code).expect("Failed to write test file");
-
-    let cwd =
-        SystemPathBuf::from_path_buf(temp_path.to_path_buf()).expect("Failed to convert path");
-    let system = OsSystem::new(&cwd);
-
-    let mut project_metadata =
-        ProjectMetadata::discover(&cwd, &system).expect("Failed to discover project");
-    project_metadata
-        .apply_configuration_files(&system)
-        .expect("Failed to apply config");
-
-    let project_options_overrides = ProjectOptionsOverrides::default();
-    project_metadata.apply_overrides(&project_options_overrides);
-
-    let db = ProjectDatabase::new(project_metadata, system).expect("Failed to create database");
-
-    let files = db.project().files(&db);
-    let mut diagnostics = Vec::new();
-
-    for file in &files {
-        diagnostics.extend(check_file(&db, file));
-    }
-
-    let display_config = DisplayDiagnosticConfig::default();
-    let display = DisplayDiagnostics::new(&db, &display_config, &diagnostics);
-
-    format!("{display}")
-}
+use crate::TestRunner;
 
 #[test]
 fn test_typing_any_detected() {
@@ -54,7 +9,8 @@ def foo(x: Any) -> str:
     return str(x)
 ";
 
-    let output = check_python_code(code);
+    let output = TestRunner::from_file("test.py", code).run_test();
+
     insta::assert_snapshot!(output, @r"
     error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
      --> test.py:4:12
@@ -78,7 +34,8 @@ def foo(x: Any, y: Any, z: str) -> None:
     pass
 ";
 
-    let output = check_python_code(code);
+    let output = TestRunner::from_file("test.py", code).run_test();
+
     insta::assert_snapshot!(output, @r"
     error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
      --> test.py:4:12
@@ -111,7 +68,8 @@ def foo(x: str, y: int) -> bool:
     return len(x) == y
 ";
 
-    let output = check_python_code(code);
+    let output = TestRunner::from_file("test.py", code).run_test();
+
     insta::assert_snapshot!(output, @"");
 }
 
@@ -124,7 +82,8 @@ def foo(x: str) -> Any:
     return x
 ";
 
-    let output = check_python_code(code);
+    let output = TestRunner::from_file("test.py", code).run_test();
+
     insta::assert_snapshot!(output, @"");
 }
 
@@ -139,7 +98,8 @@ def outer():
     return inner
 ";
 
-    let output = check_python_code(code);
+    let output = TestRunner::from_file("test.py", code).run_test();
+
     insta::assert_snapshot!(output, @"");
 }
 
@@ -157,7 +117,8 @@ class TestClass:
         return str(param)
 ";
 
-    let output = check_python_code(code);
+    let output = TestRunner::from_file("test.py", code).run_test();
+
     insta::assert_snapshot!(output, @"");
 }
 
@@ -175,7 +136,8 @@ def complex_function(
     return True
 ";
 
-    let output = check_python_code(code);
+    let output = TestRunner::from_file("test.py", code).run_test();
+
     insta::assert_snapshot!(output, @r"
     error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
      --> test.py:6:16
