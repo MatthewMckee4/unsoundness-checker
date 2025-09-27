@@ -34,6 +34,12 @@ impl SourceOrderVisitor<'_> for ASTChecker<'_, '_> {
 
                     annotation_checker.visit_expr(annotation);
                 }
+
+                if let Some(return_annotation) = stmt_function_def.returns.as_ref() {
+                    let mut annotation_checker = AnnotationChecker::new(self.context, &self.model);
+
+                    annotation_checker.visit_expr(return_annotation);
+                }
             }
             _ => {}
         }
