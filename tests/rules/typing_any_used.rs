@@ -86,7 +86,18 @@ def outer():
 
     let output = TestRunner::from_file("test.py", code).run_test();
 
-    insta::assert_snapshot!(output, @"");
+    insta::assert_snapshot!(output, @r"
+    error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+     --> test.py:5:22
+      |
+    4 | def outer():
+    5 |     def inner(param: Any) -> str:
+      |                      ^^^
+    6 |         return str(param)
+    7 |     return inner
+      |
+    info: rule `typing-any-used` is enabled by default
+    ");
 }
 
 #[test]
@@ -105,7 +116,27 @@ class TestClass:
 
     let output = TestRunner::from_file("test.py", code).run_test();
 
-    insta::assert_snapshot!(output, @"");
+    insta::assert_snapshot!(output, @r"
+    error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+     --> test.py:5:29
+      |
+    4 | class TestClass:
+    5 |     def method(self, param: Any) -> None:
+      |                             ^^^
+    6 |         pass
+      |
+    info: rule `typing-any-used` is enabled by default
+
+    error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+      --> test.py:9:30
+       |
+     8 |     @staticmethod
+     9 |     def static_method(param: Any) -> str:
+       |                              ^^^
+    10 |         return str(param)
+       |
+    info: rule `typing-any-used` is enabled by default
+    ");
 }
 
 #[test]
@@ -262,6 +293,161 @@ def get_complex() -> dict[str, list[Any]]:
     10 | def get_complex() -> dict[str, list[Any]]:
        |                                     ^^^
     11 |     return {"items": [1, 2, 3]}
+       |
+    info: rule `typing-any-used` is enabled by default
+    "#);
+}
+
+#[test]
+fn test_variable_annotation_expressions() {
+    let code = r#"
+from typing import Any
+
+a: Any = 1
+b: Any = "hello"
+c: Any = None
+"#;
+
+    let output = TestRunner::from_file("test.py", code).run_test();
+
+    insta::assert_snapshot!(output, @r#"
+    error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+     --> test.py:4:4
+      |
+    2 | from typing import Any
+    3 |
+    4 | a: Any = 1
+      |    ^^^
+    5 | b: Any = "hello"
+    6 | c: Any = None
+      |
+    info: rule `typing-any-used` is enabled by default
+
+    error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+     --> test.py:5:4
+      |
+    4 | a: Any = 1
+    5 | b: Any = "hello"
+      |    ^^^
+    6 | c: Any = None
+      |
+    info: rule `typing-any-used` is enabled by default
+
+    error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+     --> test.py:6:4
+      |
+    4 | a: Any = 1
+    5 | b: Any = "hello"
+    6 | c: Any = None
+      |    ^^^
+      |
+    info: rule `typing-any-used` is enabled by default
+    "#);
+}
+
+#[test]
+fn test_nested_annotation_expressions() {
+    let code = r#"
+from typing import Any
+
+items: list[Any] = [1, 2, 3]
+mapping: dict[str, Any] = {"key": "value"}
+nested: dict[str, list[Any]] = {"items": [1, 2]}
+"#;
+
+    let output = TestRunner::from_file("test.py", code).run_test();
+
+    insta::assert_snapshot!(output, @r#"
+    error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+     --> test.py:4:13
+      |
+    2 | from typing import Any
+    3 |
+    4 | items: list[Any] = [1, 2, 3]
+      |             ^^^
+    5 | mapping: dict[str, Any] = {"key": "value"}
+    6 | nested: dict[str, list[Any]] = {"items": [1, 2]}
+      |
+    info: rule `typing-any-used` is enabled by default
+
+    error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+     --> test.py:5:20
+      |
+    4 | items: list[Any] = [1, 2, 3]
+    5 | mapping: dict[str, Any] = {"key": "value"}
+      |                    ^^^
+    6 | nested: dict[str, list[Any]] = {"items": [1, 2]}
+      |
+    info: rule `typing-any-used` is enabled by default
+
+    error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+     --> test.py:6:24
+      |
+    4 | items: list[Any] = [1, 2, 3]
+    5 | mapping: dict[str, Any] = {"key": "value"}
+    6 | nested: dict[str, list[Any]] = {"items": [1, 2]}
+      |                        ^^^
+      |
+    info: rule `typing-any-used` is enabled by default
+    "#);
+}
+
+#[test]
+fn test_class_attribute_annotation_expressions() {
+    let code = r#"
+from typing import Any
+
+class MyClass:
+    attr: Any = "default"
+    values: list[Any] = []
+
+    def __init__(self):
+        self.data: Any = None
+        self.items: dict[str, Any] = {}
+"#;
+
+    let output = TestRunner::from_file("test.py", code).run_test();
+
+    insta::assert_snapshot!(output, @r#"
+    error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+     --> test.py:5:11
+      |
+    4 | class MyClass:
+    5 |     attr: Any = "default"
+      |           ^^^
+    6 |     values: list[Any] = []
+      |
+    info: rule `typing-any-used` is enabled by default
+
+    error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+     --> test.py:6:18
+      |
+    4 | class MyClass:
+    5 |     attr: Any = "default"
+    6 |     values: list[Any] = []
+      |                  ^^^
+    7 |
+    8 |     def __init__(self):
+      |
+    info: rule `typing-any-used` is enabled by default
+
+    error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+      --> test.py:9:20
+       |
+     8 |     def __init__(self):
+     9 |         self.data: Any = None
+       |                    ^^^
+    10 |         self.items: dict[str, Any] = {}
+       |
+    info: rule `typing-any-used` is enabled by default
+
+    error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+      --> test.py:10:31
+       |
+     8 |     def __init__(self):
+     9 |         self.data: Any = None
+    10 |         self.items: dict[str, Any] = {}
+       |                               ^^^
        |
     info: rule `typing-any-used` is enabled by default
     "#);
