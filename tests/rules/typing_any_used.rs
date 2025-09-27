@@ -74,20 +74,6 @@ def foo(x: str, y: int) -> bool:
 }
 
 #[test]
-fn test_any_in_return_type_not_detected() {
-    let code = r"
-from typing import Any
-
-def foo(x: str) -> Any:
-    return x
-";
-
-    let output = TestRunner::from_file("test.py", code).run_test();
-
-    insta::assert_snapshot!(output, @"");
-}
-
-#[test]
 fn test_nested_function_with_any() {
     let code = r"
 from typing import Any
@@ -201,4 +187,171 @@ def complex_function(
        |
     info: rule `typing-any-used` is enabled by default
     ");
+}
+
+#[test]
+fn test_any_in_return_type() {
+    let code = r"
+from typing import Any
+
+def foo() -> Any:
+    return 42
+";
+
+    let output = TestRunner::from_file("test.py", code).run_test();
+
+    insta::assert_snapshot!(output, @r"
+    error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+     --> test.py:4:14
+      |
+    2 | from typing import Any
+    3 |
+    4 | def foo() -> Any:
+      |              ^^^
+    5 |     return 42
+      |
+    info: rule `typing-any-used` is enabled by default
+    ");
+}
+
+#[test]
+fn test_any_in_nested_return_type() {
+    let code = r#"
+from typing import Any
+
+def get_list() -> list[Any]:
+    return [1, "hello", 3.14]
+
+def get_dict() -> dict[str, Any]:
+    return {"key": "value"}
+
+def get_complex() -> dict[str, list[Any]]:
+    return {"items": [1, 2, 3]}
+"#;
+
+    let output = TestRunner::from_file("test.py", code).run_test();
+
+    insta::assert_snapshot!(output, @r#"
+    error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+     --> test.py:4:24
+      |
+    2 | from typing import Any
+    3 |
+    4 | def get_list() -> list[Any]:
+      |                        ^^^
+    5 |     return [1, "hello", 3.14]
+      |
+    info: rule `typing-any-used` is enabled by default
+
+    error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+     --> test.py:7:29
+      |
+    5 |     return [1, "hello", 3.14]
+    6 |
+    7 | def get_dict() -> dict[str, Any]:
+      |                             ^^^
+    8 |     return {"key": "value"}
+      |
+    info: rule `typing-any-used` is enabled by default
+
+    error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+      --> test.py:10:37
+       |
+     8 |     return {"key": "value"}
+     9 |
+    10 | def get_complex() -> dict[str, list[Any]]:
+       |                                     ^^^
+    11 |     return {"items": [1, 2, 3]}
+       |
+    info: rule `typing-any-used` is enabled by default
+    "#);
+}
+
+#[test]
+fn test_deeply_nested_any_in_return_type() {
+    let code = r#"
+from typing import Any
+
+def deeply_nested() -> dict[str, list[tuple[str, Any]]]:
+    return {"data": [("key", 42)]}
+
+def ultra_nested() -> list[dict[str, set[tuple[Any, str]]]]:
+    return [{"items": {("value", "key")}}]
+"#;
+
+    let output = TestRunner::from_file("test.py", code).run_test();
+
+    insta::assert_snapshot!(output, @r#"
+    error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+     --> test.py:4:50
+      |
+    2 | from typing import Any
+    3 |
+    4 | def deeply_nested() -> dict[str, list[tuple[str, Any]]]:
+      |                                                  ^^^
+    5 |     return {"data": [("key", 42)]}
+      |
+    info: rule `typing-any-used` is enabled by default
+
+    error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+     --> test.py:7:48
+      |
+    5 |     return {"data": [("key", 42)]}
+    6 |
+    7 | def ultra_nested() -> list[dict[str, set[tuple[Any, str]]]]:
+      |                                                ^^^
+    8 |     return [{"items": {("value", "key")}}]
+      |
+    info: rule `typing-any-used` is enabled by default
+    "#);
+}
+
+#[test]
+fn test_any_in_union_return_type() {
+    let code = r#"
+from typing import Any
+
+def union_with_any() -> Any | str:
+    return "hello"
+
+def complex_union() -> dict[str, Any] | list[Any] | None:
+    return None
+"#;
+
+    let output = TestRunner::from_file("test.py", code).run_test();
+
+    insta::assert_snapshot!(output, @r#"
+    error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+     --> test.py:4:25
+      |
+    2 | from typing import Any
+    3 |
+    4 | def union_with_any() -> Any | str:
+      |                         ^^^
+    5 |     return "hello"
+      |
+    info: rule `typing-any-used` is enabled by default
+
+    error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+     --> test.py:7:34
+      |
+    5 |     return "hello"
+    6 |
+    7 | def complex_union() -> dict[str, Any] | list[Any] | None:
+      |                                  ^^^
+    8 |     return None
+      |
+    info: rule `typing-any-used` is enabled by default
+
+    error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+     --> test.py:7:46
+      |
+    5 |     return "hello"
+    6 |
+    7 | def complex_union() -> dict[str, Any] | list[Any] | None:
+      |                                              ^^^
+    8 |     return None
+      |
+    info: rule `typing-any-used` is enabled by default
+    "#);
 }
