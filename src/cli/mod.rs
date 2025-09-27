@@ -96,11 +96,24 @@ pub(crate) fn test(args: &CheckCommand) -> Result<ExitStatus> {
 
     let mut stdout = io::stdout();
 
-    write!(
-        stdout,
-        "{}",
-        DisplayDiagnostics::new(&db, &display_config, &diagnostics)
-    )?;
+    if diagnostics.is_empty() {
+        writeln!(stdout, "All checks passed")?;
+    } else {
+        write!(
+            stdout,
+            "{}",
+            DisplayDiagnostics::new(&db, &display_config, &diagnostics)
+        )?;
+
+        let num_diagnostics = diagnostics.len();
+
+        writeln!(
+            stdout,
+            "Found {} diagnostic{}",
+            num_diagnostics,
+            if num_diagnostics > 1 { "s" } else { "" }
+        )?;
+    }
 
     Ok(ExitStatus::Success)
 }
