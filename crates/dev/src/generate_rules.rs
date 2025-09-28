@@ -88,7 +88,7 @@ fn generate_markdown() -> String {
         let _ = writeln!(
             &mut output,
             r#"<small>
-Default level: [`{level}`](../rules.md#rule-levels "This lint has a default level of '{level}'.") ·
+Default level: `{level}`.
 </small>
 
 {documentation}
@@ -108,6 +108,7 @@ mod tests {
     use crate::generate_all::Mode;
 
     #[test]
+    #[cfg(unix)]
     fn rules_up_to_date() -> Result<()> {
         main(&Args { mode: Mode::Check })
     }

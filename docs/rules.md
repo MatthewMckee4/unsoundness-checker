@@ -3,7 +3,7 @@
 ## `typing-any-used`
 
 <small>
-Default level: [`error`](../rules.md#rule-levels "This lint has a default level of 'error'.") ·
+Default level: `error`.
 </small>
 
 **What it does**
