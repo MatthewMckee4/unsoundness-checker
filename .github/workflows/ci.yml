@@ -55,5 +55,9 @@ jobs:
           uv venv
           uv pip install -r docs/requirements.txt
 
+      - name: Prepare Docs
+        run: |
+          uv run --no-project scripts/prepare_docs.py
+
       - name: Build docs
         run: uv run --no-project mkdocs build
