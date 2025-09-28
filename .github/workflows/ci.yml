@@ -17,12 +17,9 @@ jobs:
 
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: stable
+          toolchain: nightly
           override: true
-
-      - name: Install Rustfmt nightly
-        run: |
-          rustup component add rustfmt --toolchain nightly
+          components: rustfmt, clippy
 
       - uses: pre-commit/action@v3.0.1
 
