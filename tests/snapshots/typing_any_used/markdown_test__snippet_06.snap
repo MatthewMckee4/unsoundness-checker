@@ -1,0 +1,35 @@
+---
+source: tests/markdown_test.rs
+expression: output
+---
+error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+ --> snippet_06.py:3:29
+  |
+1 | from typing import Any
+2 |
+3 | def process(data: dict[str, Any]) -> None: pass
+  |                             ^^^
+4 | def get_items() -> list[Any]: pass
+5 | user_data: dict[str, Any] = {}
+  |
+info: rule `typing-any-used` is enabled by default
+
+error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+ --> snippet_06.py:4:25
+  |
+3 | def process(data: dict[str, Any]) -> None: pass
+4 | def get_items() -> list[Any]: pass
+  |                         ^^^
+5 | user_data: dict[str, Any] = {}
+  |
+info: rule `typing-any-used` is enabled by default
+
+error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+ --> snippet_06.py:5:22
+  |
+3 | def process(data: dict[str, Any]) -> None: pass
+4 | def get_items() -> list[Any]: pass
+5 | user_data: dict[str, Any] = {}
+  |                      ^^^
+  |
+info: rule `typing-any-used` is enabled by default
