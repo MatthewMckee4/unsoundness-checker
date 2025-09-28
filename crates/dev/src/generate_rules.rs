@@ -108,7 +108,7 @@ mod tests {
     use crate::generate_all::Mode;
 
     #[test]
-    fn ty_rules_up_to_date() -> Result<()> {
+    fn rules_up_to_date() -> Result<()> {
         main(&Args { mode: Mode::Check })
     }
 }

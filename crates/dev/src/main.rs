@@ -1,9 +1,3 @@
-//! This crate implements an internal CLI for developers of Karva.
-//!
-//! Within the Karva repository you can run it with `cargo dev`.
-
-#![allow(clippy::print_stdout, clippy::print_stderr)]
-
 use std::process::ExitCode;
 
 use anyhow::Result;
