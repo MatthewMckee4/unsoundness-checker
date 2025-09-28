@@ -1,0 +1,14 @@
+---
+source: tests/markdown_test.rs
+expression: output
+---
+error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+ --> snippet_02.py:3:24
+  |
+1 | from typing import Any
+2 |
+3 | def get_user_data() -> Any:
+  |                        ^^^
+4 |     return {"name": "John", "age": 30}
+  |
+info: rule `typing-any-used` is enabled by default
