@@ -1,6 +1,6 @@
 # Unsoundness Checker
 
-There are a few aims of this repository:
+We have a few aims with the tool and the site:
 - To formally document unsoundness in the Python type system.
 - To discuss why type checkers don't detect certain unsoundness.
 - To provide a tool for detecting (some) unsoundness in Python code.
@@ -25,6 +25,16 @@ It is important to note these resources. But they are trying to accomplish somet
 
 Examples are useful to show how unsoundness can occur in code,
 but what we are trying to do here is categorise the different types of unsoundness.
+
+## Acknowledgments
+
+The core of this codebase is built on top of `ty` and uses much of `ruff`.
+
+We use the `ruff` python parser to parse Python code.
+
+We use `ty` to infer the types of expressions and statements.
+
+We also take the structure of the rules (in [`rule.rs`](crates/unsoundness_checker/src/rule.rs)) from `ty`.
 
 ## Contributing
 
