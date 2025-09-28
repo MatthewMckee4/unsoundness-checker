@@ -8,7 +8,7 @@ pub(crate) struct Args {
 
 #[derive(Copy, Clone, PartialEq, Eq, clap::ValueEnum, Default)]
 pub(crate) enum Mode {
-    /// Update the content in the `configuration.md`.
+    /// Update the content in the respective file.
     #[default]
     Write,
 
