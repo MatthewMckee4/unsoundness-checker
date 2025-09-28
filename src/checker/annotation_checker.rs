@@ -7,7 +7,7 @@ use ty_python_semantic::{
     types::{DynamicType, Type},
 };
 
-use crate::{checker::Context, diagnostic::report_typing_any_used};
+use crate::{checker::Context, rules::report_typing_any_used};
 
 pub struct AnnotationChecker<'db, 'ctx> {
     context: &'ctx Context,
