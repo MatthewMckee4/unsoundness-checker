@@ -7,7 +7,7 @@ def copy_rules_resources_to_docs():
     source_dir = "crates/unsoundness_checker/resources/rules"
     target_dir = "docs/rules"
 
-    os.mkdir(target_dir)
+    os.makedirs(target_dir, exist_ok=True)
 
     shutil.copytree(source_dir, target_dir, dirs_exist_ok=True)
     print(f"Successfully copied rules from {source_dir} to {target_dir}")
