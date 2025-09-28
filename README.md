@@ -28,9 +28,9 @@ but what we are trying to do here is categorise the different types of unsoundne
 
 ## Acknowledgments
 
-The core of this codebase is built on top of `ty` and uses much of `ruff`.
+The core of this codebase is built on top of `ty` and `ruff`, the code from which is available at [github.com/astral-sh/ruff](https://github.com/astral-sh/ruff).
 
-We use the `ruff` python parser to parse Python code.
+We use the `ruff` python parser.
 
 We use `ty` to infer the types of expressions and statements.
 
