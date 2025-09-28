@@ -1,0 +1,43 @@
+[package]
+name = "unsoundness_checker"
+version = "0.0.0"
+
+edition = { workspace = true }
+rust-version = { workspace = true }
+homepage = { workspace = true }
+documentation = { workspace = true }
+repository = { workspace = true }
+authors = { workspace = true }
+license = { workspace = true }
+
+[dependencies]
+anyhow = { workspace = true }
+argfile = { workspace = true }
+chrono = { workspace = true }
+clap = { workspace = true }
+colored = { workspace = true }
+itertools = { workspace = true }
+ruff_db = { workspace = true }
+ruff_macros = { workspace = true }
+ruff_python_ast = { workspace = true }
+ruff_python_parser = { workspace = true }
+ruff_text_size = { workspace = true }
+rustc-hash = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+tracing-flame = { workspace = true }
+tracing-subscriber = { workspace = true }
+tracing-tree = { workspace = true }
+ty_project = { workspace = true }
+ty_python_semantic = { workspace = true }
+wild = { workspace = true }
+
+[dev-dependencies]
+insta = { workspace = true }
+pulldown-cmark = { workspace = true }
+regex = { workspace = true }
+tempfile = { workspace = true }
+
+
+[lints]
+workspace = true

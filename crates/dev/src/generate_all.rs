@@ -1,0 +1,20 @@
+pub(crate) const REGENERATE_ALL_COMMAND: &str = "cargo dev generate-all";
+
+#[derive(clap::Args)]
+pub(crate) struct Args {
+    #[arg(long, default_value_t, value_enum)]
+    mode: Mode,
+}
+
+#[derive(Copy, Clone, PartialEq, Eq, clap::ValueEnum, Default)]
+pub(crate) enum Mode {
+    /// Update the content in the respective file.
+    #[default]
+    Write,
+
+    /// Don't write to the file, check if the file is up-to-date and error if not.
+    Check,
+
+    /// Write the generated help to stdout.
+    DryRun,
+}
