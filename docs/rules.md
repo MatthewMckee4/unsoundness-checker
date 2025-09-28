@@ -23,3 +23,5 @@ def foo(x: Any) -> Any:
 foo("1")
 ```
 
+[See more](rules/typing_any_used.md)
+

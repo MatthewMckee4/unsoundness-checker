@@ -1,6 +1,7 @@
 use std::{borrow::Cow, fmt::Write as _, fs, path::PathBuf};
 
 use anyhow::{Result, bail};
+use heck::ToSnakeCase;
 use itertools::Itertools as _;
 use pretty_assertions::StrComparison;
 
@@ -92,8 +93,11 @@ Default level: `{level}`.
 </small>
 
 {documentation}
+
+[See more](rules/{snake_case_name}.md)
 "#,
             level = rule.default_level(),
+            snake_case_name = rule.name().to_string().to_snake_case()
         );
     }
 
