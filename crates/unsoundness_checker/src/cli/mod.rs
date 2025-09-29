@@ -25,7 +25,7 @@ use crate::{
 mod args;
 mod logging;
 
-pub use args::Args;
+pub(crate) use args::Args;
 
 pub fn run() -> anyhow::Result<ExitStatus> {
     let args = wild::args_os();
@@ -133,12 +133,5 @@ pub enum ExitStatus {
 impl Termination for ExitStatus {
     fn report(self) -> ExitCode {
         ExitCode::from(self as u8)
-    }
-}
-
-impl ExitStatus {
-    #[must_use]
-    pub const fn to_i32(self) -> i32 {
-        self as i32
     }
 }

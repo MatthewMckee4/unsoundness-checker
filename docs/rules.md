@@ -1,5 +1,36 @@
 # Rules
 
+## `invalid-overload-implementation`
+
+<small>
+Default level: `error`.
+</small>
+
+**What it does**
+
+Checks for invalid overload implementation.
+
+**Why is this bad?**
+
+Invalid overload implementation can lead to runtime errors.
+
+**Examples**
+
+```python
+@overload
+def foo(x: int) -> str: ...
+
+@overload
+def foo(x: str) -> int: ...
+
+def foo(x: int | str) -> int | str:
+    return x
+
+foo("1")
+```
+
+[See more](rules/invalid_overload_implementation.md)
+
 ## `typing-any-used`
 
 <small>

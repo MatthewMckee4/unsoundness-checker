@@ -2,14 +2,13 @@ use core::fmt;
 use std::{fmt::Formatter, hash::Hasher};
 
 use itertools::Itertools;
-use ruff_db::diagnostic::{DiagnosticId, LintName, Severity};
+use ruff_db::diagnostic::{LintName, Severity};
 use rustc_hash::FxHashMap;
-use thiserror::Error;
 
 #[derive(Debug, Clone)]
 pub struct RuleMetadata {
     /// The unique identifier for the rule.
-    pub name: LintName,
+    pub(crate) name: LintName,
 
     /// A one-sentence summary of what the rule catches.
     pub summary: &'static str,
@@ -18,15 +17,12 @@ pub struct RuleMetadata {
     ///
     /// The documentation may require post-processing to be rendered correctly. For example, lines
     /// might have leading or trailing whitespace that should be removed.
-    pub raw_documentation: &'static str,
+    pub(crate) raw_documentation: &'static str,
 
     /// The default level of the rule if the user doesn't specify one.
-    pub default_level: Level,
+    pub(crate) default_level: Level,
 
-    pub status: RuleStatus,
-
-    /// The source file in which the rule is declared.
-    pub file: &'static str,
+    pub(crate) status: RuleStatus,
 }
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
@@ -45,20 +41,6 @@ pub enum Level {
     ///
     /// The rule is enabled and diagnostics have an error severity.
     Error,
-}
-
-impl Level {
-    pub const fn is_error(self) -> bool {
-        matches!(self, Self::Error)
-    }
-
-    pub const fn is_warn(self) -> bool {
-        matches!(self, Self::Warn)
-    }
-
-    pub const fn is_ignore(self) -> bool {
-        matches!(self, Self::Ignore)
-    }
 }
 
 impl fmt::Display for Level {
@@ -84,12 +66,9 @@ impl TryFrom<Level> for Severity {
 }
 
 impl RuleMetadata {
+    #[must_use]
     pub const fn name(&self) -> LintName {
         self.name
-    }
-
-    pub const fn summary(&self) -> &str {
-        self.summary
     }
 
     /// Returns the documentation line by line with one leading space and all trailing whitespace removed.
@@ -101,48 +80,18 @@ impl RuleMetadata {
         })
     }
 
-    /// Returns the documentation as a single string.
-    pub fn documentation(&self) -> String {
-        self.documentation_lines().join("\n")
-    }
-
+    #[must_use]
     pub const fn default_level(&self) -> Level {
         self.default_level
-    }
-
-    pub const fn status(&self) -> &RuleStatus {
-        &self.status
-    }
-
-    pub const fn file(&self) -> &str {
-        self.file
     }
 }
 
 #[derive(Copy, Clone, Debug)]
 pub enum RuleStatus {
-    /// The rule has been added to the ruleer, but is not yet stable.
-    Preview {
-        /// The version in which the rule was added.
-        since: &'static str,
-    },
-
     /// The rule is stable.
     Stable {
         /// The version in which the rule was stabilized.
         since: &'static str,
-    },
-
-    /// The rule is deprecated and no longer recommended for use.
-    Deprecated {
-        /// The version in which the rule was deprecated.
-        since: &'static str,
-
-        /// The reason why the rule has been deprecated.
-        ///
-        /// This should explain why the rule has been deprecated and if there's a replacement rule that users
-        /// can use instead.
-        reason: &'static str,
     },
 
     /// The rule has been removed and can no longer be used.
@@ -156,28 +105,12 @@ pub enum RuleStatus {
 }
 
 impl RuleStatus {
-    pub const fn preview(since: &'static str) -> Self {
-        Self::Preview { since }
-    }
-
-    pub const fn stable(since: &'static str) -> Self {
+    pub(crate) const fn stable(since: &'static str) -> Self {
         Self::Stable { since }
     }
 
-    pub const fn deprecated(since: &'static str, reason: &'static str) -> Self {
-        Self::Deprecated { since, reason }
-    }
-
-    pub const fn removed(since: &'static str, reason: &'static str) -> Self {
-        Self::Removed { since, reason }
-    }
-
-    pub const fn is_removed(&self) -> bool {
+    pub(crate) const fn is_removed(&self) -> bool {
         matches!(self, Self::Removed { .. })
-    }
-
-    pub const fn is_deprecated(&self) -> bool {
-        matches!(self, Self::Deprecated { .. })
     }
 }
 
@@ -198,7 +131,6 @@ macro_rules! declare_rule {
             summary: $summary,
             raw_documentation: concat!($($doc, '\n',)+),
             status: $status,
-            file: file!(),
             $( $key: $value, )*
         };
     };
@@ -214,7 +146,7 @@ pub struct RuleId {
 }
 
 impl RuleId {
-    pub const fn of(definition: &'static RuleMetadata) -> Self {
+    pub(crate) const fn of(definition: &'static RuleMetadata) -> Self {
         Self { definition }
     }
 }
@@ -242,7 +174,7 @@ impl std::ops::Deref for RuleId {
 }
 
 #[derive(Default, Debug)]
-pub struct RuleRegistryBuilder {
+pub(crate) struct RuleRegistryBuilder {
     /// Registered rules that haven't been removed.
     rules: Vec<RuleId>,
 
@@ -252,7 +184,7 @@ pub struct RuleRegistryBuilder {
 
 impl RuleRegistryBuilder {
     #[track_caller]
-    pub fn register_rule(&mut self, rule: &'static RuleMetadata) {
+    pub(crate) fn register_rule(&mut self, rule: &'static RuleMetadata) {
         assert_eq!(
             self.by_name.insert(&*rule.name, rule.into()),
             None,
@@ -265,136 +197,30 @@ impl RuleRegistryBuilder {
         }
     }
 
-    #[track_caller]
-    pub fn register_alias(&mut self, from: LintName, to: &'static RuleMetadata) {
-        let target = match self.by_name.get(to.name.as_str()) {
-            Some(RuleEntry::Rule(target) | RuleEntry::Removed(target)) => target,
-            Some(RuleEntry::Alias(target)) => {
-                panic!(
-                    "rule alias {from} -> {to:?} points to another alias {target:?}",
-                    target = target.name()
-                )
-            }
-            None => panic!(
-                "rule alias {from} -> {to} points to non-registered rule",
-                to = to.name
-            ),
-        };
-
-        assert_eq!(
-            self.by_name
-                .insert(from.as_str(), RuleEntry::Alias(*target)),
-            None,
-            "duplicate rule registration for '{from}'",
-        );
-    }
-
-    pub fn build(self) -> RuleRegistry {
-        RuleRegistry {
-            rules: self.rules,
-            by_name: self.by_name,
-        }
+    pub(crate) fn build(self) -> RuleRegistry {
+        RuleRegistry { rules: self.rules }
     }
 }
 
 #[derive(Default, Debug, Clone)]
 pub struct RuleRegistry {
     rules: Vec<RuleId>,
-    by_name: FxHashMap<&'static str, RuleEntry>,
 }
 
 impl RuleRegistry {
-    /// Looks up a rule by its name.
-    pub fn get(&self, code: &str) -> Result<RuleId, GetRuleError> {
-        match self.by_name.get(code) {
-            Some(RuleEntry::Rule(metadata)) => Ok(*metadata),
-            Some(RuleEntry::Alias(rule)) => {
-                if rule.status.is_removed() {
-                    Err(GetRuleError::Removed(rule.name()))
-                } else {
-                    Ok(*rule)
-                }
-            }
-            Some(RuleEntry::Removed(rule)) => Err(GetRuleError::Removed(rule.name())),
-            None => {
-                if let Some(without_prefix) = DiagnosticId::strip_category(code)
-                    && let Some(entry) = self.by_name.get(without_prefix)
-                {
-                    return Err(GetRuleError::PrefixedWithCategory {
-                        prefixed: code.to_string(),
-                        suggestion: entry.id().name.to_string(),
-                    });
-                }
-
-                Err(GetRuleError::Unknown(code.to_string()))
-            }
-        }
-    }
-
     /// Returns all registered, non-removed rules.
+    #[must_use]
     pub fn rules(&self) -> &[RuleId] {
         &self.rules
     }
-
-    /// Returns an iterator over all known aliases and to their target rules.
-    ///
-    /// This iterator includes aliases that point to removed rules.
-    pub fn aliases(&self) -> impl Iterator<Item = (LintName, RuleId)> + '_ {
-        self.by_name.iter().filter_map(|(key, value)| {
-            if let RuleEntry::Alias(alias) = value {
-                Some((LintName::of(key), *alias))
-            } else {
-                None
-            }
-        })
-    }
-
-    /// Iterates over all removed rules.
-    pub fn removed(&self) -> impl Iterator<Item = RuleId> + '_ {
-        self.by_name.iter().filter_map(|(_, value)| {
-            if let RuleEntry::Removed(metadata) = value {
-                Some(*metadata)
-            } else {
-                None
-            }
-        })
-    }
-}
-
-#[derive(Error, Debug, Clone, PartialEq, Eq)]
-pub enum GetRuleError {
-    /// The name maps to this removed rule.
-    #[error("rule `{0}` has been removed")]
-    Removed(LintName),
-
-    /// No rule with the given name is known.
-    #[error("unknown rule `{0}`")]
-    Unknown(String),
-
-    /// The name uses the full qualified diagnostic id `rule:<rule>` instead of just `rule`.
-    /// The String is the name without the `rule:` category prefix.
-    #[error("unknown rule `{prefixed}`. Did you mean `{suggestion}`?")]
-    PrefixedWithCategory {
-        prefixed: String,
-        suggestion: String,
-    },
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
-pub enum RuleEntry {
+pub(crate) enum RuleEntry {
     /// An existing rule rule. Can be in preview, stable or deprecated.
     Rule(RuleId),
     /// A rule rule that has been removed.
     Removed(RuleId),
-    Alias(RuleId),
-}
-
-impl RuleEntry {
-    const fn id(self) -> RuleId {
-        match self {
-            Self::Rule(id) | Self::Removed(id) | Self::Alias(id) => id,
-        }
-    }
 }
 
 impl From<&'static RuleMetadata> for RuleEntry {
@@ -408,7 +234,7 @@ impl From<&'static RuleMetadata> for RuleEntry {
 }
 
 #[derive(Clone, Default, PartialEq, Eq)]
-pub struct RuleSelection {
+pub(crate) struct RuleSelection {
     /// Map with the severity for each enabled rule rule.
     ///
     /// If a rule isn't present in this map, then it should be considered disabled.
@@ -418,14 +244,8 @@ pub struct RuleSelection {
 impl RuleSelection {
     /// Creates a new rule selection from all known rules in the registry that are enabled
     /// according to their default severity.
-    pub fn from_registry(registry: &RuleRegistry) -> Self {
+    pub(crate) fn from_registry(registry: &RuleRegistry) -> Self {
         Self::from_registry_with_default(registry, None)
-    }
-
-    /// Creates a new rule selection from all known rules in the registry, including rules that are default by default.
-    /// Rules that are disabled by default use the `default_severity`.
-    pub fn all(registry: &RuleRegistry, default_severity: Severity) -> Self {
-        Self::from_registry_with_default(registry, Some(default_severity))
     }
 
     fn from_registry_with_default(
@@ -446,42 +266,8 @@ impl RuleSelection {
         Self { rules }
     }
 
-    /// Returns an iterator over all enabled rules.
-    pub fn enabled(&self) -> impl Iterator<Item = RuleId> + '_ {
-        self.rules.keys().copied()
-    }
-
-    /// Returns an iterator over all enabled rules and their severity.
-    pub fn iter(&self) -> impl ExactSizeIterator<Item = (RuleId, Severity)> + '_ {
-        self.rules
-            .iter()
-            .map(|(&rule, &(severity, _))| (rule, severity))
-    }
-
-    /// Returns the configured severity for the rule with the given id or `None` if the rule is disabled.
-    pub fn severity(&self, rule: RuleId) -> Option<Severity> {
-        self.rules.get(&rule).map(|(severity, _)| *severity)
-    }
-
-    pub fn get(&self, rule: RuleId) -> Option<(Severity, RuleSource)> {
+    pub(crate) fn get(&self, rule: RuleId) -> Option<(Severity, RuleSource)> {
         self.rules.get(&rule).copied()
-    }
-
-    /// Returns `true` if the `rule` is enabled.
-    pub fn is_enabled(&self, rule: RuleId) -> bool {
-        self.severity(rule).is_some()
-    }
-
-    /// Enables `rule` and configures with the given `severity`.
-    ///
-    /// Overrides any previous configuration for the rule.
-    pub fn enable(&mut self, rule: RuleId, severity: Severity, source: RuleSource) {
-        self.rules.insert(rule, (severity, source));
-    }
-
-    /// Disables `rule` if it was previously enabled.
-    pub fn disable(&mut self, rule: RuleId) {
-        self.rules.remove(&rule);
     }
 }
 
@@ -515,14 +301,16 @@ impl fmt::Debug for RuleSelection {
 }
 
 #[derive(Default, Copy, Clone, Debug, PartialEq, Eq)]
-pub enum RuleSource {
+pub(crate) enum RuleSource {
     /// The user didn't enable the rule explicitly, instead it's enabled by default.
     #[default]
     Default,
 
     /// The rule was enabled by using a CLI argument
+    #[expect(dead_code)]
     Cli,
 
     /// The rule was enabled in a configuration file.
+    #[expect(dead_code)]
     File,
 }

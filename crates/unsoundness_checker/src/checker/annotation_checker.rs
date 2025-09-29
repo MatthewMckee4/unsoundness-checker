@@ -9,15 +9,15 @@ use ty_python_semantic::{
 
 use crate::{checker::Context, rules::report_typing_any_used};
 
-pub struct AnnotationChecker<'db, 'ctx> {
-    context: &'ctx Context,
+struct AnnotationChecker<'db, 'ctx> {
+    context: &'ctx Context<'db>,
 
     model: &'db SemanticModel<'db>,
 }
 
 impl<'db, 'ctx> AnnotationChecker<'db, 'ctx> {
     #[must_use]
-    pub const fn new(context: &'ctx Context, model: &'db SemanticModel<'db>) -> Self {
+    pub(crate) const fn new(context: &'ctx Context<'db>, model: &'db SemanticModel<'db>) -> Self {
         Self { context, model }
     }
 }
@@ -32,4 +32,14 @@ impl SourceOrderVisitor<'_> for AnnotationChecker<'_, '_> {
 
         source_order::walk_expr(self, expr);
     }
+}
+
+pub(super) fn check_annotation<'ast>(
+    context: &Context<'_>,
+    model: &'ast SemanticModel<'ast>,
+    expr: &'ast Expr,
+) {
+    let mut annotation_checker = AnnotationChecker::new(context, model);
+
+    annotation_checker.visit_expr(expr);
 }
