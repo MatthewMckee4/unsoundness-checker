@@ -23,3 +23,16 @@ def bar(x: str) -> int: ...
 def bar(x: int | str) -> object:
     return b""
 ```
+
+Though, we currently emit no diagnostic for the following:
+
+```py
+from typing import overload
+
+@overload
+def bar(x: int) -> str: ...
+@overload
+def bar(x: str) -> int: ...
+def bar(x: int | str) -> object:
+    return 1
+```
