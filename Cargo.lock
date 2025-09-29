@@ -1445,7 +1445,7 @@ checksum = "caf4aa5b0f434c91fe5c7f1ecb6a5ece2130b02ad2a590589dda5146df959001"
 [[package]]
 name = "ruff_annotate_snippets"
 version = "0.1.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#01a63c03ada001fa931cb991488b2e5a22504169"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#493b8be3270153de73d2f4c83f7f0bf232d398ea"
 dependencies = [
  "anstyle",
  "memchr",
@@ -1455,7 +1455,7 @@ dependencies = [
 [[package]]
 name = "ruff_cache"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#01a63c03ada001fa931cb991488b2e5a22504169"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#493b8be3270153de73d2f4c83f7f0bf232d398ea"
 dependencies = [
  "filetime",
  "glob",
@@ -1468,7 +1468,7 @@ dependencies = [
 [[package]]
 name = "ruff_db"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#01a63c03ada001fa931cb991488b2e5a22504169"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#493b8be3270153de73d2f4c83f7f0bf232d398ea"
 dependencies = [
  "anstyle",
  "arc-swap",
@@ -1508,7 +1508,7 @@ dependencies = [
 [[package]]
 name = "ruff_diagnostics"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#01a63c03ada001fa931cb991488b2e5a22504169"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#493b8be3270153de73d2f4c83f7f0bf232d398ea"
 dependencies = [
  "get-size2",
  "is-macro",
@@ -1519,7 +1519,7 @@ dependencies = [
 [[package]]
 name = "ruff_index"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#01a63c03ada001fa931cb991488b2e5a22504169"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#493b8be3270153de73d2f4c83f7f0bf232d398ea"
 dependencies = [
  "get-size2",
  "ruff_macros",
@@ -1529,7 +1529,7 @@ dependencies = [
 [[package]]
 name = "ruff_macros"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#01a63c03ada001fa931cb991488b2e5a22504169"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#493b8be3270153de73d2f4c83f7f0bf232d398ea"
 dependencies = [
  "heck",
  "itertools",
@@ -1542,7 +1542,7 @@ dependencies = [
 [[package]]
 name = "ruff_memory_usage"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#01a63c03ada001fa931cb991488b2e5a22504169"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#493b8be3270153de73d2f4c83f7f0bf232d398ea"
 dependencies = [
  "get-size2",
  "ordermap",
@@ -1551,7 +1551,7 @@ dependencies = [
 [[package]]
 name = "ruff_notebook"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#01a63c03ada001fa931cb991488b2e5a22504169"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#493b8be3270153de73d2f4c83f7f0bf232d398ea"
 dependencies = [
  "anyhow",
  "itertools",
@@ -1569,12 +1569,12 @@ dependencies = [
 [[package]]
 name = "ruff_options_metadata"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#01a63c03ada001fa931cb991488b2e5a22504169"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#493b8be3270153de73d2f4c83f7f0bf232d398ea"
 
 [[package]]
 name = "ruff_python_ast"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#01a63c03ada001fa931cb991488b2e5a22504169"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#493b8be3270153de73d2f4c83f7f0bf232d398ea"
 dependencies = [
  "aho-corasick",
  "bitflags 2.9.4",
@@ -1596,7 +1596,7 @@ dependencies = [
 [[package]]
 name = "ruff_python_literal"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#01a63c03ada001fa931cb991488b2e5a22504169"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#493b8be3270153de73d2f4c83f7f0bf232d398ea"
 dependencies = [
  "bitflags 2.9.4",
  "itertools",
@@ -1607,7 +1607,7 @@ dependencies = [
 [[package]]
 name = "ruff_python_parser"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#01a63c03ada001fa931cb991488b2e5a22504169"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#493b8be3270153de73d2f4c83f7f0bf232d398ea"
 dependencies = [
  "bitflags 2.9.4",
  "bstr",
@@ -1627,7 +1627,7 @@ dependencies = [
 [[package]]
 name = "ruff_python_stdlib"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#01a63c03ada001fa931cb991488b2e5a22504169"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#493b8be3270153de73d2f4c83f7f0bf232d398ea"
 dependencies = [
  "bitflags 2.9.4",
  "unicode-ident",
@@ -1636,7 +1636,7 @@ dependencies = [
 [[package]]
 name = "ruff_python_trivia"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#01a63c03ada001fa931cb991488b2e5a22504169"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#493b8be3270153de73d2f4c83f7f0bf232d398ea"
 dependencies = [
  "itertools",
  "ruff_source_file",
@@ -1647,7 +1647,7 @@ dependencies = [
 [[package]]
 name = "ruff_source_file"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#01a63c03ada001fa931cb991488b2e5a22504169"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#493b8be3270153de73d2f4c83f7f0bf232d398ea"
 dependencies = [
  "get-size2",
  "memchr",
@@ -1658,7 +1658,7 @@ dependencies = [
 [[package]]
 name = "ruff_text_size"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#01a63c03ada001fa931cb991488b2e5a22504169"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#493b8be3270153de73d2f4c83f7f0bf232d398ea"
 dependencies = [
  "get-size2",
  "serde",
@@ -2157,7 +2157,7 @@ dependencies = [
 [[package]]
 name = "ty_combine"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#01a63c03ada001fa931cb991488b2e5a22504169"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#493b8be3270153de73d2f4c83f7f0bf232d398ea"
 dependencies = [
  "ordermap",
  "ruff_db",
@@ -2168,7 +2168,7 @@ dependencies = [
 [[package]]
 name = "ty_project"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#01a63c03ada001fa931cb991488b2e5a22504169"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#493b8be3270153de73d2f4c83f7f0bf232d398ea"
 dependencies = [
  "anyhow",
  "camino",
@@ -2204,7 +2204,7 @@ dependencies = [
 [[package]]
 name = "ty_python_semantic"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#01a63c03ada001fa931cb991488b2e5a22504169"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#493b8be3270153de73d2f4c83f7f0bf232d398ea"
 dependencies = [
  "anyhow",
  "bitflags 2.9.4",
@@ -2248,7 +2248,7 @@ dependencies = [
 [[package]]
 name = "ty_static"
 version = "0.0.1"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#01a63c03ada001fa931cb991488b2e5a22504169"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#493b8be3270153de73d2f4c83f7f0bf232d398ea"
 dependencies = [
  "ruff_macros",
 ]
@@ -2256,7 +2256,7 @@ dependencies = [
 [[package]]
 name = "ty_vendored"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#01a63c03ada001fa931cb991488b2e5a22504169"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#493b8be3270153de73d2f4c83f7f0bf232d398ea"
 dependencies = [
  "path-slash",
  "ruff_db",

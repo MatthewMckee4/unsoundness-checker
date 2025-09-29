@@ -7,8 +7,8 @@ error[invalid-overload-implementation]: Invalid overload implementation can lead
   |
 6 | def bar(x: str) -> int: ...
 7 | def bar(x: int | str) -> object:
-8 |     return True
-  |     ^^^^^^^^^^^
+8 |     return b""
+  |     ^^^^^^^^^^
   |
-info: This overload implementation is invalid as `Literal[True]` is not assignable to any of the overload return types (`str`, `int`)
+info: This overload implementation is invalid as `Literal[b""]` is not assignable to any of the overload return types (`str`, `int`)
 info: rule `invalid-overload-implementation` is enabled by default

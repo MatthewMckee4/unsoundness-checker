@@ -21,5 +21,5 @@ def bar(x: int) -> str: ...
 @overload
 def bar(x: str) -> int: ...
 def bar(x: int | str) -> object:
-    return True
+    return b""
 ```

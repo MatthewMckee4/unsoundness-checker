@@ -51,7 +51,7 @@ pub(super) fn check_function_statement<'ast>(
         let overload_matches_return_type =
             |overload_return_type: &Option<Type>| match (return_type, overload_return_type) {
                 (Some(return_type), Some(overload_return_type)) => {
-                    overload_return_type.is_assignable_to(model.db(), return_type)
+                    return_type.is_assignable_to(model.db(), *overload_return_type)
                 }
                 (None, None) => true,
                 _ => false,
