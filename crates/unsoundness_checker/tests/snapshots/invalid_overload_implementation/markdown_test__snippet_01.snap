@@ -2,3 +2,13 @@
 source: crates/unsoundness_checker/tests/markdown_test.rs
 expression: output
 ---
+error[invalid-overload-implementation]: Invalid overload implementation can lead to runtime errors.
+ --> snippet_01.py:8:5
+  |
+6 | def foo(x: str) -> int: ...
+7 | def foo(x: int | str) -> int | str:
+8 |     return x
+  |     ^^^^^^^^
+  |
+info: This overload implementation is invalid as `int | str` is not assignable to any of the overload return types (`str`, `int`)
+info: rule `invalid-overload-implementation` is enabled by default
