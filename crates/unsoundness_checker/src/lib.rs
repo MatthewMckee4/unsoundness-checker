@@ -1,13 +1,14 @@
-pub(crate) use crate::context::Context;
+pub use checker::check_file;
+
 use crate::rule::{RuleRegistry, RuleRegistryBuilder};
-pub use crate::rules::register_rules;
+pub(crate) use crate::{context::Context, rules::register_rules};
 
 pub mod checker;
 pub mod cli;
-pub(crate) mod context;
-pub(crate) mod rule;
-pub(crate) mod rules;
-pub(crate) mod version;
+pub mod context;
+pub mod rule;
+pub mod rules;
+pub mod version;
 
 pub(crate) const NAME: &str = "Unsoundness Checker";
 

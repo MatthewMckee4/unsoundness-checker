@@ -1,6 +1,6 @@
 use std::fmt;
 
-pub struct VersionInfo {
+pub(crate) struct VersionInfo {
     version: String,
 }
 
@@ -12,7 +12,7 @@ impl fmt::Display for VersionInfo {
     }
 }
 
-pub fn version() -> VersionInfo {
+pub(crate) fn version() -> VersionInfo {
     let version = option_env!("CARGO_PKG_VERSION").map(ToString::to_string);
 
     version.map_or_else(

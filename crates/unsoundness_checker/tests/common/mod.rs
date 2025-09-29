@@ -8,7 +8,7 @@ use tempfile::TempDir;
 use ty_project::{
     Db, ProjectDatabase, ProjectMetadata, metadata::options::ProjectOptionsOverrides,
 };
-use unsoundness_checker::checker::check_file;
+use unsoundness_checker::check_file;
 
 static DISPLAY_CONFIG: OnceLock<DisplayDiagnosticConfig> = OnceLock::new();
 static PROJECT_OPTIONS: OnceLock<ProjectOptionsOverrides> = OnceLock::new();

@@ -4,16 +4,16 @@ use ty_project::Db;
 
 use crate::{Context, default_rule_registry, rule::RuleSelection};
 
-pub mod annotation_checker;
-pub mod ast_checker;
+mod annotation_checker;
+mod ast_checker;
+mod overload_checker;
 
-pub use annotation_checker::AnnotationChecker;
-pub use ast_checker::ASTChecker;
+pub(crate) use ast_checker::ASTChecker;
 
 pub fn check_file(db: &dyn Db, file: File) -> Vec<Diagnostic> {
     let rule_registry = default_rule_registry();
 
-    let context = Context::new(file, RuleSelection::from_registry(rule_registry));
+    let context = Context::new(db, file, RuleSelection::from_registry(rule_registry));
 
     let mut ast_checker = ASTChecker::new(db, &context, file);
 
