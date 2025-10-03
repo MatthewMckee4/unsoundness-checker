@@ -1,8 +1,15 @@
+use ruff_db::files::File;
 use ruff_python_ast::{
-    Stmt, StmtFunctionDef, StmtReturn,
+    AnyParameterRef, Expr, ExprContext, ExprName, Stmt, StmtFunctionDef, StmtReturn,
+    name::Name,
     visitor::source_order::{self, SourceOrderVisitor},
 };
-use ty_python_semantic::{HasType, SemanticModel, types::Type};
+use ruff_text_size::{Ranged, TextRange, TextSize};
+use ty_python_semantic::{
+    Db, HasType, SemanticModel,
+    semantic_index::semantic_index,
+    types::{Type, infer_scope_types},
+};
 
 use crate::{Context, rules::report_invalid_overload_implementation};
 
@@ -42,6 +49,12 @@ pub(super) fn check_function_statement<'ast>(
 
     let return_statements = get_return_statements(stmt_function_def);
 
+    let parameters = &stmt_function_def
+        .parameters
+        .iter()
+        .map(AnyParameterRef::as_parameter)
+        .collect::<Vec<_>>();
+
     for return_statement in return_statements {
         let return_type = return_statement
             .value
@@ -78,6 +91,19 @@ pub(super) fn check_function_statement<'ast>(
             .filter(|signature| overload_matches_return_type(&signature.return_ty))
             .collect::<Vec<_>>();
     }
+}
+
+fn inferred_type<'db>(
+    db: &'db dyn Db,
+    file: File,
+    node_expr: &Expr,
+    actual_expr: &Expr,
+) -> Type<'db> {
+    let index = semantic_index(db, file);
+    let file_scope = index.expression_scope_id(node_expr);
+    let scope = file_scope.to_scope_id(db, file);
+
+    infer_scope_types(db, scope).expression_type(actual_expr)
 }
 
 fn get_return_statements(stmt_function_def: &StmtFunctionDef) -> Vec<&StmtReturn> {
