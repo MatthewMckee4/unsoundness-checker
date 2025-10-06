@@ -17,12 +17,12 @@ Invalid overload implementation can lead to runtime errors.
 **Examples**
 
 ```python
+from typing import overload
+
 @overload
 def foo(x: int) -> str: ...
-
 @overload
 def foo(x: str) -> int: ...
-
 def foo(x: int | str) -> int | str:
     return x
 
@@ -48,6 +48,8 @@ Using `typing.Any` in type annotations can lead to runtime errors.
 **Examples**
 
 ```python
+from typing import Any
+
 def foo(x: Any) -> Any:
     return x + 1
 

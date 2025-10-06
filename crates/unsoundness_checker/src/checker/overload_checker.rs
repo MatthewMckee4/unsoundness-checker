@@ -2,7 +2,10 @@ use ruff_python_ast::{
     Stmt, StmtFunctionDef, StmtReturn,
     visitor::source_order::{self, SourceOrderVisitor},
 };
-use ty_python_semantic::{HasType, SemanticModel, types::Type};
+use ty_python_semantic::{
+    HasType, SemanticModel,
+    types::{Type, UnionBuilder},
+};
 
 use crate::{Context, rules::report_invalid_overload_implementation};
 
@@ -40,6 +43,16 @@ pub(super) fn check_function_statement<'ast>(
         .map(|overload| overload.return_ty)
         .collect::<Vec<_>>();
 
+    let union_of_overload_return_type = overload_return_types
+        .iter()
+        .filter_map(|ty| ty.as_ref())
+        .fold(UnionBuilder::new(model.db()), |builder, ty| {
+            builder.add(*ty)
+        })
+        .build();
+
+    let is_any_overload_return_type_none = overload_return_types.iter().any(Option::is_none);
+
     let return_statements = get_return_statements(stmt_function_def);
 
     for return_statement in return_statements {
@@ -48,35 +61,30 @@ pub(super) fn check_function_statement<'ast>(
             .as_ref()
             .map(|value| value.inferred_type(model));
 
-        let overload_matches_return_type =
-            |overload_return_type: &Option<Type>| match (return_type, overload_return_type) {
-                (Some(return_type), Some(overload_return_type)) => {
-                    return_type.is_assignable_to(model.db(), *overload_return_type)
+        match (return_type, is_any_overload_return_type_none) {
+            (Some(_), true) | (None, false) => {
+                report_invalid_overload_implementation(
+                    context,
+                    return_statement,
+                    return_type.as_ref(),
+                    &overload_return_types,
+                );
+            }
+            (Some(return_type), false) => {
+                let is_return_type_assignable_to_an_overload =
+                    return_type.is_assignable_to(model.db(), union_of_overload_return_type);
+
+                if !is_return_type_assignable_to_an_overload {
+                    report_invalid_overload_implementation(
+                        context,
+                        return_statement,
+                        Some(&return_type),
+                        &overload_return_types,
+                    );
                 }
-                (None, None) => true,
-                _ => false,
-            };
-
-        let is_return_type_assignable_to_an_overload = overload_return_types
-            .iter()
-            .any(&overload_matches_return_type);
-
-        if !is_return_type_assignable_to_an_overload {
-            report_invalid_overload_implementation(
-                context,
-                return_statement,
-                return_type.as_ref(),
-                &overload_return_types,
-            );
-
-            continue;
+            }
+            (None, true) => {}
         }
-
-        // Return type is assignable to at least one overload return type
-        let _possible_overload_matches = overload_signatures
-            .iter()
-            .filter(|signature| overload_matches_return_type(&signature.return_ty))
-            .collect::<Vec<_>>();
     }
 }
 

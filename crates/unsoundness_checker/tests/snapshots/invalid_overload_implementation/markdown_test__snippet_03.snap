@@ -2,3 +2,13 @@
 source: crates/unsoundness_checker/tests/markdown_test.rs
 expression: output
 ---
+error[invalid-overload-implementation]: Invalid overload implementation can lead to runtime errors.
+ --> snippet_03.py:8:5
+  |
+6 | def bar(x: str) -> int: ...
+7 | def bar(x: int | str) -> object:
+8 |     return b""
+  |     ^^^^^^^^^^
+  |
+info: This overload implementation is invalid as `Literal[b""]` is not assignable to any of the overload return types (`str`, `int`)
+info: rule `invalid-overload-implementation` is enabled by default
