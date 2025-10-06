@@ -80,21 +80,28 @@ def baz(x: int | str) -> int | str:
     return x
 ```
 
-This is a more complex example which makes it very difficult to catch any errors. this is a valid implementation, but because we do not narrow `x` here, we cannot make any assumptions about if this is valid or not.
+This is a more complex example which makes it very difficult to catch any errors. this is a valid implementation, but because we lost information about the use of `x`,
+we cannot make any assumptions about if this is valid or not.
 
-And because we don't want to emit false positives, we can't take this further.
+And because we don't want to emit false positives, we will emit anything here.
 
 ```py
-from typing import overload
+from typing import overload, TypeVar
+
+T = TypeVar("T")
+
+def custom_copy(x: T) -> T:
+    return x
 
 @overload
 def baz(x: list[int]) -> str: ...
 @overload
 def baz(x: str) -> int: ...
 def baz(x: list[int] | str) -> int | str:
-    y = list(x) if isinstance(x, list) else x
+    # Some copy function
+    y = custom_copy(x)
     if isinstance(y, list):
-        return "".join(str(i) for i in y)
+        return ""
     else:
-        return len(y)
+        return 1
 ```
