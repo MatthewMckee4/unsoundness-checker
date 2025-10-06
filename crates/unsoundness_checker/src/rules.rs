@@ -22,6 +22,8 @@ declare_rule! {
     ///
     /// ## Examples
     /// ```python
+    /// from typing import Any
+    ///
     /// def foo(x: Any) -> Any:
     ///     return x + 1
     ///
@@ -43,12 +45,12 @@ declare_rule! {
     ///
     /// ## Examples
     /// ```python
+    /// from typing import overload
+    ///
     /// @overload
     /// def foo(x: int) -> str: ...
-    ///
     /// @overload
     /// def foo(x: str) -> int: ...
-    ///
     /// def foo(x: int | str) -> int | str:
     ///     return x
     ///

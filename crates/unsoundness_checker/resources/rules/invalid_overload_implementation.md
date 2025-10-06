@@ -6,10 +6,10 @@
 from typing import overload
 
 @overload
-def process(x: int) -> str: ...
+def foo(x: int) -> str: ...
 @overload
-def process(x: str) -> int: ...
-def process(x: int | str) -> str | int:
+def foo(x: str) -> int: ...
+def foo(x: int | str) -> str | int:
     if isinstance(x, int):
         return str(x)
     return len(x)
@@ -19,43 +19,22 @@ def process(x: int | str) -> str | int:
 from typing import overload
 
 @overload
-def convert(x: list[int]) -> tuple[int, ...]: ...
+def foo(x: int, y: str) -> bool: ...
 @overload
-def convert(x: dict[str, int]) -> list[int]: ...
-def convert(x: list[int] | dict[str, int]) -> tuple[int, ...] | list[int]:
-    if isinstance(x, list):
-        return tuple(x)
-    return list(x.values())
-```
-
-```py
-from typing import overload, Union
-
-@overload
-def handle(x: int, y: str) -> bool: ...
-@overload
-def handle(x: str, y: int) -> float: ...
-def handle(x: Union[int, str], y: Union[str, int]) -> Union[bool, float]:
+def foo(x: str, y: int) -> float: ...
+def foo(x: int | str, y: str | int) -> bool | float:
     if isinstance(x, int) and isinstance(y, str):
         return True
     return 1.0
 ```
 
-## Invalid Overloads
+## Invalid Overloads Implementations
 
-We emit diagnostics for return types that are not assignable to any of the overload return types.
+### What we can catch
 
-```py
-from typing import overload
+We emit diagnostics for return types that are not assignable to the union of the overload return types.
 
-@overload
-def foo(x: int) -> str: ...
-@overload
-def foo(x: str) -> int: ...
-def foo(x: int | str) -> int | str:
-    return x
-```
-
+The main issue that type checkers won't always pick up on is that the implementation return type can simply be `object` which everything is assignable to.
 
 ```py
 from typing import overload
@@ -68,6 +47,8 @@ def bar(x: int | str) -> object:
     return b""
 ```
 
+A side note is that if you changed the return type of `bar` implementation to `int | str`, then most type checkers would catch this error.
+
 ```py
 from typing import overload
 
@@ -75,19 +56,45 @@ from typing import overload
 def bar(x: int) -> str: ...
 @overload
 def bar(x: str) -> int: ...
-def bar(x: int | str) -> list[str]:
-    return ["invalid"]
+def bar(x: int | str) -> int | str:
+    return b""
 ```
 
-Though, we currently emit no diagnostic for the following:
+### What we can't catch
+
+Due to more complex examples, we currently can't catch all invalid overload implementations.
+
+The idea for the implementation of this was that at each return statement if all input variables had been narrowed to the types of the matching overload statement, then this would be a valid implementation.
+
+This is a obvious incorrect implementation.
+
+```py
+
+from typing import overload
+
+@overload
+def baz(x: int) -> str: ...
+@overload
+def baz(x: str) -> int: ...
+def baz(x: int | str) -> int | str:
+    return x
+```
+
+This is a more complex example which makes it very difficult to catch any errors. this is a valid implementation, but because we do not narrow `x` here, we cannot make any assumptions about if this is valid or not.
+
+And because we don't want to emit false positives, we can't take this further.
 
 ```py
 from typing import overload
 
 @overload
-def bar(x: int) -> str: ...
+def baz(x: list[int]) -> str: ...
 @overload
-def bar(x: str) -> int: ...
-def bar(x: int | str) -> object:
-    return 1
+def baz(x: str) -> int: ...
+def baz(x: list[int] | str) -> int | str:
+    y = list(x) if isinstance(x, list) else x
+    if isinstance(y, list):
+        return "".join(str(i) for i in y)
+    else:
+        return len(y)
 ```
