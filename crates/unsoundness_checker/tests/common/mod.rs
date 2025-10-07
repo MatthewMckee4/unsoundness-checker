@@ -26,7 +26,7 @@ impl TestRunner {
     }
 
     #[must_use]
-    pub fn temp_dir(&self) -> &TempDir {
+    pub const fn temp_dir(&self) -> &TempDir {
         &self.temp_dir
     }
 
