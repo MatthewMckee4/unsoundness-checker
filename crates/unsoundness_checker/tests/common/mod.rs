@@ -107,6 +107,8 @@ impl TestRunner {
         let venv_output = std::process::Command::new("uv")
             .arg("venv")
             .arg("--clear")
+            .arg("-p")
+            .arg("3.13")
             .output()
             .expect("Failed to create virtual environment");
 
