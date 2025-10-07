@@ -25,6 +25,7 @@ impl TestRunner {
         Self { temp_dir }
     }
 
+    #[must_use]
     pub fn temp_dir(&self) -> &TempDir {
         &self.temp_dir
     }
@@ -124,8 +125,6 @@ impl Default for TestRunner {
         Self::new()
     }
 }
-
-use std::collections::HashMap;
 
 use pulldown_cmark::{Event, Parser, Tag, TagEnd};
 

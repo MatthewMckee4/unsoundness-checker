@@ -31,6 +31,9 @@ def get_user_data() -> Any:
 ```python
 from typing import Any
 
+def get_user() -> dict[str, str | int]:
+    return {"name": "John", "age": 30}
+
 user_info: Any = get_user()
 ```
 
@@ -50,16 +53,4 @@ Instead, be specific about what you expect:
 ```python
 def calculate_total(items: list[int]) -> int:
     return sum(item for item in items)
-```
-
-## Other Examples
-
-The checker also finds `Any` nested in other types:
-
-```python
-from typing import Any
-
-def process(data: dict[str, Any]) -> None: pass
-def get_items() -> list[Any]: pass
-user_data: dict[str, Any] = {}
 ```

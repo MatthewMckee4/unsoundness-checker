@@ -111,23 +111,26 @@ def embed_diagnostics_in_markdown(markdown_path: str, rule_name: str):
 
                 new_lines.append("")
 
-                # Check if we have any non-empty diagnostics
-                has_diagnostics = any(diag.strip() for diag in checker_outputs.values())
+                for checker in ["unsoundness-checker", "mypy", "pyright"]:
+                    if checker in checker_outputs:
+                        diagnostic = checker_outputs[checker].strip()
+                        display_name = "Unsoundness Checker" if checker == "unsoundness-checker" else checker.capitalize()
 
-                if has_diagnostics:
-                    for checker in ["unsoundness-checker", "mypy", "pyright"]:
-                        if checker in checker_outputs:
-                            diagnostic = checker_outputs[checker]
-                            display_name = "Unsoundness Checker" if checker == "unsoundness-checker" else checker.capitalize()
+                        # Check if diagnostic is empty or indicates no issues
+                        is_empty = not diagnostic
+                        is_mypy_clean = checker == "mypy" and "no issues" in diagnostic.lower()
+                        is_pyright_clean = checker == "pyright" and "0 errors" in diagnostic.lower()
+
+                        if is_empty or is_mypy_clean or is_pyright_clean:
+                            new_lines.append(f'!!! info "{display_name}: No Diagnostic Emitted"')
+                            new_lines.append("")
+                        else:
                             new_lines.append(f'??? note "{display_name} Output"')
                             new_lines.append("    ```")
                             for diag_line in diagnostic.split("\n"):
                                 new_lines.append(f"    {diag_line}")
                             new_lines.append("    ```")
                             new_lines.append("")
-                else:
-                    new_lines.append('!!! info "No Diagnostic Emitted"')
-                    new_lines.append("")
 
         i += 1
 
