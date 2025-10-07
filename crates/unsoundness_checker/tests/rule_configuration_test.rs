@@ -9,7 +9,7 @@ fn test_typing_any_used_rule_enabled() {
     runner.add_file(
         "pyproject.toml",
         r#"
-[tool.ty.rules]
+[tool.unsoundness-checker.rules]
 typing-any-used = "error"
 "#,
     );
@@ -57,7 +57,7 @@ fn test_typing_any_used_rule_disabled() {
     runner.add_file(
         "pyproject.toml",
         r#"
-[tool.ty.rules]
+[tool.unsoundness-checker.rules]
 typing-any-used = "ignore"
 "#,
     );
@@ -83,7 +83,7 @@ fn test_invalid_overload_implementation_rule_enabled() {
     runner.add_file(
         "pyproject.toml",
         r#"
-[tool.ty.rules]
+[tool.unsoundness-checker.rules]
 invalid-overload-implementation = "error"
 "#,
     );
@@ -125,7 +125,7 @@ fn test_invalid_overload_implementation_rule_disabled() {
     runner.add_file(
         "pyproject.toml",
         r#"
-[tool.ty.rules]
+[tool.unsoundness-checker.rules]
 invalid-overload-implementation = "ignore"
 "#,
     );
@@ -157,7 +157,7 @@ fn test_all_rules_enabled() {
     runner.add_file(
         "pyproject.toml",
         r#"
-[tool.ty.rules]
+[tool.unsoundness-checker.rules]
 typing-any-used = "error"
 invalid-overload-implementation = "error"
 "#,
@@ -225,7 +225,7 @@ fn test_all_rules_disabled() {
     runner.add_file(
         "pyproject.toml",
         r#"
-[tool.ty.rules]
+[tool.unsoundness-checker.rules]
 typing-any-used = "ignore"
 invalid-overload-implementation = "ignore"
 "#,
@@ -261,7 +261,7 @@ fn test_mixed_rule_configuration() {
     runner.add_file(
         "pyproject.toml",
         r#"
-[tool.ty.rules]
+[tool.unsoundness-checker.rules]
 typing-any-used = "error"
 invalid-overload-implementation = "ignore"
 "#,
@@ -319,7 +319,7 @@ fn test_rule_warning_level() {
     runner.add_file(
         "pyproject.toml",
         r#"
-[tool.ty.rules]
+[tool.unsoundness-checker.rules]
 typing-any-used = "warn"
 "#,
     );
@@ -416,7 +416,7 @@ fn test_typing_any_used_error_level() {
     runner.add_file(
         "pyproject.toml",
         r#"
-[tool.ty.rules]
+[tool.unsoundness-checker.rules]
 typing-any-used = "error"
 "#,
     );
@@ -464,7 +464,7 @@ fn test_invalid_overload_implementation_error_level() {
     runner.add_file(
         "pyproject.toml",
         r#"
-[tool.ty.rules]
+[tool.unsoundness-checker.rules]
 invalid-overload-implementation = "error"
 "#,
     );
@@ -496,7 +496,7 @@ fn test_typing_any_used_warn_level() {
     runner.add_file(
         "pyproject.toml",
         r#"
-[tool.ty.rules]
+[tool.unsoundness-checker.rules]
 typing-any-used = "warn"
 "#,
     );
@@ -544,7 +544,7 @@ fn test_invalid_overload_implementation_warn_level() {
     runner.add_file(
         "pyproject.toml",
         r#"
-[tool.ty.rules]
+[tool.unsoundness-checker.rules]
 invalid-overload-implementation = "warn"
 "#,
     );
@@ -576,7 +576,7 @@ fn test_all_rules_warn_level() {
     runner.add_file(
         "pyproject.toml",
         r#"
-[tool.ty.rules]
+[tool.unsoundness-checker.rules]
 typing-any-used = "warn"
 invalid-overload-implementation = "warn"
 "#,
@@ -644,7 +644,7 @@ fn test_mixed_warn_error_levels() {
     runner.add_file(
         "pyproject.toml",
         r#"
-[tool.ty.rules]
+[tool.unsoundness-checker.rules]
 typing-any-used = "warn"
 invalid-overload-implementation = "error"
 "#,
@@ -712,7 +712,7 @@ fn test_unrecognized_rule_name() {
     runner.add_file(
         "pyproject.toml",
         r#"
-[tool.ty.rules]
+[tool.unsoundness-checker.rules]
 typing-any-used = "error"
 nonexistent-rule = "error"
 invalid-overload-implementation = "warn"
@@ -743,7 +743,7 @@ def overload_func(x: int | str) -> int | str:
     warning[unknown-rule]: Unknown lint rule `nonexistent-rule`
      --> pyproject.toml:4:1
       |
-    2 | [tool.ty.rules]
+    2 | [tool.unsoundness-checker.rules]
     3 | typing-any-used = "error"
     4 | nonexistent-rule = "error"
       | ^^^^^^^^^^^^^^^^
