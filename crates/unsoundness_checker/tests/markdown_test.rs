@@ -1,6 +1,6 @@
 use std::fs;
 
-mod common;
+pub mod common;
 
 use common::run_rule_tests;
 

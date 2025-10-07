@@ -8,7 +8,7 @@ use tempfile::TempDir;
 use ty_project::{
     Db, ProjectDatabase, ProjectMetadata, metadata::options::ProjectOptionsOverrides,
 };
-use unsoundness_checker::check_file;
+use unsoundness_checker::{check_file, default_rule_registry, rule::RuleSelection};
 
 static DISPLAY_CONFIG: OnceLock<DisplayDiagnosticConfig> = OnceLock::new();
 static PROJECT_OPTIONS: OnceLock<ProjectOptionsOverrides> = OnceLock::new();
@@ -60,23 +60,32 @@ impl TestRunner {
             .apply_configuration_files(&system)
             .expect("Failed to apply config");
 
+        let rules = project_metadata.options().rules.clone();
+
         let project_options_overrides =
             PROJECT_OPTIONS.get_or_init(ProjectOptionsOverrides::default);
         project_metadata.apply_overrides(project_options_overrides);
 
         let db = ProjectDatabase::new(project_metadata, system).expect("Failed to create database");
 
+        let rule_registry = default_rule_registry();
+        let (rule_selection, rule_diagnostics) =
+            RuleSelection::from_rules_selection(rule_registry, rules.as_ref(), &db);
+
         let files = db.project().files(&db);
         let mut diagnostics = Vec::new();
 
         for file in &files {
-            diagnostics.extend(check_file(&db, file));
+            diagnostics.extend(check_file(&db, file, &rule_selection));
         }
 
         let display_config = DISPLAY_CONFIG.get_or_init(DisplayDiagnosticConfig::default);
+
+        let rule_display = DisplayDiagnostics::new(&db, display_config, &rule_diagnostics);
+
         let display = DisplayDiagnostics::new(&db, display_config, &diagnostics);
 
-        format!("{display}")
+        format!("{rule_display}{display}")
     }
 }
 
@@ -112,6 +121,7 @@ impl RuleTestFile {
     }
 
     /// Parses markdown content into a `RuleTestFile`
+    #[must_use]
     pub fn from_markdown_content(content: &str) -> Self {
         let parser = Parser::new(content);
         let mut snippets = Vec::new();
@@ -167,6 +177,7 @@ impl RuleTestFile {
 
 const RESOURCE_DIR: &str = "resources/rules";
 
+#[must_use]
 pub fn run_rule_tests(rule_name: &str) -> HashMap<String, String> {
     let file_path = format!("{RESOURCE_DIR}/{rule_name}.md");
     let rule_tests = RuleTestFile::from_markdown_file(file_path);

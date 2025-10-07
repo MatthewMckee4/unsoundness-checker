@@ -19,12 +19,16 @@ pub(crate) struct Context<'db> {
     /// The diagnostics collected so far.
     diagnostics: RefCell<Vec<Diagnostic>>,
     /// The rule selection.
-    rule_selection: RuleSelection,
+    rule_selection: &'db RuleSelection,
 }
 
 impl<'db> Context<'db> {
     #[must_use]
-    pub(crate) const fn new(db: &'db dyn Db, file: File, rule_selection: RuleSelection) -> Self {
+    pub(crate) const fn new(
+        db: &'db dyn Db,
+        file: File,
+        rule_selection: &'db RuleSelection,
+    ) -> Self {
         Self {
             db,
             file,
@@ -42,7 +46,7 @@ impl<'db> Context<'db> {
     }
 
     pub(crate) const fn rule_selection(&self) -> &RuleSelection {
-        &self.rule_selection
+        self.rule_selection
     }
 
     pub(crate) const fn file(&self) -> File {
