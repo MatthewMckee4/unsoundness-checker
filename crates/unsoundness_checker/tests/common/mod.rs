@@ -104,6 +104,35 @@ impl TestRunner {
     }
 
     fn run_external_tool(&self, tool: &str) -> String {
+        let venv_output = std::process::Command::new("uv")
+            .arg("venv")
+            .arg("--clear")
+            .output()
+            .expect("Failed to create virtual environment");
+
+        if !venv_output.status.success() {
+            eprintln!(
+                "Failed to create virtual environment: {}",
+                String::from_utf8_lossy(&venv_output.stderr)
+            );
+        }
+
+        let install_output = std::process::Command::new("uv")
+            .arg("pip")
+            .arg("install")
+            .arg(tool)
+            .output()
+            .expect("Failed to install tool");
+
+        if !install_output.status.success() {
+            eprintln!(
+                "Failed to install {}: {}",
+                tool,
+                String::from_utf8_lossy(&install_output.stderr)
+            );
+        }
+
+        // Then run the tool
         let output = std::process::Command::new("uv")
             .arg("run")
             .arg("--with")
