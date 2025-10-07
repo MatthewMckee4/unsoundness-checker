@@ -2,8 +2,18 @@ use core::fmt;
 use std::{fmt::Formatter, hash::Hasher};
 
 use itertools::Itertools;
-use ruff_db::diagnostic::{LintName, Severity};
+use ruff_db::{
+    diagnostic::{Annotation, Diagnostic, DiagnosticId, LintName, Severity, Span},
+    files::system_path_to_file,
+};
 use rustc_hash::FxHashMap;
+use ty_project::{
+    Db,
+    metadata::{
+        options::{OptionDiagnostic, Rules},
+        value::ValueSource,
+    },
+};
 
 #[derive(Debug, Clone)]
 pub struct RuleMetadata {
@@ -213,6 +223,10 @@ impl RuleRegistry {
     pub fn rules(&self) -> &[RuleId] {
         &self.rules
     }
+
+    pub(crate) fn get(&self, code: &str) -> Option<RuleId> {
+        self.rules.iter().find(|r| r.name() == code).copied()
+    }
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
@@ -234,7 +248,7 @@ impl From<&'static RuleMetadata> for RuleEntry {
 }
 
 #[derive(Clone, Default, PartialEq, Eq)]
-pub(crate) struct RuleSelection {
+pub struct RuleSelection {
     /// Map with the severity for each enabled rule rule.
     ///
     /// If a rule isn't present in this map, then it should be considered disabled.
@@ -268,6 +282,71 @@ impl RuleSelection {
 
     pub(crate) fn get(&self, rule: RuleId) -> Option<(Severity, RuleSource)> {
         self.rules.get(&rule).copied()
+    }
+
+    /// Enables `rule` and configures with the given `severity`.
+    ///
+    /// Overrides any previous configuration for the rule.
+    pub(crate) fn enable(&mut self, rule: RuleId, severity: Severity, source: RuleSource) {
+        self.rules.insert(rule, (severity, source));
+    }
+
+    /// Disables `rule` if it was previously enabled.
+    pub(crate) fn disable(&mut self, rule: RuleId) {
+        self.rules.remove(&rule);
+    }
+
+    pub fn from_rules_selection(
+        registry: &RuleRegistry,
+        rules: Option<&Rules>,
+        db: &dyn Db,
+    ) -> (Self, Vec<Diagnostic>) {
+        let mut selection = Self::from_registry(registry);
+
+        let Some(rules) = rules else {
+            return (selection, Vec::new());
+        };
+
+        let mut diagnostics = Vec::new();
+
+        for (rule_name, level) in &rules.inner {
+            let source = rule_name.source();
+            if let Some(lint) = registry.get(rule_name) {
+                let lint_source = match source {
+                    ValueSource::File(_) => RuleSource::File,
+                    ValueSource::Cli => RuleSource::Cli,
+
+                    ValueSource::PythonVSCodeExtension => {
+                        unreachable!("Can't configure rules from the Python VSCode extension")
+                    }
+                };
+                if let Ok(severity) = Severity::try_from(**level) {
+                    selection.enable(lint, severity, lint_source);
+                } else {
+                    selection.disable(lint);
+                }
+            } else {
+                // `system_path_to_file` can return `Err` if the file was deleted since the configuration
+                // was read. This should be rare and it should be okay to default to not showing a configuration
+                // file in that case.
+                let file = source
+                    .file()
+                    .and_then(|path| system_path_to_file(db, path).ok());
+
+                let diagnostic = OptionDiagnostic::new(
+                    DiagnosticId::UnknownRule,
+                    format!("Unknown lint rule `{rule_name}`"),
+                    Severity::Warning,
+                );
+
+                let annotation = file
+                    .map(Span::from)
+                    .map(|span| Annotation::primary(span.with_optional_range(rule_name.range())));
+                diagnostics.push(diagnostic.with_annotation(annotation).to_diagnostic());
+            }
+        }
+
+        (selection, diagnostics)
     }
 }
 
@@ -307,10 +386,8 @@ pub(crate) enum RuleSource {
     Default,
 
     /// The rule was enabled by using a CLI argument
-    #[expect(dead_code)]
     Cli,
 
     /// The rule was enabled in a configuration file.
-    #[expect(dead_code)]
     File,
 }

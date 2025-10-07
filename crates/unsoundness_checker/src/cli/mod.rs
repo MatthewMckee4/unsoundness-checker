@@ -19,6 +19,8 @@ use crate::{
         args::{CheckCommand, Command},
         logging::setup_tracing,
     },
+    default_rule_registry,
+    rule::RuleSelection,
     version::{self},
 };
 
@@ -74,6 +76,8 @@ pub(crate) fn test(args: &CheckCommand) -> Result<ExitStatus> {
 
     let mut project_metadata = ProjectMetadata::discover(&cwd, &system)?;
 
+    let rules = project_metadata.options().rules.clone();
+
     project_metadata.apply_configuration_files(&system)?;
 
     let project_options_overrides = ProjectOptionsOverrides::default();
@@ -87,14 +91,26 @@ pub(crate) fn test(args: &CheckCommand) -> Result<ExitStatus> {
 
     let files = db.project().files(&db);
 
+    let display_config = DisplayDiagnosticConfig::default();
+
+    let rule_registry = default_rule_registry();
+
+    let (rule_selection, rule_diagnostics) =
+        RuleSelection::from_rules_selection(rule_registry, rules.as_ref(), &db);
+
+    let mut stdout = io::stdout();
+
+    write!(
+        stdout,
+        "{}",
+        DisplayDiagnostics::new(&db, &display_config, &rule_diagnostics)
+    )?;
+
     let mut diagnostics = Vec::new();
 
     for file in &files {
-        diagnostics.extend(check_file(&db, file));
+        diagnostics.extend(check_file(&db, file, &rule_selection));
     }
-    let display_config = DisplayDiagnosticConfig::default();
-
-    let mut stdout = io::stdout();
 
     if diagnostics.is_empty() {
         writeln!(stdout, "All checks passed")?;
