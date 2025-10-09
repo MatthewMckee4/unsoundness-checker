@@ -95,15 +95,15 @@ impl TestRunner {
 
     #[must_use]
     pub fn run_mypy(&self) -> String {
-        self.run_external_tool("mypy")
+        self.run_external_tool("mypy", "1.19")
     }
 
     #[must_use]
     pub fn run_pyright(&self) -> String {
-        self.run_external_tool("pyright")
+        self.run_external_tool("pyright", "1.1.406")
     }
 
-    fn run_external_tool(&self, tool: &str) -> String {
+    fn run_external_tool(&self, tool: &str, version: &str) -> String {
         let venv_output = std::process::Command::new("uv")
             .arg("venv")
             .arg("--clear")
@@ -122,7 +122,7 @@ impl TestRunner {
         let install_output = std::process::Command::new("uv")
             .arg("pip")
             .arg("install")
-            .arg(tool)
+            .arg(format!("{tool}=={version}"))
             .output()
             .expect("Failed to install tool");
 
@@ -255,15 +255,17 @@ pub fn run_rule_tests(rule_name: &str) -> Vec<(PathBuf, String, String)> {
         let output = test_runner.run_test();
         results.push((temp_path.clone(), test_name.to_string(), output));
 
-        let mypy_output = test_runner.run_mypy();
-        results.push((temp_path.clone(), format!("{test_name}_mypy"), mypy_output));
+        if cfg!(unix) {
+            let mypy_output = test_runner.run_mypy();
+            results.push((temp_path.clone(), format!("{test_name}_mypy"), mypy_output));
 
-        let pyright_output = test_runner.run_pyright();
-        results.push((
-            temp_path.clone(),
-            format!("{test_name}_pyright"),
-            pyright_output,
-        ));
+            let pyright_output = test_runner.run_pyright();
+            results.push((
+                temp_path.clone(),
+                format!("{test_name}_pyright"),
+                pyright_output,
+            ));
+        }
     }
 
     results
