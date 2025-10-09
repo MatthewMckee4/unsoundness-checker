@@ -95,7 +95,7 @@ impl TestRunner {
 
     #[must_use]
     pub fn run_mypy(&self) -> String {
-        self.run_external_tool("mypy", "1.19")
+        self.run_external_tool("mypy", "1.18.2")
     }
 
     #[must_use]
@@ -138,7 +138,7 @@ impl TestRunner {
         let output = std::process::Command::new("uv")
             .arg("run")
             .arg("--with")
-            .arg(tool)
+            .arg(format!("{tool}=={version}"))
             .arg(tool)
             .arg(self.temp_dir.path())
             .output()
