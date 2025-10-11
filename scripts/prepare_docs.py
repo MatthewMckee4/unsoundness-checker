@@ -39,7 +39,7 @@ def read_snapshot_file(filepath: str) -> str:
     return content.strip()
 
 
-def get_snapshots_for_rule(rule_name: str) -> Dict[str, str]:
+def get_snapshots_for_rule(rule_name: str) -> Dict[str, Dict[str, str]]:
     """Get all snapshot files for a given rule and return their content."""
     snapshots_dir = f"crates/unsoundness_checker/tests/snapshots/{rule_name}"
 
@@ -53,12 +53,26 @@ def get_snapshots_for_rule(rule_name: str) -> Dict[str, str]:
     for filepath in sorted(snapshot_files):
         filename = os.path.basename(filepath)
 
-        match = re.search(r"snippet_(\d+)", filename)
+        # Try matching with checker suffix first
+        match = re.search(r"snippet_(\d+)_(mypy|pyright)", filename)
         if match:
             snippet_num = match.group(1)
-            diagnostic = read_snapshot_file(filepath)
+            checker = match.group(2)
+        else:
+            # Try matching without checker suffix (our checker's output)
+            match = re.search(r"snippet_(\d+)", filename)
+            if match:
+                snippet_num = match.group(1)
+                checker = "unsoundness-checker"
+            else:
+                continue
 
-            snapshots[snippet_num] = diagnostic
+        diagnostic = read_snapshot_file(filepath)
+
+        if snippet_num not in snapshots:
+            snapshots[snippet_num] = {}
+
+        snapshots[snippet_num][checker] = diagnostic
 
     return snapshots
 
@@ -93,19 +107,30 @@ def embed_diagnostics_in_markdown(markdown_path: str, rule_name: str):
 
             snippet_key = f"{code_block_count:02d}"
             if snippet_key in snapshots:
-                diagnostic = snapshots[snippet_key]
+                checker_outputs = snapshots[snippet_key]
 
                 new_lines.append("")
-                if diagnostic.strip():
-                    new_lines.append('??? note "Diagnostic Output"')
-                    new_lines.append("    ```")
-                    for diag_line in diagnostic.split("\n"):
-                        new_lines.append(f"    {diag_line}")
-                    new_lines.append("    ```")
-                else:
-                    new_lines.append('!!! info "No Diagnostic Emitted"')
 
-                new_lines.append("")
+                for checker in ["unsoundness-checker", "mypy", "pyright"]:
+                    if checker in checker_outputs:
+                        diagnostic = checker_outputs[checker].strip()
+                        display_name = "Unsoundness Checker" if checker == "unsoundness-checker" else checker.capitalize()
+
+                        # Check if diagnostic is empty or indicates no issues
+                        is_empty = not diagnostic
+                        is_mypy_clean = checker == "mypy" and "no issues" in diagnostic.lower()
+                        is_pyright_clean = checker == "pyright" and "0 errors" in diagnostic.lower()
+
+                        if is_empty or is_mypy_clean or is_pyright_clean:
+                            new_lines.append(f'!!! info "{display_name}: No Diagnostic Emitted"')
+                            new_lines.append("")
+                        else:
+                            new_lines.append(f'??? note "{display_name} Output"')
+                            new_lines.append("    ```")
+                            for diag_line in diagnostic.split("\n"):
+                                new_lines.append(f"    {diag_line}")
+                            new_lines.append("    ```")
+                            new_lines.append("")
 
         i += 1
 

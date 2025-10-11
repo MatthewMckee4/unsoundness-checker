@@ -1,4 +1,4 @@
-use std::{fs, sync::OnceLock};
+use std::{fs, path::PathBuf, sync::OnceLock};
 
 use ruff_db::{
     diagnostic::{DisplayDiagnosticConfig, DisplayDiagnostics},
@@ -23,6 +23,11 @@ impl TestRunner {
     pub fn new() -> Self {
         let temp_dir = TempDir::new().expect("Failed to create temp dir");
         Self { temp_dir }
+    }
+
+    #[must_use]
+    pub const fn temp_dir(&self) -> &TempDir {
+        &self.temp_dir
     }
 
     #[must_use]
@@ -87,6 +92,63 @@ impl TestRunner {
 
         format!("{rule_display}{display}")
     }
+
+    #[must_use]
+    pub fn run_mypy(&self) -> String {
+        self.run_external_tool("mypy", "1.18.2")
+    }
+
+    #[must_use]
+    pub fn run_pyright(&self) -> String {
+        self.run_external_tool("pyright", "1.1.406")
+    }
+
+    fn run_external_tool(&self, tool: &str, version: &str) -> String {
+        let venv_output = std::process::Command::new("uv")
+            .arg("venv")
+            .arg("--clear")
+            .arg("-p")
+            .arg("3.13")
+            .output()
+            .expect("Failed to create virtual environment");
+
+        if !venv_output.status.success() {
+            eprintln!(
+                "Failed to create virtual environment: {}",
+                String::from_utf8_lossy(&venv_output.stderr)
+            );
+        }
+
+        let install_output = std::process::Command::new("uv")
+            .arg("pip")
+            .arg("install")
+            .arg(format!("{tool}=={version}"))
+            .output()
+            .expect("Failed to install tool");
+
+        if !install_output.status.success() {
+            eprintln!(
+                "Failed to install {}: {}",
+                tool,
+                String::from_utf8_lossy(&install_output.stderr)
+            );
+        }
+
+        // Then run the tool
+        let output = std::process::Command::new("uv")
+            .arg("run")
+            .arg("--with")
+            .arg(format!("{tool}=={version}"))
+            .arg(tool)
+            .arg(self.temp_dir.path())
+            .output()
+            .expect("Failed to run external tool");
+
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        let stderr = String::from_utf8_lossy(&output.stderr);
+
+        format!("{stdout}{stderr}")
+    }
 }
 
 impl Default for TestRunner {
@@ -94,8 +156,6 @@ impl Default for TestRunner {
         Self::new()
     }
 }
-
-use std::collections::HashMap;
 
 use pulldown_cmark::{Event, Parser, Tag, TagEnd};
 
@@ -178,18 +238,34 @@ impl RuleTestFile {
 const RESOURCE_DIR: &str = "resources/rules";
 
 #[must_use]
-pub fn run_rule_tests(rule_name: &str) -> HashMap<String, String> {
+pub fn run_rule_tests(rule_name: &str) -> Vec<(PathBuf, String, String)> {
     let file_path = format!("{RESOURCE_DIR}/{rule_name}.md");
     let rule_tests = RuleTestFile::from_markdown_file(file_path);
 
-    let mut results = HashMap::new();
+    let mut results = Vec::new();
 
     for snippet in rule_tests.python_snippets() {
         let test_name = snippet.name.as_deref().unwrap_or("unnamed");
         let filename = format!("{test_name}.py");
 
-        let output = TestRunner::from_file(&filename, &snippet.content).run_test();
-        results.insert(test_name.to_string(), output);
+        let test_runner = TestRunner::from_file(&filename, &snippet.content);
+
+        let temp_path = test_runner.temp_dir().path().to_owned();
+
+        let output = test_runner.run_test();
+        results.push((temp_path.clone(), test_name.to_string(), output));
+
+        if cfg!(unix) {
+            let mypy_output = test_runner.run_mypy();
+            results.push((temp_path.clone(), format!("{test_name}_mypy"), mypy_output));
+
+            let pyright_output = test_runner.run_pyright();
+            results.push((
+                temp_path.clone(),
+                format!("{test_name}_pyright"),
+                pyright_output,
+            ));
+        }
     }
 
     results

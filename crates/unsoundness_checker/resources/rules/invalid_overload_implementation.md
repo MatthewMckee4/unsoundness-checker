@@ -98,7 +98,7 @@ def baz(x: list[int]) -> str: ...
 @overload
 def baz(x: str) -> int: ...
 def baz(x: list[int] | str) -> int | str:
-    # Some copy function
+    # Some complex function that loses information about the type of x, and how it is used
     y = custom_copy(x)
     if isinstance(y, list):
         return ""

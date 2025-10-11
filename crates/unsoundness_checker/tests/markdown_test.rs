@@ -1,4 +1,4 @@
-use std::fs;
+use std::{fs, path::Path};
 
 pub mod common;
 
@@ -34,12 +34,20 @@ fn test_all_rules_from_markdown() {
         fs::create_dir_all(&snapshots_dir)
             .unwrap_or_else(|_| panic!("Failed to create snapshots directory for {rule_name}"));
 
-        for (snippet_name, output) in results {
-            insta::with_settings!({
-                snapshot_path => format!("snapshots/{}", rule_name)
-            }, {
+        for (temp_path, snippet_name, output) in results {
+            let temp_filter = tempdir_filter(&temp_path);
+
+            let mut settings = insta::Settings::clone_current();
+            settings.set_snapshot_path(format!("snapshots/{rule_name}"));
+            settings.add_filter(&temp_filter, "<temp_dir>/");
+
+            settings.bind(|| {
                 insta::assert_snapshot!(snippet_name.clone(), output);
             });
         }
     }
+}
+
+fn tempdir_filter(path: &Path) -> String {
+    format!(r"{}\\?/?", regex::escape(path.to_str().unwrap()))
 }

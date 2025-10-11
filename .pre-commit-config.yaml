@@ -25,11 +25,6 @@ repos:
     hooks:
       - id: validate-pyproject
 
-  - repo: https://github.com/crate-ci/typos
-    rev: v1.32.0
-    hooks:
-      - id: typos
-
   - repo: https://github.com/doublify/pre-commit-rust
     rev: v1.0
     hooks:
