@@ -4,7 +4,6 @@ use ruff_db::{
     diagnostic::{DisplayDiagnosticConfig, DisplayDiagnostics},
     system::{OsSystem, SystemPathBuf},
 };
-use ruff_macros::kebab_case;
 use tempfile::TempDir;
 use ty_project::{
     Db, ProjectDatabase, ProjectMetadata, metadata::options::ProjectOptionsOverrides,
@@ -284,15 +283,19 @@ pub fn run_rule_tests(rule_name: &str) -> Vec<(PathBuf, String, String)> {
 
     let rule_registry = default_rule_registry();
 
-    let rule_name_kebab = kebab_case!(rule_name);
+    let rule_name_kebab = kebab_case(rule_name);
 
-    let rule_levels = rule_registry.rules().iter().map(|rule| {
-        if rule.name == rule_name_kebab {
-            (rule.name.to_string(), Level::Error.to_string())
-        } else {
-            (rule.name.to_string(), Level::Ignore.to_string())
-        }
-    });
+    let rule_levels = rule_registry
+        .rules()
+        .iter()
+        .map(|rule| {
+            if rule.name.to_string() == rule_name_kebab {
+                (rule_name_kebab.clone(), Level::Error.to_string())
+            } else {
+                (rule.name.to_string(), Level::Ignore.to_string())
+            }
+        })
+        .collect::<Vec<_>>();
 
     for snippet in rule_tests.python_snippets() {
         let test_name = snippet.name.as_deref().unwrap_or("unnamed");
@@ -300,7 +303,7 @@ pub fn run_rule_tests(rule_name: &str) -> Vec<(PathBuf, String, String)> {
 
         let mut test_runner = TestRunner::from_file(&filename, &snippet.content);
 
-        test_runner.with_rules(rule_levels.clone());
+        test_runner.with_rules(rule_levels.clone().into_iter());
 
         let temp_path = test_runner.temp_dir().path().to_owned();
 
@@ -321,4 +324,9 @@ pub fn run_rule_tests(rule_name: &str) -> Vec<(PathBuf, String, String)> {
     }
 
     results
+}
+
+/// Converts `snake_case` to `kebab-case`.
+fn kebab_case(input: &str) -> String {
+    input.replace('_', "-")
 }
