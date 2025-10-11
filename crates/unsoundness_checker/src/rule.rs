@@ -18,7 +18,7 @@ use ty_project::{
 #[derive(Debug, Clone)]
 pub struct RuleMetadata {
     /// The unique identifier for the rule.
-    pub(crate) name: LintName,
+    pub name: LintName,
 
     /// A one-sentence summary of what the rule catches.
     pub summary: &'static str,
@@ -262,7 +262,8 @@ impl RuleSelection {
         Self::from_registry_with_default(registry, None)
     }
 
-    fn from_registry_with_default(
+    #[must_use]
+    pub fn from_registry_with_default(
         registry: &RuleRegistry,
         default_severity: Option<Severity>,
     ) -> Self {

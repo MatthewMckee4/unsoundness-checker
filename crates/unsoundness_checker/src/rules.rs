@@ -1,4 +1,4 @@
-use ruff_python_ast::{Expr, StmtReturn};
+use ruff_python_ast::{Decorator, Expr, StmtReturn};
 use ruff_text_size::Ranged;
 use ty_python_semantic::types::Type;
 
@@ -7,10 +7,10 @@ use crate::{
     rule::{Level, RuleRegistryBuilder, RuleStatus},
 };
 
-/// Registers all known type check lints.
 pub(crate) fn register_rules(registry: &mut RuleRegistryBuilder) {
     registry.register_rule(&TYPING_ANY_USED);
     registry.register_rule(&INVALID_OVERLOAD_IMPLEMENTATION);
+    registry.register_rule(&TYPING_OVERLOAD_USED);
 }
 
 declare_rule! {
@@ -63,6 +63,32 @@ declare_rule! {
     }
 }
 
+declare_rule! {
+    /// ## What it does
+    /// Checks for usage of overloaded functions.
+    ///
+    /// ## Why is this bad?
+    /// Using overloaded functions can lead to runtime errors.
+    /// When users don't follow the correct overload implementation, it can lead to unexpected behavior.
+    ///
+    /// ## Examples
+    /// ```python
+    /// from typing import overload
+    ///
+    /// @overload
+    /// def foo(x: int) -> str: ...
+    /// @overload
+    /// def foo(x: str) -> int: ...
+    /// def foo(x: int | str) -> int | str:
+    ///     return x
+    /// ```
+    pub (crate) static TYPING_OVERLOAD_USED = {
+        summary: "detects usage of overloaded functions",
+        status: RuleStatus::stable("1.0.0"),
+        default_level: Level::Error,
+    }
+}
+
 pub(crate) fn report_typing_any_used(context: &Context, expr: &Expr) {
     let Some(builder) = context.report_lint(&TYPING_ANY_USED, expr.range()) else {
         return;
@@ -108,4 +134,12 @@ pub(crate) fn report_invalid_overload_implementation<'db>(
         "This overload implementation is invalid as {return_type_display} is not \
         assignable to any of the overload return types ({overload_return_types_display})"
     ));
+}
+
+pub(crate) fn report_typing_overload_used(context: &Context, decorator: &Decorator) {
+    let Some(builder) = context.report_lint(&TYPING_OVERLOAD_USED, decorator.range()) else {
+        return;
+    };
+
+    builder.into_diagnostic("Using `typing.overload` can lead to runtime errors.");
 }

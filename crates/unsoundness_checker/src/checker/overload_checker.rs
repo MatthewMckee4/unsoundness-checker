@@ -1,13 +1,17 @@
+use ruff_db::parsed::parsed_module;
 use ruff_python_ast::{
     Stmt, StmtFunctionDef, StmtReturn,
     visitor::source_order::{self, SourceOrderVisitor},
 };
 use ty_python_semantic::{
     HasType, SemanticModel,
-    types::{Type, UnionBuilder},
+    types::{KnownFunction, Type, UnionBuilder},
 };
 
-use crate::{Context, rules::report_invalid_overload_implementation};
+use crate::{
+    Context,
+    rules::{report_invalid_overload_implementation, report_typing_overload_used},
+};
 
 pub(super) fn check_function_statement<'ast>(
     context: &Context,
@@ -20,7 +24,24 @@ pub(super) fn check_function_statement<'ast>(
         return;
     };
 
-    let (overloads, _) = function_type_ty.overloads_and_implementation(model.db());
+    let (overloads, implementation) = function_type_ty.overloads_and_implementation(context.db());
+
+    let ast = parsed_module(context.db(), context.file()).load(context.db());
+
+    if implementation.is_some() {
+        for overload in overloads {
+            let overload_stmt = overload.node(context.db(), context.file(), &ast);
+
+            for decorator in &overload_stmt.decorator_list {
+                let decorator_ty = decorator.expression.inferred_type(model);
+                if let Type::FunctionLiteral(decorator_type_ty) = decorator_ty {
+                    if decorator_type_ty.is_known(context.db(), KnownFunction::Overload) {
+                        report_typing_overload_used(context, decorator);
+                    }
+                }
+            }
+        }
+    }
 
     if overloads.is_empty() {
         return;
@@ -30,10 +51,10 @@ pub(super) fn check_function_statement<'ast>(
         .iter()
         .map(|overload| {
             overload.signature(
-                model.db(),
+                context.db(),
                 function_type_ty
-                    .literal(model.db())
-                    .inherited_generic_context(model.db()),
+                    .literal(context.db())
+                    .inherited_generic_context(context.db()),
             )
         })
         .collect::<Vec<_>>();
@@ -46,7 +67,7 @@ pub(super) fn check_function_statement<'ast>(
     let union_of_overload_return_type = overload_return_types
         .iter()
         .filter_map(|ty| ty.as_ref())
-        .fold(UnionBuilder::new(model.db()), |builder, ty| {
+        .fold(UnionBuilder::new(context.db()), |builder, ty| {
             builder.add(*ty)
         })
         .build();

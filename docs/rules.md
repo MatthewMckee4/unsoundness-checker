@@ -58,3 +58,33 @@ foo("1")
 
 [See more](rules/typing_any_used.md)
 
+## `typing-overload-used`
+
+<small>
+Default level: `error`.
+</small>
+
+**What it does**
+
+Checks for usage of overloaded functions.
+
+**Why is this bad?**
+
+Using overloaded functions can lead to runtime errors.
+When users don't follow the correct overload implementation, it can lead to unexpected behavior.
+
+**Examples**
+
+```python
+from typing import overload
+
+@overload
+def foo(x: int) -> str: ...
+@overload
+def foo(x: str) -> int: ...
+def foo(x: int | str) -> int | str:
+    return x
+```
+
+[See more](rules/typing_overload_used.md)
+
