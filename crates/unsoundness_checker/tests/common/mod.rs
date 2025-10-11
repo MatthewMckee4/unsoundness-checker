@@ -1,4 +1,4 @@
-use std::{fs, path::PathBuf, sync::OnceLock};
+use std::{fmt::Write, fs, path::PathBuf, sync::OnceLock};
 
 use ruff_db::{
     diagnostic::{DisplayDiagnosticConfig, DisplayDiagnostics},
@@ -8,7 +8,10 @@ use tempfile::TempDir;
 use ty_project::{
     Db, ProjectDatabase, ProjectMetadata, metadata::options::ProjectOptionsOverrides,
 };
-use unsoundness_checker::{check_file, default_rule_registry, rule::RuleSelection};
+use unsoundness_checker::{
+    check_file, default_rule_registry,
+    rule::{Level, RuleSelection},
+};
 
 static DISPLAY_CONFIG: OnceLock<DisplayDiagnosticConfig> = OnceLock::new();
 static PROJECT_OPTIONS: OnceLock<ProjectOptionsOverrides> = OnceLock::new();
@@ -45,6 +48,40 @@ impl TestRunner {
         }
 
         fs::write(&file_path, content).expect("Failed to write test file");
+        self
+    }
+
+    /// Configures rules in a pyproject.toml file
+    ///
+    /// # Arguments
+    /// * `rules` - Iterator of tuples containing (`rule_name`, severity)
+    ///
+    /// # Example
+    /// ```
+    /// runner.with_rules([
+    ///     ("typing-any-used", "error"),
+    ///     ("invalid-overload-implementation", "warn"),
+    /// ].into_iter());
+    /// ```
+    pub fn with_rules<I, S1, S2>(&mut self, rules: I) -> &mut Self
+    where
+        I: Iterator<Item = (S1, S2)>,
+        S1: AsRef<str>,
+        S2: AsRef<str>,
+    {
+        let mut content = String::from("[tool.unsoundness-checker.rules]\n");
+
+        for (rule_name, severity) in rules {
+            writeln!(
+                &mut content,
+                "{} = \"{}\"",
+                rule_name.as_ref(),
+                severity.as_ref()
+            )
+            .expect("Failed to write rule");
+        }
+
+        self.add_file("pyproject.toml", &content);
         self
     }
 
@@ -244,11 +281,29 @@ pub fn run_rule_tests(rule_name: &str) -> Vec<(PathBuf, String, String)> {
 
     let mut results = Vec::new();
 
+    let rule_registry = default_rule_registry();
+
+    let rule_name_kebab = kebab_case(rule_name);
+
+    let rule_levels = rule_registry
+        .rules()
+        .iter()
+        .map(|rule| {
+            if rule.name.to_string() == rule_name_kebab {
+                (rule_name_kebab.clone(), Level::Error.to_string())
+            } else {
+                (rule.name.to_string(), Level::Ignore.to_string())
+            }
+        })
+        .collect::<Vec<_>>();
+
     for snippet in rule_tests.python_snippets() {
         let test_name = snippet.name.as_deref().unwrap_or("unnamed");
         let filename = format!("{test_name}.py");
 
-        let test_runner = TestRunner::from_file(&filename, &snippet.content);
+        let mut test_runner = TestRunner::from_file(&filename, &snippet.content);
+
+        test_runner.with_rules(rule_levels.clone().into_iter());
 
         let temp_path = test_runner.temp_dir().path().to_owned();
 
@@ -269,4 +324,9 @@ pub fn run_rule_tests(rule_name: &str) -> Vec<(PathBuf, String, String)> {
     }
 
     results
+}
+
+/// Converts `snake_case` to `kebab-case`.
+fn kebab_case(input: &str) -> String {
+    input.replace('_', "-")
 }

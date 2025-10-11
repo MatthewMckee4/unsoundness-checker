@@ -1,4 +1,4 @@
-use std::{fs, path::Path};
+use std::{fs, panic, path::Path};
 
 pub mod common;
 
@@ -26,6 +26,8 @@ fn test_all_rules_from_markdown() {
         "No rule markdown files found in {rules_dir}",
     );
 
+    let mut failures = Vec::new();
+
     for rule_name in rule_files {
         let results = run_rule_tests(&rule_name);
 
@@ -41,11 +43,30 @@ fn test_all_rules_from_markdown() {
             settings.set_snapshot_path(format!("snapshots/{rule_name}"));
             settings.add_filter(&temp_filter, "<temp_dir>/");
 
-            settings.bind(|| {
-                insta::assert_snapshot!(snippet_name.clone(), output);
-            });
+            let result = panic::catch_unwind(panic::AssertUnwindSafe(|| {
+                settings.bind(|| {
+                    insta::assert_snapshot!(snippet_name.clone(), output);
+                });
+            }));
+
+            if let Err(err) = result {
+                let error_message = err.downcast_ref::<String>().map_or_else(
+                    || {
+                        err.downcast_ref::<&str>()
+                            .map_or_else(|| "Unknown panic".to_string(), |s| (*s).to_string())
+                    },
+                    Clone::clone,
+                );
+                failures.push(format!("{rule_name}/{snippet_name}: {error_message}"));
+            }
         }
     }
+
+    assert!(
+        failures.is_empty(),
+        "Snapshot assertions failed:\n{}",
+        failures.join("\n")
+    );
 }
 
 fn tempdir_filter(path: &Path) -> String {

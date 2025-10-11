@@ -10,4 +10,4 @@ error[typing-any-used]: Using `typing.Any` in type annotations can lead to runti
 6 | user_info: Any = get_user()
   |            ^^^
   |
-info: rule `typing-any-used` is enabled by default
+info: rule `typing-any-used` was selected in the configuration file

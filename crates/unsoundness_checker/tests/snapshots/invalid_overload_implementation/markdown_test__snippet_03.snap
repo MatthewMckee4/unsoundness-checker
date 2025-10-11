@@ -11,4 +11,4 @@ error[invalid-overload-implementation]: Invalid overload implementation can lead
   |     ^^^^^^^^^^
   |
 info: This overload implementation is invalid as `Literal[b""]` is not assignable to any of the overload return types (`str`, `int`)
-info: rule `invalid-overload-implementation` is enabled by default
+info: rule `invalid-overload-implementation` was selected in the configuration file
