@@ -288,9 +288,9 @@ pub fn run_rule_tests(rule_name: &str) -> Vec<(PathBuf, String, String)> {
 
     let rule_levels = rule_registry.rules().iter().map(|rule| {
         if rule.name == rule_name_kebab {
-            (rule.name.to_string(), Level::Ignore.to_string())
-        } else {
             (rule.name.to_string(), Level::Error.to_string())
+        } else {
+            (rule.name.to_string(), Level::Ignore.to_string())
         }
     });
 

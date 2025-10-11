@@ -2,26 +2,3 @@
 source: crates/unsoundness_checker/tests/markdown_test.rs
 expression: output
 ---
-error[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
- --> snippet_05.py:4:1
-  |
-2 | from typing import overload
-3 |
-4 | @overload
-  | ^^^^^^^^^
-5 | def baz(x: int) -> str: ...
-6 | @overload
-  |
-info: rule `typing-overload-used` was selected in the configuration file
-
-error[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
- --> snippet_05.py:6:1
-  |
-4 | @overload
-5 | def baz(x: int) -> str: ...
-6 | @overload
-  | ^^^^^^^^^
-7 | def baz(x: str) -> int: ...
-8 | def baz(x: int | str) -> int | str:
-  |
-info: rule `typing-overload-used` was selected in the configuration file
