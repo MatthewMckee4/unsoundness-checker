@@ -33,7 +33,7 @@ declare_rule! {
     pub (crate) static TYPING_ANY_USED = {
         summary: "detects usage of `typing.Any` in type annotations",
         status: RuleStatus::stable("1.0.0"),
-        default_level: Level::Error,
+        default_level: Level::Warn,
     }
 }
 
@@ -86,7 +86,7 @@ declare_rule! {
     pub (crate) static TYPING_OVERLOAD_USED = {
         summary: "detects usage of overloaded functions",
         status: RuleStatus::stable("1.0.0"),
-        default_level: Level::Error,
+        default_level: Level::Warn,
     }
 }
 
