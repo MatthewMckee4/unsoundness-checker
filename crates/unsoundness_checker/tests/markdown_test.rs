@@ -26,6 +26,8 @@ fn test_all_rules_from_markdown() {
         "No rule markdown files found in {rules_dir}",
     );
 
+    rule_files.sort();
+
     let mut failures = Vec::new();
 
     for rule_name in rule_files {
@@ -38,6 +40,8 @@ fn test_all_rules_from_markdown() {
 
         for (temp_path, snippet_name, output) in results {
             let temp_filter = tempdir_filter(&temp_path);
+
+            eprint!("test {rule_name}/{snippet_name}");
 
             let mut settings = insta::Settings::clone_current();
             settings.set_snapshot_path(format!("snapshots/{rule_name}"));
@@ -58,6 +62,9 @@ fn test_all_rules_from_markdown() {
                     Clone::clone,
                 );
                 failures.push(format!("{rule_name}/{snippet_name}: {error_message}"));
+                eprintln!(" failed");
+            } else {
+                eprintln!(" passed");
             }
         }
     }
