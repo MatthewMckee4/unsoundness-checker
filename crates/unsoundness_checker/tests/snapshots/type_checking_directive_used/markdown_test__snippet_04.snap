@@ -1,0 +1,21 @@
+---
+source: crates/unsoundness_checker/tests/markdown_test.rs
+expression: output
+---
+error[type-checking-directive-used]: Type checking directive `pyrefly: ignore` suppresses type checker warnings, which may hide potential type errors.
+ --> snippet_04.py:1:20
+  |
+1 | value = process()  # pyrefly: ignore[unused-import]
+  |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2 | item = fetch()  # pyrefly: ignore[type-error]
+  |
+info: rule `type-checking-directive-used` was selected in the configuration file
+
+error[type-checking-directive-used]: Type checking directive `pyrefly: ignore` suppresses type checker warnings, which may hide potential type errors.
+ --> snippet_04.py:2:17
+  |
+1 | value = process()  # pyrefly: ignore[unused-import]
+2 | item = fetch()  # pyrefly: ignore[type-error]
+  |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+info: rule `type-checking-directive-used` was selected in the configuration file

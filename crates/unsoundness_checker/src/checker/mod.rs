@@ -1,23 +1,23 @@
-use ruff_db::{diagnostic::Diagnostic, files::File, parsed::parsed_module};
-use ruff_python_ast::visitor::source_order::SourceOrderVisitor;
+use ruff_db::{diagnostic::Diagnostic, files::File};
 use ty_project::Db;
 
-use crate::{Context, rule::RuleSelection};
+use crate::{
+    Context,
+    checker::{ast_checker::check_ast, tokens_checker::check_tokens},
+    rule::RuleSelection,
+};
 
 mod annotation_checker;
 mod ast_checker;
 mod overload_checker;
-
-pub(crate) use ast_checker::ASTChecker;
+mod tokens_checker;
 
 pub fn check_file(db: &dyn Db, file: File, rule_selection: &RuleSelection) -> Vec<Diagnostic> {
     let context = Context::new(db, file, rule_selection);
 
-    let mut ast_checker = ASTChecker::new(db, &context, file);
+    check_ast(db, &context, file);
 
-    let ast = parsed_module(db, file).load(db);
-
-    ast_checker.visit_body(ast.suite());
+    check_tokens(db, &context, file);
 
     context.into_diagnostics()
 }
