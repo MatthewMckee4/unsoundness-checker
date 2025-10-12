@@ -31,10 +31,36 @@ foo("1")
 
 [See more](rules/invalid_overload_implementation.md)
 
+## `type-checking-directive-used`
+
+<small>
+Default level: `warn`.
+</small>
+
+**What it does**
+
+Checks for usage of type checking directives in comments.
+
+**Why is this bad?**
+
+Type checking directives like `# type: ignore` suppress type checker warnings,
+which can hide potential type errors that may lead to runtime failures.
+These directives bypass the safety guarantees that type checking provides.
+
+**Examples**
+
+```python
+# mypy / standard (PEP 484)
+x = "string" + 123  # type: ignore
+y = foo()  # type: ignore[attr-defined]
+```
+
+[See more](rules/type_checking_directive_used.md)
+
 ## `typing-any-used`
 
 <small>
-Default level: `error`.
+Default level: `warn`.
 </small>
 
 **What it does**
@@ -61,7 +87,7 @@ foo("1")
 ## `typing-overload-used`
 
 <small>
-Default level: `error`.
+Default level: `warn`.
 </small>
 
 **What it does**
@@ -87,30 +113,4 @@ def foo(x: int | str) -> int | str:
 ```
 
 [See more](rules/typing_overload_used.md)
-
-## `type-checking-directive-used`
-
-<small>
-Default level: `warn`.
-</small>
-
-**What it does**
-
-Checks for usage of type checking directives in comments.
-
-**Why is this bad?**
-
-Type checking directives like `# type: ignore` suppress type checker warnings,
-which can hide potential type errors that may lead to runtime failures.
-These directives bypass the safety guarantees that type checking provides.
-
-**Examples**
-
-```python
-# mypy / standard (PEP 484)
-x = "string" + 123  # type: ignore
-y = foo()  # type: ignore[attr-defined]
-```
-
-[See more](rules/type_checking_directive_used.md)
 
