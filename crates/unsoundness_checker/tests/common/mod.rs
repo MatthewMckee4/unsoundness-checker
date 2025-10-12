@@ -1,4 +1,4 @@
-use std::{fmt::Write, fs, path::PathBuf, process::Command, sync::OnceLock};
+use std::{fmt::Write, fs, path::PathBuf, sync::OnceLock};
 
 use ruff_db::{
     diagnostic::{DisplayDiagnosticConfig, DisplayDiagnostics},
@@ -15,7 +15,6 @@ use unsoundness_checker::{
 
 static DISPLAY_CONFIG: OnceLock<DisplayDiagnosticConfig> = OnceLock::new();
 static PROJECT_OPTIONS: OnceLock<ProjectOptionsOverrides> = OnceLock::new();
-static SHARED_VENV: OnceLock<TempDir> = OnceLock::new();
 
 /// Test runner for executing unsoundness checker tests in isolated environments
 pub struct TestRunner {
@@ -133,62 +132,51 @@ impl TestRunner {
 
     #[must_use]
     pub fn run_mypy(&self) -> String {
-        self.run_external_tool("mypy")
+        self.run_external_tool("mypy", "1.18.2")
     }
 
     #[must_use]
     pub fn run_pyright(&self) -> String {
-        self.run_external_tool("pyright")
+        self.run_external_tool("pyright", "1.1.406")
     }
 
-    /// Initialize and cache a shared virtual environment for all tests
-    fn ensure_shared_venv() -> &'static TempDir {
-        SHARED_VENV.get_or_init(|| {
-            let venv_dir = TempDir::new().expect("Failed to create shared venv");
+    fn run_external_tool(&self, tool: &str, version: &str) -> String {
+        let venv_output = std::process::Command::new("uv")
+            .arg("venv")
+            .arg("--clear")
+            .arg("-p")
+            .arg("3.13")
+            .output()
+            .expect("Failed to create virtual environment");
 
-            let venv_output = Command::new("uv")
-                .arg("venv")
-                .arg(venv_dir.path())
-                .arg("-p")
-                .arg("3.13")
-                .output()
-                .expect("Failed to create virtual environment");
+        if !venv_output.status.success() {
+            eprintln!(
+                "Failed to create virtual environment: {}",
+                String::from_utf8_lossy(&venv_output.stderr)
+            );
+        }
 
-            if !venv_output.status.success() {
-                eprintln!(
-                    "Failed to create virtual environment: {}",
-                    String::from_utf8_lossy(&venv_output.stderr)
-                );
-            }
+        let install_output = std::process::Command::new("uv")
+            .arg("pip")
+            .arg("install")
+            .arg(format!("{tool}=={version}"))
+            .output()
+            .expect("Failed to install tool");
 
-            // Install both mypy and pyright once
-            let install_output = Command::new("uv")
-                .arg("pip")
-                .arg("install")
-                .arg("--python")
-                .arg(venv_dir.path().join("bin/python"))
-                .arg("mypy==1.18.2")
-                .arg("pyright==1.1.406")
-                .output()
-                .expect("Failed to install tools");
+        if !install_output.status.success() {
+            eprintln!(
+                "Failed to install {}: {}",
+                tool,
+                String::from_utf8_lossy(&install_output.stderr)
+            );
+        }
 
-            if !install_output.status.success() {
-                eprintln!(
-                    "Failed to install tools: {}",
-                    String::from_utf8_lossy(&install_output.stderr)
-                );
-            }
-
-            venv_dir
-        })
-    }
-
-    fn run_external_tool(&self, tool: &str) -> String {
-        let venv = Self::ensure_shared_venv();
-
-        // Run the tool directly from the venv
-        let tool_path = venv.path().join("bin").join(tool);
-        let output = Command::new(tool_path)
+        // Then run the tool
+        let output = std::process::Command::new("uv")
+            .arg("run")
+            .arg("--with")
+            .arg(format!("{tool}=={version}"))
+            .arg(tool)
             .arg(self.temp_dir.path())
             .output()
             .expect("Failed to run external tool");
@@ -309,9 +297,6 @@ pub fn run_rule_tests(rule_name: &str) -> Vec<(PathBuf, String, String)> {
         })
         .collect::<Vec<_>>();
 
-    // Check if external tool tests should be skipped (for faster iteration)
-    let skip_external_tools = std::env::var("SKIP_EXTERNAL_TOOLS").is_ok();
-
     for snippet in rule_tests.python_snippets() {
         let test_name = snippet.name.as_deref().unwrap_or("unnamed");
         let filename = format!("{test_name}.py");
@@ -325,7 +310,7 @@ pub fn run_rule_tests(rule_name: &str) -> Vec<(PathBuf, String, String)> {
         let output = test_runner.run_test();
         results.push((temp_path.clone(), test_name.to_string(), output));
 
-        if !skip_external_tools && cfg!(unix) && rule_name != "type_checking_directive_used" {
+        if cfg!(unix) && rule_name != "type_checking_directive_used" {
             let mypy_output = test_runner.run_mypy();
             results.push((temp_path.clone(), format!("{test_name}_mypy"), mypy_output));
 
