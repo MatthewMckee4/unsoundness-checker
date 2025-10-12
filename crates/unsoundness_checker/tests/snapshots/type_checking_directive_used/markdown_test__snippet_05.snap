@@ -1,0 +1,12 @@
+---
+source: crates/unsoundness_checker/tests/markdown_test.rs
+expression: output
+---
+error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
+ --> snippet_05.py:5:41
+  |
+4 | # This will fail at runtime, but the directive hides the error
+5 | result = calculate_total("not a list")  # type: ignore
+  |                                         ^^^^^^^^^^^^^^
+  |
+info: rule `type-checking-directive-used` was selected in the configuration file

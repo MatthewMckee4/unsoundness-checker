@@ -11,6 +11,7 @@ pub(crate) fn register_rules(registry: &mut RuleRegistryBuilder) {
     registry.register_rule(&TYPING_ANY_USED);
     registry.register_rule(&INVALID_OVERLOAD_IMPLEMENTATION);
     registry.register_rule(&TYPING_OVERLOAD_USED);
+    registry.register_rule(&TYPE_CHECKING_DIRECTIVE_USED);
 }
 
 declare_rule! {
@@ -89,6 +90,28 @@ declare_rule! {
     }
 }
 
+declare_rule! {
+    /// ## What it does
+    /// Checks for usage of type checking directives in comments.
+    ///
+    /// ## Why is this bad?
+    /// Type checking directives like `# type: ignore` suppress type checker warnings,
+    /// which can hide potential type errors that may lead to runtime failures.
+    /// These directives bypass the safety guarantees that type checking provides.
+    ///
+    /// ## Examples
+    /// ```python
+    /// # mypy / standard (PEP 484)
+    /// x = "string" + 123  # type: ignore
+    /// y = foo()  # type: ignore[attr-defined]
+    /// ```
+    pub (crate) static TYPE_CHECKING_DIRECTIVE_USED = {
+        summary: "detects usage of type checking directives in comments",
+        status: RuleStatus::stable("1.0.0"),
+        default_level: Level::Warn,
+    }
+}
+
 pub(crate) fn report_typing_any_used(context: &Context, expr: &Expr) {
     let Some(builder) = context.report_lint(&TYPING_ANY_USED, expr.range()) else {
         return;
@@ -142,4 +165,18 @@ pub(crate) fn report_typing_overload_used(context: &Context, decorator: &Decorat
     };
 
     builder.into_diagnostic("Using `typing.overload` can lead to runtime errors.");
+}
+
+pub(crate) fn report_type_checking_directive_used(
+    context: &Context,
+    range: ruff_text_size::TextRange,
+    directive: &str,
+) {
+    let Some(builder) = context.report_lint(&TYPE_CHECKING_DIRECTIVE_USED, range) else {
+        return;
+    };
+
+    builder.into_diagnostic(format!(
+        "Type checking directive `{directive}` suppresses type checker warnings, which may hide potential type errors.",
+    ));
 }

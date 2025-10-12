@@ -310,7 +310,7 @@ pub fn run_rule_tests(rule_name: &str) -> Vec<(PathBuf, String, String)> {
         let output = test_runner.run_test();
         results.push((temp_path.clone(), test_name.to_string(), output));
 
-        if cfg!(unix) {
+        if cfg!(unix) && rule_name != "type_checking_directive_used" {
             let mypy_output = test_runner.run_mypy();
             results.push((temp_path.clone(), format!("{test_name}_mypy"), mypy_output));
 

@@ -1,0 +1,34 @@
+---
+source: crates/unsoundness_checker/tests/markdown_test.rs
+expression: output
+---
+error[type-checking-directive-used]: Type checking directive `pyright: ignore` suppresses type checker warnings, which may hide potential type errors.
+ --> snippet_02.py:2:22
+  |
+1 | # Blanket ignore
+2 | data = risky_call()  # pyright: ignore
+  |                      ^^^^^^^^^^^^^^^^^
+3 |
+4 | # Specific report type
+  |
+info: rule `type-checking-directive-used` was selected in the configuration file
+
+error[type-checking-directive-used]: Type checking directive `pyright: ignore` suppresses type checker warnings, which may hide potential type errors.
+ --> snippet_02.py:5:20
+  |
+4 | # Specific report type
+5 | value = process()  # pyright: ignore[reportOptionalMemberAccess]
+  |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+6 | item = fetch()  # pyright: ignore[reportGeneralTypeIssues]
+  |
+info: rule `type-checking-directive-used` was selected in the configuration file
+
+error[type-checking-directive-used]: Type checking directive `pyright: ignore` suppresses type checker warnings, which may hide potential type errors.
+ --> snippet_02.py:6:17
+  |
+4 | # Specific report type
+5 | value = process()  # pyright: ignore[reportOptionalMemberAccess]
+6 | item = fetch()  # pyright: ignore[reportGeneralTypeIssues]
+  |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+info: rule `type-checking-directive-used` was selected in the configuration file

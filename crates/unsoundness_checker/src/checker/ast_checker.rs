@@ -1,4 +1,4 @@
-use ruff_db::files::File;
+use ruff_db::{files::File, parsed::parsed_module};
 use ruff_python_ast::{
     Stmt,
     visitor::source_order::{self, SourceOrderVisitor},
@@ -60,4 +60,12 @@ impl SourceOrderVisitor<'_> for ASTChecker<'_, '_> {
 
         source_order::walk_stmt(self, stmt);
     }
+}
+
+pub fn check_ast<'db>(db: &'db dyn Db, context: &Context<'db>, file: File) {
+    let mut ast_checker = ASTChecker::new(db, context, file);
+
+    let ast = parsed_module(db, file).load(db);
+
+    ast_checker.visit_body(ast.suite());
 }
