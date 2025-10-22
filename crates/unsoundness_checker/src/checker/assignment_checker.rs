@@ -42,6 +42,9 @@ pub(super) fn check_assignment<'ast>(
 
                         let inferred_target_type = target.inferred_type(model);
 
+                        // Setting `__default__` to an object of type `None` on a function with no default parameters
+                        // is fine as the current `__default__` is of type `tuple[None]`
+                        // If there are some default parameters, we can emit an error now.
                         if inferred_target_type.is_none(context.db()) && !default_types.is_empty() {
                             report_setting_function_defaults_attribute(
                                 context,
@@ -58,6 +61,7 @@ pub(super) fn check_assignment<'ast>(
 
                         let target_tuple_elements: Vec<_> = tuple_spec.fixed_elements().collect();
 
+                        // Setting the default arguments to less than there already are can lead to runtime errors.
                         if target_tuple_elements.len() < default_types.len() {
                             report_setting_function_defaults_attribute(
                                 context,
@@ -74,6 +78,7 @@ pub(super) fn check_assignment<'ast>(
                                 continue;
                             };
 
+                            // If we want to "replace" a default argument, it must be assignable to the annotated type.
                             if !target_ty.is_assignable_to(context.db(), *annotated_ty) {
                                 report_setting_function_defaults_attribute(
                                     context,
