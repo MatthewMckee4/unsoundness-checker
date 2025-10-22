@@ -19,6 +19,7 @@ chrono = "0.4.42"
 clap = { version = "4.5.48", features = ["derive", "wrap_help"] }
 colored = "3.0.0"
 dev = { path = "crates/dev" }
+dir-test = { version = "0.4.0" }
 heck = "0.5.0"
 insta = "1.41.1"
 itertools = "0.14.0"

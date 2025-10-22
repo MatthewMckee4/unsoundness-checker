@@ -8,6 +8,7 @@ use crate::{
 };
 
 mod annotation_checker;
+mod assignment_checker;
 mod ast_checker;
 mod overload_checker;
 mod tokens_checker;
