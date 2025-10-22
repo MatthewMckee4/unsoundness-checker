@@ -34,6 +34,11 @@ impl TestRunner {
     }
 
     #[must_use]
+    pub fn venv_dir(&self) -> PathBuf {
+        self.temp_dir.path().join(".venv")
+    }
+
+    #[must_use]
     pub fn from_file(filename: &str, content: &str) -> Self {
         let mut runner = Self::new();
         runner.add_file(filename, content);
@@ -143,7 +148,7 @@ impl TestRunner {
     fn run_external_tool(&self, tool: &str, version: &str) -> String {
         let venv_output = std::process::Command::new("uv")
             .arg("venv")
-            .arg(self.temp_dir().path().join(".venv"))
+            .arg(self.venv_dir())
             .arg("--clear")
             .arg("-p")
             .arg("3.12")
@@ -160,6 +165,8 @@ impl TestRunner {
         let install_output = std::process::Command::new("uv")
             .arg("pip")
             .arg("install")
+            .arg("--python")
+            .arg(self.venv_dir())
             .arg(format!("{tool}=={version}"))
             .output()
             .expect("Failed to install tool");
@@ -175,8 +182,8 @@ impl TestRunner {
         // Then run the tool
         let output = std::process::Command::new("uv")
             .arg("run")
-            .arg("--with")
-            .arg(format!("{tool}=={version}"))
+            .arg("--python")
+            .arg(self.venv_dir())
             .arg(tool)
             .arg(self.temp_dir.path())
             .output()
