@@ -143,6 +143,7 @@ impl TestRunner {
     fn run_external_tool(&self, tool: &str, version: &str) -> String {
         let venv_output = std::process::Command::new("uv")
             .arg("venv")
+            .arg(self.temp_dir().path().join(".venv"))
             .arg("--clear")
             .arg("-p")
             .arg("3.12")

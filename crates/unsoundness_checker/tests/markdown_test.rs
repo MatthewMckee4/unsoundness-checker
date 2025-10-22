@@ -26,8 +26,6 @@ fn test_all_rules_from_markdown(fixture: Fixture<&str>) {
     for (temp_path, snippet_name, output) in results {
         let temp_filter = tempdir_filter(&temp_path);
 
-        eprint!("test {rule_name}/{snippet_name}");
-
         let mut settings = insta::Settings::clone_current();
         settings.set_snapshot_path(format!("snapshots/{rule_name}"));
         settings.add_filter(&temp_filter, "<temp_dir>/");
