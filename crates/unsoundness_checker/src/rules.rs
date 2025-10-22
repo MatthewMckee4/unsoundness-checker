@@ -12,6 +12,8 @@ pub(crate) fn register_rules(registry: &mut RuleRegistryBuilder) {
     registry.register_rule(&INVALID_OVERLOAD_IMPLEMENTATION);
     registry.register_rule(&TYPING_OVERLOAD_USED);
     registry.register_rule(&TYPE_CHECKING_DIRECTIVE_USED);
+    registry.register_rule(&SETTING_FUNCTION_DEFAULTS_ATTRIBUTE);
+    registry.register_rule(&SETTING_FUNCTION_CODE_ATTRIBUTE);
 }
 
 declare_rule! {
@@ -112,6 +114,58 @@ declare_rule! {
     }
 }
 
+declare_rule! {
+    /// ## What it does
+    /// Checks for setting the `__defaults__` attribute of a function.
+    ///
+    /// ## Why is this bad?
+    /// Modifying the `__defaults__` attribute can bypass type checking
+    /// and lead to runtime type errors. Type checkers may not detect type incompatibilities
+    /// when function defaults are mutated through this attribute.
+    ///
+    /// ## Examples
+    /// ```python
+    /// def foo(x: int = 1) -> int:
+    ///     return x
+    ///
+    /// # Mutating defaults through __defaults__ can cause type errors
+    /// foo.__defaults__ = ("string",)
+    /// result = foo()  # Returns "string" but type checker thinks it's int
+    /// ```
+    pub (crate) static SETTING_FUNCTION_DEFAULTS_ATTRIBUTE = {
+        summary: "detects setting the `__defaults__` attribute of a function",
+        status: RuleStatus::stable("1.0.0"),
+        default_level: Level::Error,
+    }
+}
+
+declare_rule! {
+    /// ## What it does
+    /// Checks for setting the `__code__` attribute of a function.
+    ///
+    /// ## Why is this bad?
+    /// Modifying the `__code__` attribute allows runtime modification
+    /// of function internals, which can bypass type checking and lead to runtime type errors.
+    /// Type checkers cannot analyze or verify operations performed through code objects.
+    ///
+    /// ## Examples
+    /// ```python
+    /// def foo(x: int) -> int:
+    ///     return x + 1
+    ///
+    /// def bar(x: str) -> str:
+    ///     return x + "!"
+    ///
+    /// # Setting __code__ can lead to unsafe operations
+    /// foo.__code__ = bar.__code__  # Now foo has wrong signature
+    /// ```
+    pub (crate) static SETTING_FUNCTION_CODE_ATTRIBUTE = {
+        summary: "detects setting the `__code__` attribute of a function",
+        status: RuleStatus::stable("1.0.0"),
+        default_level: Level::Error,
+    }
+}
+
 pub(crate) fn report_typing_any_used(context: &Context, expr: &Expr) {
     let Some(builder) = context.report_lint(&TYPING_ANY_USED, expr.range()) else {
         return;
@@ -179,4 +233,25 @@ pub(crate) fn report_type_checking_directive_used(
     builder.into_diagnostic(format!(
         "Type checking directive `{directive}` suppresses type checker warnings, which may hide potential type errors.",
     ));
+}
+
+pub(crate) fn report_setting_function_defaults_attribute(context: &Context, expr: &Expr) {
+    let Some(builder) = context.report_lint(&SETTING_FUNCTION_DEFAULTS_ATTRIBUTE, expr.range())
+    else {
+        return;
+    };
+
+    builder.into_diagnostic(
+        "Setting `__defaults__` attribute can bypass type checking and lead to runtime type errors.",
+    );
+}
+
+pub(crate) fn report_setting_function_code_attribute(context: &Context, expr: &Expr) {
+    let Some(builder) = context.report_lint(&SETTING_FUNCTION_CODE_ATTRIBUTE, expr.range()) else {
+        return;
+    };
+
+    builder.into_diagnostic(
+        "Setting `__code__` attribute can bypass type checking and lead to runtime type errors.",
+    );
 }

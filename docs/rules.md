@@ -31,6 +31,66 @@ foo("1")
 
 [See more](rules/invalid_overload_implementation.md)
 
+## `setting-function-code-attribute`
+
+<small>
+Default level: `error`.
+</small>
+
+**What it does**
+
+Checks for setting the `__code__` attribute of a function.
+
+**Why is this bad?**
+
+Modifying the `__code__` attribute allows runtime modification
+of function internals, which can bypass type checking and lead to runtime type errors.
+Type checkers cannot analyze or verify operations performed through code objects.
+
+**Examples**
+
+```python
+def foo(x: int) -> int:
+    return x + 1
+
+def bar(x: str) -> str:
+    return x + "!"
+
+# Setting __code__ can lead to unsafe operations
+foo.__code__ = bar.__code__  # Now foo has wrong signature
+```
+
+[See more](rules/setting_function_code_attribute.md)
+
+## `setting-function-defaults-attribute`
+
+<small>
+Default level: `error`.
+</small>
+
+**What it does**
+
+Checks for setting the `__defaults__` attribute of a function.
+
+**Why is this bad?**
+
+Modifying the `__defaults__` attribute can bypass type checking
+and lead to runtime type errors. Type checkers may not detect type incompatibilities
+when function defaults are mutated through this attribute.
+
+**Examples**
+
+```python
+def foo(x: int = 1) -> int:
+    return x
+
+# Mutating defaults through __defaults__ can cause type errors
+foo.__defaults__ = ("string",)
+result = foo()  # Returns "string" but type checker thinks it's int
+```
+
+[See more](rules/setting_function_defaults_attribute.md)
+
 ## `type-checking-directive-used`
 
 <small>

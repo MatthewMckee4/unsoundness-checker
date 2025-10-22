@@ -38,7 +38,7 @@ insta = { workspace = true, features = ["filters"] }
 pulldown-cmark = { workspace = true }
 regex = { workspace = true }
 tempfile = { workspace = true }
-
+dir-test = { workspace = true }
 
 [lints]
 workspace = true

@@ -145,7 +145,7 @@ impl TestRunner {
             .arg("venv")
             .arg("--clear")
             .arg("-p")
-            .arg("3.13")
+            .arg("3.12")
             .output()
             .expect("Failed to create virtual environment");
 
