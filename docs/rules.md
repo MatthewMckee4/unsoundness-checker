@@ -89,6 +89,40 @@ foo.__code__ = bar.__code__
 
 [See more](rules/setting_function_code_attribute.md)
 
+## `if-type-checking-used`
+
+<small>
+Default level: `warn`.
+</small>
+
+**What it does**
+
+Checks for usage of `if TYPE_CHECKING:` blocks from the `typing` module.
+
+**Why is this bad?**
+
+`TYPE_CHECKING` is `False` at runtime but `True` during static type checking.
+When used with an `else` clause where signatures don't match, the type checker
+validates against the `if TYPE_CHECKING` branch, but at runtime the `else` branch
+executes, causing runtime type errors that the type checker can't catch.
+
+**Examples**
+
+```python
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    def get_value() -> int:
+        ...
+else:
+    def get_value() -> str:
+        return "hello"
+
+result: int = get_value()  # Type checks, but returns str at runtime!
+```
+
+[See more](rules/if_type_checking_used.md)
+
 ## `type-checking-directive-used`
 
 <small>

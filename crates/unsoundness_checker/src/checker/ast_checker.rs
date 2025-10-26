@@ -8,7 +8,10 @@ use ty_python_semantic::SemanticModel;
 
 use crate::{
     Context,
-    checker::{annotation_checker, assignment_checker::check_assignment, overload_checker},
+    checker::{
+        annotation_checker, assignment_checker::check_assignment, if_checker::check_if_statement,
+        overload_checker,
+    },
 };
 
 pub struct ASTChecker<'db, 'ctx> {
@@ -56,6 +59,7 @@ impl SourceOrderVisitor<'_> for ASTChecker<'_, '_> {
                 annotation_checker::check_annotation(self.context, &self.model, annotation);
             }
             Stmt::Assign(stmt_assign) => check_assignment(self.context, &self.model, stmt_assign),
+            Stmt::If(stmt_if) => check_if_statement(self.context, &self.model, stmt_if),
             _ => {}
         }
 

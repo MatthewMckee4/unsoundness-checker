@@ -12,6 +12,7 @@ pub(crate) fn register_rules(registry: &mut RuleRegistryBuilder) {
     registry.register_rule(&INVALID_OVERLOAD_IMPLEMENTATION);
     registry.register_rule(&TYPING_OVERLOAD_USED);
     registry.register_rule(&TYPE_CHECKING_DIRECTIVE_USED);
+    registry.register_rule(&IF_TYPE_CHECKING_USED);
     registry.register_rule(&INVALID_FUNCTION_DEFAULTS);
     registry.register_rule(&SETTING_FUNCTION_CODE_ATTRIBUTE);
 }
@@ -109,6 +110,36 @@ declare_rule! {
     /// ```
     pub (crate) static TYPE_CHECKING_DIRECTIVE_USED = {
         summary: "detects usage of type checking directives in comments",
+        status: RuleStatus::stable("1.0.0"),
+        default_level: Level::Warn,
+    }
+}
+
+declare_rule! {
+    /// ## What it does
+    /// Checks for usage of `if TYPE_CHECKING:` blocks from the `typing` module.
+    ///
+    /// ## Why is this bad?
+    /// `TYPE_CHECKING` is `False` at runtime but `True` during static type checking.
+    /// When used with an `else` clause where signatures don't match, the type checker
+    /// validates against the `if TYPE_CHECKING` branch, but at runtime the `else` branch
+    /// executes, causing runtime type errors that the type checker can't catch.
+    ///
+    /// ## Examples
+    /// ```python
+    /// from typing import TYPE_CHECKING
+    ///
+    /// if TYPE_CHECKING:
+    ///     def get_value() -> int:
+    ///         ...
+    /// else:
+    ///     def get_value() -> str:
+    ///         return "hello"
+    ///
+    /// result: int = get_value()  # Type checks, but returns str at runtime!
+    /// ```
+    pub (crate) static IF_TYPE_CHECKING_USED = {
+        summary: "detects usage of `if TYPE_CHECKING:` blocks",
         status: RuleStatus::stable("1.0.0"),
         default_level: Level::Warn,
     }
@@ -255,5 +286,17 @@ pub(crate) fn report_setting_function_code_attribute(context: &Context, expr: &E
 
     builder.into_diagnostic(
         "Setting `__code__` attribute on a function may lead to runtime type errors.",
+    );
+}
+
+pub(crate) fn report_if_type_checking_used(context: &Context, if_typing_checking_expr: &Expr) {
+    let Some(builder) =
+        context.report_lint(&IF_TYPE_CHECKING_USED, if_typing_checking_expr.range())
+    else {
+        return;
+    };
+
+    builder.into_diagnostic(
+        "Using `if TYPE_CHECKING:` blocks can lead to runtime errors if imports or definitions are incorrectly referenced at runtime.",
     );
 }

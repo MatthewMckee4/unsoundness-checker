@@ -137,15 +137,15 @@ impl TestRunner {
 
     #[must_use]
     pub fn run_mypy(&self) -> String {
-        self.run_external_tool("mypy", "1.18.2")
+        self.run_external_tool("mypy")
     }
 
     #[must_use]
     pub fn run_pyright(&self) -> String {
-        self.run_external_tool("pyright", "1.1.406")
+        self.run_external_tool("pyright")
     }
 
-    fn run_external_tool(&self, tool: &str, version: &str) -> String {
+    fn run_external_tool(&self, tool: &str) -> String {
         let venv_output = std::process::Command::new("uv")
             .arg("venv")
             .arg(self.venv_dir())
@@ -167,7 +167,7 @@ impl TestRunner {
             .arg("install")
             .arg("--python")
             .arg(self.venv_dir())
-            .arg(format!("{tool}=={version}"))
+            .arg(tool)
             .output()
             .expect("Failed to install tool");
 
