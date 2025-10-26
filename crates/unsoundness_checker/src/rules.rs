@@ -1,4 +1,4 @@
-use ruff_python_ast::{Decorator, Expr, StmtIf, StmtReturn};
+use ruff_python_ast::{Decorator, Expr, StmtReturn};
 use ruff_text_size::Ranged;
 use ty_python_semantic::types::Type;
 
@@ -289,8 +289,10 @@ pub(crate) fn report_setting_function_code_attribute(context: &Context, expr: &E
     );
 }
 
-pub(crate) fn report_if_type_checking_used(context: &Context, stmt_if: &StmtIf) {
-    let Some(builder) = context.report_lint(&IF_TYPE_CHECKING_USED, stmt_if.range()) else {
+pub(crate) fn report_if_type_checking_used(context: &Context, if_typing_checking_expr: &Expr) {
+    let Some(builder) =
+        context.report_lint(&IF_TYPE_CHECKING_USED, if_typing_checking_expr.range())
+    else {
         return;
     };
 

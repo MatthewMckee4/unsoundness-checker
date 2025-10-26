@@ -9,7 +9,7 @@ pub(super) fn check_if_statement<'ast>(
     stmt_if: &'ast StmtIf,
 ) {
     if is_type_checking_test(&stmt_if.test) {
-        report_if_type_checking_used(context, stmt_if);
+        report_if_type_checking_used(context, &stmt_if.test);
     }
 }
 

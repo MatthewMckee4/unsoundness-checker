@@ -3,14 +3,13 @@ source: crates/unsoundness_checker/tests/markdown_test.rs
 expression: output
 ---
 error[if-type-checking-used]: Using `if TYPE_CHECKING:` blocks can lead to runtime errors if imports or definitions are incorrectly referenced at runtime.
- --> snippet_02.py:3:1
+ --> snippet_02.py:3:4
   |
-1 |   from typing import TYPE_CHECKING
+1 | from typing import TYPE_CHECKING
 2 |
-3 | / if TYPE_CHECKING:
-4 | |     TIMEOUT: int = 30
-5 | | else:
-6 | |     TIMEOUT: str = "30"
-  | |_______________________^
+3 | if TYPE_CHECKING:
+  |    ^^^^^^^^^^^^^
+4 |     TIMEOUT: int = 30
+5 | else:
   |
 info: rule `if-type-checking-used` was selected in the configuration file

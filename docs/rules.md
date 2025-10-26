@@ -118,8 +118,6 @@ else:
     def get_value() -> str:
         return "hello"
 
-# Type checker sees: get_value() -> int
-# Runtime executes: get_value() -> str
 result: int = get_value()  # Type checks, but returns str at runtime!
 ```
 
