@@ -3,6 +3,7 @@ pub use checker::check_file;
 use crate::rule::{RuleRegistry, RuleRegistryBuilder};
 pub(crate) use crate::{context::Context, rules::register_rules};
 
+pub mod categories;
 pub mod checker;
 pub mod cli;
 pub mod context;

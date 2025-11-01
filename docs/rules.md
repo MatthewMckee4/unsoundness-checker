@@ -2,9 +2,6 @@
 
 ## `invalid-function-defaults`
 
-<small>
-Default level: `error`.
-</small>
 
 **What it does**
 
@@ -25,13 +22,18 @@ foo.__defaults__ = ("string",)
 result = foo()  # Returns "string" but type checker thinks it's int
 ```
 
+<small>
+Default level: `error`.
+</small>
+
+<small>
+Categories: [`runtime-modification`](categories.md#runtime-modification).
+</small>
+
 [See more](rules/invalid_function_defaults.md)
 
 ## `invalid-overload-implementation`
 
-<small>
-Default level: `error`.
-</small>
 
 **What it does**
 
@@ -56,13 +58,18 @@ def foo(x: int | str) -> int | str:
 foo("1")
 ```
 
+<small>
+Default level: `error`.
+</small>
+
+<small>
+Categories: None.
+</small>
+
 [See more](rules/invalid_overload_implementation.md)
 
 ## `setting-function-code-attribute`
 
-<small>
-Default level: `error`.
-</small>
 
 **What it does**
 
@@ -87,13 +94,18 @@ foo.__code__ = bar.__code__
 # Now foo will return a string
 ```
 
+<small>
+Default level: `error`.
+</small>
+
+<small>
+Categories: [`runtime-modification`](categories.md#runtime-modification).
+</small>
+
 [See more](rules/setting_function_code_attribute.md)
 
 ## `if-type-checking-used`
 
-<small>
-Default level: `warn`.
-</small>
 
 **What it does**
 
@@ -121,13 +133,18 @@ else:
 result: int = get_value()  # Type checks, but returns str at runtime!
 ```
 
+<small>
+Default level: `warn`.
+</small>
+
+<small>
+Categories: [`type-checking-suppression`](categories.md#type-checking-suppression).
+</small>
+
 [See more](rules/if_type_checking_used.md)
 
 ## `type-checking-directive-used`
 
-<small>
-Default level: `warn`.
-</small>
 
 **What it does**
 
@@ -147,13 +164,18 @@ x = "string" + 123  # type: ignore
 y = foo()  # type: ignore[attr-defined]
 ```
 
+<small>
+Default level: `warn`.
+</small>
+
+<small>
+Categories: [`type-checking-suppression`](categories.md#type-checking-suppression).
+</small>
+
 [See more](rules/type_checking_directive_used.md)
 
 ## `typing-any-used`
 
-<small>
-Default level: `warn`.
-</small>
 
 **What it does**
 
@@ -174,13 +196,18 @@ def foo(x: Any) -> Any:
 foo("1")
 ```
 
+<small>
+Default level: `warn`.
+</small>
+
+<small>
+Categories: [`type-checking-suppression`](categories.md#type-checking-suppression).
+</small>
+
 [See more](rules/typing_any_used.md)
 
 ## `typing-overload-used`
 
-<small>
-Default level: `warn`.
-</small>
 
 **What it does**
 
@@ -203,6 +230,14 @@ def foo(x: str) -> int: ...
 def foo(x: int | str) -> int | str:
     return x
 ```
+
+<small>
+Default level: `warn`.
+</small>
+
+<small>
+Categories: None.
+</small>
 
 [See more](rules/typing_overload_used.md)
 

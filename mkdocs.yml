@@ -5,6 +5,7 @@ repo_url: https://github.com/MatthewMckee4/unsoundness-checker
 nav:
   - Home: index.md
   - Rules: rules.md
+  - Categories: categories.md
   - Configuration: configuration.md
 
 theme:
