@@ -86,17 +86,33 @@ fn generate_markdown() -> String {
             })
             .join("\n");
 
+        // Format categories with links to categories page
+        let categories = if rule.categories.is_empty() {
+            String::from("None")
+        } else {
+            rule.categories
+                .iter()
+                .map(|cat| format!("[`{}`](categories.md#{})", cat.name, cat.name))
+                .join(", ")
+        };
+
         let _ = writeln!(
             &mut output,
-            r#"<small>
+            r#"
+{documentation}
+
+<small>
 Default level: `{level}`.
 </small>
 
-{documentation}
+<small>
+Categories: {categories}.
+</small>
 
 [See more](rules/{snake_case_name}.md)
 "#,
             level = rule.default_level(),
+            categories = categories,
             snake_case_name = rule.name().to_string().to_snake_case()
         );
     }

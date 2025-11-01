@@ -3,7 +3,9 @@ use ruff_text_size::Ranged;
 use ty_python_semantic::types::Type;
 
 use crate::{
-    Context, declare_rule,
+    Context,
+    categories::{RUNTIME_MODIFICATION, TYPE_CHECKING_SUPPRESSION},
+    declare_rule,
     rule::{Level, RuleRegistryBuilder, RuleStatus},
 };
 
@@ -36,6 +38,7 @@ declare_rule! {
     pub (crate) static TYPING_ANY_USED = {
         summary: "detects usage of `typing.Any` in type annotations",
         status: RuleStatus::stable("1.0.0"),
+        categories: &[&TYPE_CHECKING_SUPPRESSION],
         default_level: Level::Warn,
     }
 }
@@ -111,6 +114,7 @@ declare_rule! {
     pub (crate) static TYPE_CHECKING_DIRECTIVE_USED = {
         summary: "detects usage of type checking directives in comments",
         status: RuleStatus::stable("1.0.0"),
+        categories: &[&TYPE_CHECKING_SUPPRESSION],
         default_level: Level::Warn,
     }
 }
@@ -141,6 +145,7 @@ declare_rule! {
     pub (crate) static IF_TYPE_CHECKING_USED = {
         summary: "detects usage of `if TYPE_CHECKING:` blocks",
         status: RuleStatus::stable("1.0.0"),
+        categories: &[&TYPE_CHECKING_SUPPRESSION],
         default_level: Level::Warn,
     }
 }
@@ -164,6 +169,7 @@ declare_rule! {
     pub (crate) static INVALID_FUNCTION_DEFAULTS = {
         summary: "detects invalid setting of the `__defaults__` attribute of a function",
         status: RuleStatus::stable("1.0.0"),
+        categories: &[&RUNTIME_MODIFICATION],
         default_level: Level::Error,
     }
 }
@@ -191,6 +197,7 @@ declare_rule! {
     pub (crate) static SETTING_FUNCTION_CODE_ATTRIBUTE = {
         summary: "detects setting the `__code__` attribute of a function",
         status: RuleStatus::stable("1.0.0"),
+        categories: &[&RUNTIME_MODIFICATION],
         default_level: Level::Error,
     }
 }

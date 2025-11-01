@@ -15,6 +15,8 @@ use ty_project::{
     },
 };
 
+use crate::categories::CategoryMetadata;
+
 #[derive(Debug, Clone)]
 pub struct RuleMetadata {
     /// The unique identifier for the rule.
@@ -33,6 +35,23 @@ pub struct RuleMetadata {
     pub(crate) default_level: Level,
 
     pub(crate) status: RuleStatus,
+
+    /// Categories of unsoundness that this rule detects.
+    ///
+    /// A rule may belong to multiple categories or none at all.
+    pub categories: &'static [&'static CategoryMetadata],
+}
+
+#[doc(hidden)]
+pub const fn rule_metadata_defaults() -> RuleMetadata {
+    RuleMetadata {
+        name: LintName::of(""),
+        summary: "",
+        raw_documentation: "",
+        default_level: Level::Error,
+        status: RuleStatus::stable("0.0.0"),
+        categories: &[],
+    }
 }
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
@@ -136,12 +155,14 @@ macro_rules! declare_rule {
         }
     ) => {
         $( #[doc = $doc] )+
+        #[allow(clippy::needless_update)]
         $vis static $name: $crate::rule::RuleMetadata = $crate::rule::RuleMetadata {
             name: ruff_db::diagnostic::LintName::of(ruff_macros::kebab_case!($name)),
             summary: $summary,
             raw_documentation: concat!($($doc, '\n',)+),
             status: $status,
             $( $key: $value, )*
+            ..$crate::rule::rule_metadata_defaults()
         };
     };
 }
