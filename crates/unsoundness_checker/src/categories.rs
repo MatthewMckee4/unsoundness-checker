@@ -12,9 +12,6 @@ pub struct CategoryMetadata {
 
 declare_category! {
     /// Runtime code modifications that escape static type checker analysis.
-    ///
-    /// Examples: modifying `__code__`, `__defaults__`, or other runtime attributes
-    /// that change behavior in ways type checkers cannot detect.
     pub(crate) static RUNTIME_MODIFICATION = {
         name: "runtime-modification",
     }
@@ -22,15 +19,11 @@ declare_category! {
 
 declare_category! {
     /// Mechanisms that suppress or bypass type checker warnings.
-    ///
-    /// Examples: `typing.Any`, `# type: ignore` directives, or other escape hatches
-    /// that silence type checking without fixing underlying type issues.
     pub(crate) static TYPE_CHECKING_SUPPRESSION = {
         name: "type-checking-suppression",
     }
 }
 
-/// All registered categories.
 pub static ALL_CATEGORIES: &[&CategoryMetadata] =
     &[&RUNTIME_MODIFICATION, &TYPE_CHECKING_SUPPRESSION];
 

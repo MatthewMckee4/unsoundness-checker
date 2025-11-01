@@ -6,9 +6,6 @@ This page describes the different categories of type system unsoundness that the
 
 Runtime code modifications that escape static type checker analysis.
 
-Examples: modifying `__code__`, `__defaults__`, or other runtime attributes
-that change behavior in ways type checkers cannot detect.
-
 ### Rules in this category
 
 - [`invalid-function-defaults`](rules.md#invalid-function-defaults) - detects invalid setting of the `__defaults__` attribute of a function
@@ -17,9 +14,6 @@ that change behavior in ways type checkers cannot detect.
 ## type-checking-suppression
 
 Mechanisms that suppress or bypass type checker warnings.
-
-Examples: `typing.Any`, `# type: ignore` directives, or other escape hatches
-that silence type checking without fixing underlying type issues.
 
 ### Rules in this category
 
