@@ -92,7 +92,6 @@ fn generate_markdown() -> String {
                     rule.summary
                 );
             }
-            let _ = writeln!(&mut output);
         }
     }
 

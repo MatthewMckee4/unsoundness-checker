@@ -10,7 +10,6 @@ Runtime code modifications that escape static type checker analysis.
 
 - [`invalid-function-defaults`](rules.md#invalid-function-defaults) - detects invalid setting of the `__defaults__` attribute of a function
 - [`setting-function-code-attribute`](rules.md#setting-function-code-attribute) - detects setting the `__code__` attribute of a function
-
 ## type-checking-suppression
 
 Mechanisms that suppress or bypass type checker warnings.
