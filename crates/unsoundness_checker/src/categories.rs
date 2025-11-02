@@ -12,16 +12,12 @@ pub struct CategoryMetadata {
 
 declare_category! {
     /// Runtime code modifications that escape static type checker analysis.
-    pub(crate) static RUNTIME_MODIFICATION = {
-        name: "runtime-modification",
-    }
+    pub(crate) static RUNTIME_MODIFICATION
 }
 
 declare_category! {
     /// Mechanisms that suppress or bypass type checker warnings.
-    pub(crate) static TYPE_CHECKING_SUPPRESSION = {
-        name: "type-checking-suppression",
-    }
+    pub(crate) static TYPE_CHECKING_SUPPRESSION
 }
 
 pub static ALL_CATEGORIES: &[&CategoryMetadata] =
@@ -31,13 +27,11 @@ pub static ALL_CATEGORIES: &[&CategoryMetadata] =
 macro_rules! declare_category {
     (
         $(#[doc = $doc:literal])+
-        $vis: vis static $name: ident = {
-            name: $cat_name: literal,
-        }
+        $vis: vis static $name: ident
     ) => {
         $( #[doc = $doc] )+
         $vis static $name: CategoryMetadata = CategoryMetadata {
-            name: $cat_name,
+            name: ruff_macros::kebab_case!($name),
             documentation: concat!($($doc, '\n',)+),
         };
     };
