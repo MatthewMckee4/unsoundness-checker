@@ -17,6 +17,7 @@ pub(crate) fn register_rules(registry: &mut RuleRegistryBuilder) {
     registry.register_rule(&IF_TYPE_CHECKING_USED);
     registry.register_rule(&INVALID_FUNCTION_DEFAULTS);
     registry.register_rule(&SETTING_FUNCTION_CODE_ATTRIBUTE);
+    registry.register_rule(&TYPING_CAST_USED);
 }
 
 declare_rule! {
@@ -202,6 +203,34 @@ declare_rule! {
     }
 }
 
+declare_rule! {
+    /// ## What it does
+    /// Checks for usage of `typing.cast()` function calls.
+    ///
+    /// ## Why is this bad?
+    /// `typing.cast()` tells the type checker to treat a value as a specific type
+    /// without any runtime checks or validation. This can lead to runtime type errors
+    /// if the cast is incorrect. Type checkers trust casts completely, so incorrect
+    /// casts bypass all type safety guarantees.
+    ///
+    /// ## Examples
+    /// ```python
+    /// from typing import cast
+    ///
+    /// def get_value() -> int | str:
+    ///     return "hello"
+    ///
+    /// result = cast(int, get_value())
+    /// result + 1  # Type checks, but fails at runtime!
+    /// ```
+    pub (crate) static TYPING_CAST_USED = {
+        summary: "detects usage of `typing.cast()` function calls",
+        status: RuleStatus::stable("1.0.0"),
+        categories: &[&TYPE_CHECKING_SUPPRESSION],
+        default_level: Level::Warn,
+    }
+}
+
 pub(crate) fn report_typing_any_used(context: &Context, expr: &Expr) {
     let Some(builder) = context.report_lint(&TYPING_ANY_USED, expr.range()) else {
         return;
@@ -306,4 +335,16 @@ pub(crate) fn report_if_type_checking_used(context: &Context, if_typing_checking
     builder.into_diagnostic(
         "Using `if TYPE_CHECKING:` blocks can lead to runtime errors if imports or definitions are incorrectly referenced at runtime.",
     );
+}
+
+pub(crate) fn report_typing_cast_used(context: &Context, expr: &Expr) {
+    let Some(builder) = context.report_lint(&TYPING_CAST_USED, expr.range()) else {
+        return;
+    };
+
+    let mut diagnostic = builder.into_diagnostic(
+        "Using `typing.cast()` bypasses type checking and can lead to runtime type errors.",
+    );
+
+    diagnostic.info("Consider using `isinstance` checks to ensure types at runtime.");
 }

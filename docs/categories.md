@@ -19,3 +19,4 @@ Mechanisms that suppress or bypass type checker warnings.
 - [`typing-any-used`](rules.md#typing-any-used) - detects usage of `typing.Any` in type annotations
 - [`type-checking-directive-used`](rules.md#type-checking-directive-used) - detects usage of type checking directives in comments
 - [`if-type-checking-used`](rules.md#if-type-checking-used) - detects usage of `if TYPE_CHECKING:` blocks
+- [`typing-cast-used`](rules.md#typing-cast-used) - detects usage of `typing.cast()` function calls

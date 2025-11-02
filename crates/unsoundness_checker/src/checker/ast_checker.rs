@@ -1,6 +1,6 @@
 use ruff_db::{files::File, parsed::parsed_module};
 use ruff_python_ast::{
-    Stmt,
+    Expr, Stmt,
     visitor::source_order::{self, SourceOrderVisitor},
 };
 use ty_project::Db;
@@ -9,8 +9,8 @@ use ty_python_semantic::SemanticModel;
 use crate::{
     Context,
     checker::{
-        annotation_checker, assignment_checker::check_assignment, if_checker::check_if_statement,
-        overload_checker,
+        annotation_checker, assignment_checker::check_assignment, expr_checker::check_expr,
+        if_checker::check_if_statement, overload_checker,
     },
 };
 
@@ -64,6 +64,12 @@ impl SourceOrderVisitor<'_> for ASTChecker<'_, '_> {
         }
 
         source_order::walk_stmt(self, stmt);
+    }
+
+    fn visit_expr(&mut self, expr: &'_ Expr) {
+        check_expr(self.context, &self.model, expr);
+
+        source_order::walk_expr(self, expr);
     }
 }
 
