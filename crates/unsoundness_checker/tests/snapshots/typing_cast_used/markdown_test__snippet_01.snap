@@ -1,0 +1,13 @@
+---
+source: crates/unsoundness_checker/tests/markdown_test.rs
+expression: output
+---
+error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+ --> snippet_01.py:4:12
+  |
+3 | def foo() -> int:
+4 |     return cast(int, "hello")
+  |            ^^^^
+  |
+info: Consider using `isinstance` checks to ensure types at runtime.
+info: rule `typing-cast-used` was selected in the configuration file

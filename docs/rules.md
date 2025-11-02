@@ -206,6 +206,42 @@ Categories: [`type-checking-suppression`](categories.md#type-checking-suppressio
 
 [See more](rules/typing_any_used.md)
 
+## `typing-cast-used`
+
+
+**What it does**
+
+Checks for usage of `typing.cast()` function calls.
+
+**Why is this bad?**
+
+`typing.cast()` tells the type checker to treat a value as a specific type
+without any runtime checks or validation. This can lead to runtime type errors
+if the cast is incorrect. Type checkers trust casts completely, so incorrect
+casts bypass all type safety guarantees.
+
+**Examples**
+
+```python
+from typing import cast
+
+def get_value() -> int | str:
+    return "hello"
+
+result = cast(int, get_value())
+result + 1  # Type checks, but fails at runtime!
+```
+
+<small>
+Default level: `warn`.
+</small>
+
+<small>
+Categories: [`type-checking-suppression`](categories.md#type-checking-suppression).
+</small>
+
+[See more](rules/typing_cast_used.md)
+
 ## `typing-overload-used`
 
 
