@@ -3,7 +3,10 @@ use ty_python_semantic::{HasType, SemanticModel, types::Type};
 
 use crate::{
     Context,
-    rules::{report_setting_function_code_attribute, report_setting_function_defaults_attribute},
+    rules::{
+        report_mutating_globals_dict, report_setting_function_code_attribute,
+        report_setting_function_defaults_attribute,
+    },
 };
 
 pub(super) fn check_assignment<'ast>(
@@ -12,6 +15,13 @@ pub(super) fn check_assignment<'ast>(
     stmt_assign: &'ast StmtAssign,
 ) {
     for target in &stmt_assign.targets {
+        // Check for subscript assignment to globals()
+        if let Expr::Subscript(subscript_expr) = target {
+            if is_globals_call(&subscript_expr.value) {
+                report_mutating_globals_dict(context, target);
+            }
+        }
+
         if let Expr::Attribute(attr_expr) = target {
             let inferred_value_type = attr_expr.value.inferred_type(model);
 
@@ -96,5 +106,20 @@ pub(super) fn check_assignment<'ast>(
                 }
             }
         }
+    }
+}
+
+/// Checks if an expression is a call to `globals()`
+fn is_globals_call(expr: &Expr) -> bool {
+    match expr {
+        Expr::Call(call_expr) => {
+            // Check if the function being called is named "globals"
+            if let Expr::Name(name_expr) = call_expr.func.as_ref() {
+                name_expr.id.as_str() == "globals"
+            } else {
+                false
+            }
+        }
+        _ => false,
     }
 }

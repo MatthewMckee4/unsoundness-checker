@@ -1,0 +1,15 @@
+---
+source: crates/unsoundness_checker/tests/markdown_test.rs
+expression: output
+---
+error[mutating-globals-dict]: Mutating the `globals()` dictionary may lead to runtime type errors.
+ --> snippet_01.py:3:1
+  |
+1 | x: int = 5
+2 |
+3 | globals()['x'] = "hello"
+  | ^^^^^^^^^^^^^^
+4 |
+5 | # Type checker thinks `result` is an `int`, but it is a string
+  |
+info: rule `mutating-globals-dict` was selected in the configuration file
