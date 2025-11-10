@@ -5,7 +5,7 @@
 
 **What it does**
 
-Checks for invalid settings of the `__defaults__` attribute of a function.
+Checks for invalid mutations of the `__defaults__` attribute of a function.
 
 **Why is this bad?**
 
@@ -68,6 +68,42 @@ Categories: None.
 
 [See more](rules/invalid_overload_implementation.md)
 
+## `mutating-function-code-attribute`
+
+
+**What it does**
+
+Checks for mutating the `__code__` attribute of a function.
+
+**Why is this bad?**
+
+Modifying the `__code__` attribute allows runtime modification
+of function internals, which can bypass type checking and lead to runtime type errors.
+Type checkers cannot analyze or verify operations performed through code objects.
+
+**Examples**
+
+```python
+def foo(x: int) -> int:
+    return 1
+
+def bar(x: str) -> str:
+    return "bar"
+
+foo.__code__ = bar.__code__
+# Now foo will return a string
+```
+
+<small>
+Default level: `error`.
+</small>
+
+<small>
+Categories: [`runtime-modification`](categories.md#runtime-modification).
+</small>
+
+[See more](rules/mutating_function_code_attribute.md)
+
 ## `mutating-globals-dict`
 
 
@@ -101,42 +137,6 @@ Categories: [`runtime-modification`](categories.md#runtime-modification).
 </small>
 
 [See more](rules/mutating_globals_dict.md)
-
-## `setting-function-code-attribute`
-
-
-**What it does**
-
-Checks for setting the `__code__` attribute of a function.
-
-**Why is this bad?**
-
-Modifying the `__code__` attribute allows runtime modification
-of function internals, which can bypass type checking and lead to runtime type errors.
-Type checkers cannot analyze or verify operations performed through code objects.
-
-**Examples**
-
-```python
-def foo(x: int) -> int:
-    return 1
-
-def bar(x: str) -> str:
-    return "bar"
-
-foo.__code__ = bar.__code__
-# Now foo will return a string
-```
-
-<small>
-Default level: `error`.
-</small>
-
-<small>
-Categories: [`runtime-modification`](categories.md#runtime-modification).
-</small>
-
-[See more](rules/setting_function_code_attribute.md)
 
 ## `if-type-checking-used`
 

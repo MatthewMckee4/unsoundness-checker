@@ -8,8 +8,8 @@ Runtime code modifications that escape static type checker analysis.
 
 ### Rules in this category
 
-- [`invalid-function-defaults`](rules.md#invalid-function-defaults) - detects invalid setting of the `__defaults__` attribute of a function
-- [`setting-function-code-attribute`](rules.md#setting-function-code-attribute) - detects setting the `__code__` attribute of a function
+- [`invalid-function-defaults`](rules.md#invalid-function-defaults) - detects invalid mutation of the `__defaults__` attribute of a function
+- [`mutating-function-code-attribute`](rules.md#mutating-function-code-attribute) - detects mutating the `__code__` attribute of a function
 - [`mutating-globals-dict`](rules.md#mutating-globals-dict) - detects mutations to the `globals()` dictionary
 ## type-checking-suppression
 

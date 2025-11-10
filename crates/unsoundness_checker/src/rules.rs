@@ -16,7 +16,7 @@ pub(crate) fn register_rules(registry: &mut RuleRegistryBuilder) {
     registry.register_rule(&TYPE_CHECKING_DIRECTIVE_USED);
     registry.register_rule(&IF_TYPE_CHECKING_USED);
     registry.register_rule(&INVALID_FUNCTION_DEFAULTS);
-    registry.register_rule(&SETTING_FUNCTION_CODE_ATTRIBUTE);
+    registry.register_rule(&MUTATING_FUNCTION_CODE_ATTRIBUTE);
     registry.register_rule(&TYPING_CAST_USED);
     registry.register_rule(&MUTATING_GLOBALS_DICT);
 }
@@ -154,7 +154,7 @@ declare_rule! {
 
 declare_rule! {
     /// ## What it does
-    /// Checks for invalid settings of the `__defaults__` attribute of a function.
+    /// Checks for invalid mutations of the `__defaults__` attribute of a function.
     ///
     /// ## Why is this bad?
     /// Modifying the `__defaults__` attribute with types different to the parameters
@@ -169,7 +169,7 @@ declare_rule! {
     /// result = foo()  # Returns "string" but type checker thinks it's int
     /// ```
     pub (crate) static INVALID_FUNCTION_DEFAULTS = {
-        summary: "detects invalid setting of the `__defaults__` attribute of a function",
+        summary: "detects invalid mutation of the `__defaults__` attribute of a function",
         status: RuleStatus::stable("1.0.0"),
         categories: &[&RUNTIME_MODIFICATION],
         default_level: Level::Error,
@@ -178,7 +178,7 @@ declare_rule! {
 
 declare_rule! {
     /// ## What it does
-    /// Checks for setting the `__code__` attribute of a function.
+    /// Checks for mutating the `__code__` attribute of a function.
     ///
     /// ## Why is this bad?
     /// Modifying the `__code__` attribute allows runtime modification
@@ -196,8 +196,8 @@ declare_rule! {
     /// foo.__code__ = bar.__code__
     /// # Now foo will return a string
     /// ```
-    pub (crate) static SETTING_FUNCTION_CODE_ATTRIBUTE = {
-        summary: "detects setting the `__code__` attribute of a function",
+    pub (crate) static MUTATING_FUNCTION_CODE_ATTRIBUTE = {
+        summary: "detects mutating the `__code__` attribute of a function",
         status: RuleStatus::stable("1.0.0"),
         categories: &[&RUNTIME_MODIFICATION],
         default_level: Level::Error,
@@ -342,13 +342,13 @@ pub(crate) fn report_setting_function_defaults_attribute(
     ));
 }
 
-pub(crate) fn report_setting_function_code_attribute(context: &Context, expr: &Expr) {
-    let Some(builder) = context.report_lint(&SETTING_FUNCTION_CODE_ATTRIBUTE, expr.range()) else {
+pub(crate) fn report_mutating_function_code_attribute(context: &Context, expr: &Expr) {
+    let Some(builder) = context.report_lint(&MUTATING_FUNCTION_CODE_ATTRIBUTE, expr.range()) else {
         return;
     };
 
     builder.into_diagnostic(
-        "Setting `__code__` attribute on a function may lead to runtime type errors.",
+        "Mutating `__code__` attribute on a function may lead to runtime type errors.",
     );
 }
 
