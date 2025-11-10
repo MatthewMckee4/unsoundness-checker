@@ -4,7 +4,7 @@ use ty_python_semantic::{HasType, SemanticModel, types::Type};
 use crate::{
     Context,
     rules::{
-        report_mutating_globals_dict, report_setting_function_code_attribute,
+        report_mutating_function_code_attribute, report_mutating_globals_dict,
         report_setting_function_defaults_attribute,
     },
 };
@@ -102,7 +102,7 @@ pub(super) fn check_assignment<'ast>(
                             }
                         }
                         "__code__" => {
-                            report_setting_function_code_attribute(context, target);
+                            report_mutating_function_code_attribute(context, target);
                         }
                         _ => {}
                     }
