@@ -68,6 +68,40 @@ Categories: None.
 
 [See more](rules/invalid_overload_implementation.md)
 
+## `mutating-globals-dict`
+
+
+**What it does**
+
+Checks for mutations to the `globals()` dictionary.
+
+**Why is this bad?**
+
+Modifying the `globals()` dictionary allows runtime modification
+of global variables, which can bypass type checking and lead to runtime type errors.
+Type checkers cannot track or verify modifications made through the globals dictionary.
+
+**Examples**
+
+```python
+x: int = 5
+
+globals()['x'] = "hello"
+
+# Type checker thinks `x` is an `int`, but it is now a string
+result: int = x
+```
+
+<small>
+Default level: `error`.
+</small>
+
+<small>
+Categories: [`runtime-modification`](categories.md#runtime-modification).
+</small>
+
+[See more](rules/mutating_globals_dict.md)
+
 ## `setting-function-code-attribute`
 
 

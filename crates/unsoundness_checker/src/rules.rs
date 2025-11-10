@@ -18,6 +18,7 @@ pub(crate) fn register_rules(registry: &mut RuleRegistryBuilder) {
     registry.register_rule(&INVALID_FUNCTION_DEFAULTS);
     registry.register_rule(&SETTING_FUNCTION_CODE_ATTRIBUTE);
     registry.register_rule(&TYPING_CAST_USED);
+    registry.register_rule(&MUTATING_GLOBALS_DICT);
 }
 
 declare_rule! {
@@ -231,6 +232,32 @@ declare_rule! {
     }
 }
 
+declare_rule! {
+    /// ## What it does
+    /// Checks for mutations to the `globals()` dictionary.
+    ///
+    /// ## Why is this bad?
+    /// Modifying the `globals()` dictionary allows runtime modification
+    /// of global variables, which can bypass type checking and lead to runtime type errors.
+    /// Type checkers cannot track or verify modifications made through the globals dictionary.
+    ///
+    /// ## Examples
+    /// ```python
+    /// x: int = 5
+    ///
+    /// globals()['x'] = "hello"
+    ///
+    /// # Type checker thinks `x` is an `int`, but it is now a string
+    /// result: int = x
+    /// ```
+    pub (crate) static MUTATING_GLOBALS_DICT = {
+        summary: "detects mutations to the `globals()` dictionary",
+        status: RuleStatus::stable("1.0.0"),
+        categories: &[&RUNTIME_MODIFICATION],
+        default_level: Level::Error,
+    }
+}
+
 pub(crate) fn report_typing_any_used(context: &Context, expr: &Expr) {
     let Some(builder) = context.report_lint(&TYPING_ANY_USED, expr.range()) else {
         return;
@@ -347,4 +374,12 @@ pub(crate) fn report_typing_cast_used(context: &Context, expr: &Expr) {
     );
 
     diagnostic.info("Consider using `isinstance` checks to ensure types at runtime.");
+}
+
+pub(crate) fn report_mutating_globals_dict(context: &Context, expr: &Expr) {
+    let Some(builder) = context.report_lint(&MUTATING_GLOBALS_DICT, expr.range()) else {
+        return;
+    };
+
+    builder.into_diagnostic("Mutating the `globals()` dictionary may lead to runtime type errors.");
 }
