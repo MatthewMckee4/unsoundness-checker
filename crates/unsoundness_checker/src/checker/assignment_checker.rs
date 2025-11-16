@@ -1,4 +1,4 @@
-use ruff_python_ast::{Expr, StmtAssign};
+use ruff_python_ast::{Expr, StmtAssign, name::Name};
 use ty_python_semantic::{HasType, SemanticModel, types::Type};
 
 use crate::{
@@ -17,8 +17,30 @@ pub(super) fn check_assignment<'ast>(
     for target in &stmt_assign.targets {
         match target {
             Expr::Subscript(subscript_expr) => {
-                if is_globals_call(&subscript_expr.value) {
-                    report_mutating_globals_dict(context, target);
+                if is_globals_call(&subscript_expr.value)
+                    && let Some(expr_string_literal) = subscript_expr.slice.as_string_literal_expr()
+                {
+                    let members = model.members_in_scope_at(stmt_assign.into());
+
+                    if let Some(current_symbol_definition) =
+                        members.get(&Name::new(expr_string_literal.value.to_str()))
+                    {
+                        let value_type = target.inferred_type(model);
+
+                        let current_type = current_symbol_definition.ty;
+
+                        // Try promote literal types like `Literal[1]`.
+                        //
+                        // A definition like `x = 1` gives x type `Literal[1]`. But we want to be able to assign `Literal[2]` to it.
+                        let current_promotion = current_type.literal_promotion_type(model.db());
+
+                        if !value_type.is_assignable_to(
+                            context.db(),
+                            current_promotion.unwrap_or(current_type),
+                        ) {
+                            report_mutating_globals_dict(context, target);
+                        }
+                    }
                 }
             }
             Expr::Attribute(attr_expr) => {
