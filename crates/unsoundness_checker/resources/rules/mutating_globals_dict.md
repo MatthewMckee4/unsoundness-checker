@@ -6,13 +6,22 @@ The `globals()` function returns a dictionary representing the current global sy
 
 ## What gets flagged
 
-### Mutating `globals()` dictionary
-
-```python
+```py
 x: int = 5
 
 globals()['x'] = "hello"
 
 # Type checker thinks `result` is an `int`, but it is a string
 result: int = x
+```
+
+## What is okay
+
+If the type of the new value is assignable to the existing type of the symbol, we allow the mutation.
+
+```py
+x: int = 1
+
+# `Literal[2]` is assignable to `int`
+globals()["x"] = 2
 ```

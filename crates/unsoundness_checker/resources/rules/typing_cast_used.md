@@ -28,3 +28,14 @@ assert isinstance(result, int)
 ```
 
 This provides actual runtime safety instead of just lying to the type checker.
+
+## What is okay
+
+If the type of the value you are casting is assignable to the target type, it is okay to use `typing.cast()`.
+
+```py
+from typing import cast
+
+def foo() -> int:
+    return cast(int, 1)
+```
