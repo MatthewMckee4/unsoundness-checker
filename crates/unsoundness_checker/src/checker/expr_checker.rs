@@ -18,7 +18,36 @@ pub(super) fn check_expr<'ast>(
 
             if let Type::FunctionLiteral(function_type) = func_ty {
                 if function_type.is_known(context.db(), KnownFunction::Cast) {
-                    report_typing_cast_used(context, &expr_call.func);
+                    let Some(first_argument) = expr_call.arguments.find_positional(0) else {
+                        return;
+                    };
+
+                    let Some(second_argument) = expr_call.arguments.find_positional(1) else {
+                        return;
+                    };
+
+                    let value_type = second_argument.inferred_type(model);
+
+                    let casting_type = first_argument.inferred_type(model);
+
+                    // println!("value type: {:?}", value_type.display(model.db()));
+                    // println!("casting type: {:?}", first_argument_type);
+                    // println!(
+                    //     "casting type: {:?}",
+                    //     first_argument_type.to_instance(model.db())
+                    // );
+
+                    // let Some(casting_type) = first_argument_type.to_instance(model.db()) else {
+                    //     return;
+                    // };
+
+                    let current_promotion = casting_type.literal_promotion_type(model.db());
+
+                    if !value_type
+                        .is_assignable_to(context.db(), current_promotion.unwrap_or(casting_type))
+                    {
+                        report_typing_cast_used(context, &expr_call.func);
+                    }
                 }
             }
         }
