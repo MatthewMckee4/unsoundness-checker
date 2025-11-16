@@ -10,7 +10,7 @@ use crate::{
     Context,
     checker::{
         annotation_checker, assignment_checker::check_assignment, expr_checker::check_expr,
-        if_checker::check_if_statement, overload_checker,
+        function_checker, if_checker::check_if_statement,
     },
 };
 
@@ -33,7 +33,7 @@ impl SourceOrderVisitor<'_> for ASTChecker<'_, '_> {
     fn visit_stmt(&mut self, stmt: &'_ Stmt) {
         match stmt {
             Stmt::FunctionDef(stmt_function_def) => {
-                overload_checker::check_function_statement(
+                function_checker::check_function_statement(
                     self.context,
                     &self.model,
                     stmt_function_def,

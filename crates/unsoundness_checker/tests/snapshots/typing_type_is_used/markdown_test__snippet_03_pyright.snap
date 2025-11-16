@@ -1,0 +1,7 @@
+---
+source: crates/unsoundness_checker/tests/markdown_test.rs
+expression: output
+---
+<temp_dir>/snippet_03.py
+  <temp_dir>/snippet_03.py:1:20 - error: "TypeIs" is unknown import symbol (reportAttributeAccessIssue)
+1 error, 0 warnings, 0 informations

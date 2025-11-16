@@ -10,7 +10,10 @@ use ty_python_semantic::{
 
 use crate::{
     Context,
-    rules::{report_invalid_overload_implementation, report_typing_overload_used},
+    rules::{
+        report_invalid_overload_implementation, report_typing_overload_used,
+        report_typing_type_is_used,
+    },
 };
 
 pub(super) fn check_function_statement<'ast>(
@@ -18,6 +21,13 @@ pub(super) fn check_function_statement<'ast>(
     model: &'ast SemanticModel<'ast>,
     stmt_function_def: &StmtFunctionDef,
 ) {
+    if let Some(return_type) = stmt_function_def.returns.as_ref() {
+        let inferred_return_type = return_type.inferred_type(model);
+        if let Type::TypeIs(_) = inferred_return_type {
+            report_typing_type_is_used(context, return_type);
+        }
+    }
+
     let function_ty = stmt_function_def.inferred_type(model);
 
     let Type::FunctionLiteral(function_type_ty) = function_ty else {
