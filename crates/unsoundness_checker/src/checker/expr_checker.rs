@@ -30,17 +30,6 @@ pub(super) fn check_expr<'ast>(
 
                     let casting_type = first_argument.inferred_type(model);
 
-                    // println!("value type: {:?}", value_type.display(model.db()));
-                    // println!("casting type: {:?}", first_argument_type);
-                    // println!(
-                    //     "casting type: {:?}",
-                    //     first_argument_type.to_instance(model.db())
-                    // );
-
-                    // let Some(casting_type) = first_argument_type.to_instance(model.db()) else {
-                    //     return;
-                    // };
-
                     let current_promotion = casting_type.literal_promotion_type(model.db());
 
                     if !value_type
