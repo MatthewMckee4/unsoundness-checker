@@ -311,3 +311,40 @@ Categories: None.
 
 [See more](rules/typing_overload_used.md)
 
+## `typing-type-is-used`
+
+
+**What it does**
+
+Checks for return types that use `typing.TypeIs`.
+
+**Why is this bad?**
+
+Using `typing.TypeIs` in return type annotations can lead to runtime type errors.
+Type checkers use `TypeIs` to narrow types, but incorrect implementation can bypass
+type safety guarantees.
+
+**Examples**
+
+```python
+from typing import TypeIs
+
+def is_int(x: object) -> TypeIs[int]:
+    return True
+
+value = "hello"
+
+if is_int(value):
+    result = value + 1  # Type checks but fails at runtime!
+```
+
+<small>
+Default level: `warn`.
+</small>
+
+<small>
+Categories: [`type-checking-suppression`](categories.md#type-checking-suppression).
+</small>
+
+[See more](rules/typing_type_is_used.md)
+

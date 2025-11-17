@@ -11,8 +11,8 @@ mod annotation_checker;
 mod assignment_checker;
 mod ast_checker;
 mod expr_checker;
+mod function_checker;
 mod if_checker;
-mod overload_checker;
 mod tokens_checker;
 
 pub fn check_file(db: &dyn Db, file: File, rule_selection: &RuleSelection) -> Vec<Diagnostic> {

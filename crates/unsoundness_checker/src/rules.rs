@@ -19,6 +19,7 @@ pub(crate) fn register_rules(registry: &mut RuleRegistryBuilder) {
     registry.register_rule(&MUTATING_FUNCTION_CODE_ATTRIBUTE);
     registry.register_rule(&TYPING_CAST_USED);
     registry.register_rule(&MUTATING_GLOBALS_DICT);
+    registry.register_rule(&TYPING_TYPE_IS_USED);
 }
 
 declare_rule! {
@@ -382,4 +383,41 @@ pub(crate) fn report_mutating_globals_dict(context: &Context, expr: &Expr) {
     };
 
     builder.into_diagnostic("Mutating the `globals()` dictionary may lead to runtime type errors.");
+}
+
+declare_rule! {
+    /// ## What it does
+    /// Checks for return types that use `typing.TypeIs`.
+    ///
+    /// ## Why is this bad?
+    /// Using `typing.TypeIs` in return type annotations can lead to runtime type errors.
+    /// Type checkers use `TypeIs` to narrow types, but incorrect implementation can bypass
+    /// type safety guarantees.
+    ///
+    /// ## Examples
+    /// ```python
+    /// from typing import TypeIs
+    ///
+    /// def is_int(x: object) -> TypeIs[int]:
+    ///     return True
+    ///
+    /// value = "hello"
+    ///
+    /// if is_int(value):
+    ///     result = value + 1  # Type checks but fails at runtime!
+    /// ```
+    pub (crate) static TYPING_TYPE_IS_USED = {
+        summary: "detects usage of `typing.TypeIs` in return type annotations",
+        status: RuleStatus::stable("1.0.0"),
+        categories: &[&TYPE_CHECKING_SUPPRESSION],
+        default_level: Level::Warn,
+    }
+}
+
+pub(crate) fn report_typing_type_is_used(context: &Context, expr: &Expr) {
+    let Some(builder) = context.report_lint(&TYPING_TYPE_IS_USED, expr.range()) else {
+        return;
+    };
+
+    builder.into_diagnostic("Using `typing.TypeIs` can lead to runtime type errors.");
 }
