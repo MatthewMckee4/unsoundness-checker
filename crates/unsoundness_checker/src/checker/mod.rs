@@ -14,6 +14,7 @@ mod expr_checker;
 mod function_checker;
 mod if_checker;
 mod tokens_checker;
+mod utils;
 
 pub fn check_file(db: &dyn Db, file: File, rule_selection: &RuleSelection) -> Vec<Diagnostic> {
     let context = Context::new(db, file, rule_selection);

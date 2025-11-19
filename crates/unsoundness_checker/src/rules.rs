@@ -21,6 +21,7 @@ pub(crate) fn register_rules(registry: &mut RuleRegistryBuilder) {
     registry.register_rule(&MUTATING_GLOBALS_DICT);
     registry.register_rule(&TYPING_TYPE_IS_USED);
     registry.register_rule(&CALLABLE_ELLIPSIS_USED);
+    registry.register_rule(&MUTABLE_GENERIC_DEFAULT);
 }
 
 declare_rule! {
@@ -74,6 +75,38 @@ declare_rule! {
         status: RuleStatus::stable("1.0.0"),
         categories: &[&TYPE_CHECKING_SUPPRESSION],
         default_level: Level::Warn,
+    }
+}
+
+declare_rule! {
+    /// ## What it does
+    /// Checks for generic functions or methods that accept mutable objects as default parameter values.
+    ///
+    /// ## Why is this bad?
+    /// When a generic function uses a mutable default value (like a list, dict, or set), that default
+    /// is shared across all invocations of the function. This creates a scenario where the mutable
+    /// object can accumulate values of different types from different calls.
+    ///
+    /// Type checkers assume that `list[T]` only contains values of type `T`. However, when a mutable
+    /// default is reused across calls with different type parameters, the list can contain values of
+    /// multiple different types, leading to runtime type errors.
+    ///
+    /// ## Examples
+    /// ```python
+    /// def append_and_return[T](x: T, items: list[T] = []) -> list[T]:
+    ///     items.append(x)
+    ///     return items
+    ///
+    /// int_list = append_and_return(42)
+    /// str_list = append_and_return("hello")
+    ///
+    /// # This is a int at runtime but str at type check time.
+    /// value: str = str_list[0]
+    /// ```
+    pub (crate) static MUTABLE_GENERIC_DEFAULT = {
+        summary: "detects mutable default arguments in generic functions",
+        status: RuleStatus::stable("1.0.0"),
+        default_level: Level::Error,
     }
 }
 
@@ -290,6 +323,35 @@ declare_rule! {
     }
 }
 
+declare_rule! {
+    /// ## What it does
+    /// Checks for return types that use `typing.TypeIs`.
+    ///
+    /// ## Why is this bad?
+    /// Using `typing.TypeIs` in return type annotations can lead to runtime type errors.
+    /// Type checkers use `TypeIs` to narrow types, but incorrect implementation can bypass
+    /// type safety guarantees.
+    ///
+    /// ## Examples
+    /// ```python
+    /// from typing import TypeIs
+    ///
+    /// def is_int(x: object) -> TypeIs[int]:
+    ///     return True
+    ///
+    /// value = "hello"
+    ///
+    /// if is_int(value):
+    ///     result = value + 1  # Type checks but fails at runtime!
+    /// ```
+    pub (crate) static TYPING_TYPE_IS_USED = {
+        summary: "detects usage of `typing.TypeIs` in return type annotations",
+        status: RuleStatus::stable("1.0.0"),
+        categories: &[&TYPE_CHECKING_SUPPRESSION],
+        default_level: Level::Warn,
+    }
+}
+
 pub(crate) fn report_typing_any_used(context: &Context, expr: &Expr) {
     let Some(builder) = context.report_lint(&TYPING_ANY_USED, expr.range()) else {
         return;
@@ -416,35 +478,6 @@ pub(crate) fn report_mutating_globals_dict(context: &Context, expr: &Expr) {
     builder.into_diagnostic("Mutating the `globals()` dictionary may lead to runtime type errors.");
 }
 
-declare_rule! {
-    /// ## What it does
-    /// Checks for return types that use `typing.TypeIs`.
-    ///
-    /// ## Why is this bad?
-    /// Using `typing.TypeIs` in return type annotations can lead to runtime type errors.
-    /// Type checkers use `TypeIs` to narrow types, but incorrect implementation can bypass
-    /// type safety guarantees.
-    ///
-    /// ## Examples
-    /// ```python
-    /// from typing import TypeIs
-    ///
-    /// def is_int(x: object) -> TypeIs[int]:
-    ///     return True
-    ///
-    /// value = "hello"
-    ///
-    /// if is_int(value):
-    ///     result = value + 1  # Type checks but fails at runtime!
-    /// ```
-    pub (crate) static TYPING_TYPE_IS_USED = {
-        summary: "detects usage of `typing.TypeIs` in return type annotations",
-        status: RuleStatus::stable("1.0.0"),
-        categories: &[&TYPE_CHECKING_SUPPRESSION],
-        default_level: Level::Warn,
-    }
-}
-
 pub(crate) fn report_typing_type_is_used(context: &Context, expr: &Expr) {
     let Some(builder) = context.report_lint(&TYPING_TYPE_IS_USED, expr.range()) else {
         return;
@@ -460,5 +493,15 @@ pub(crate) fn report_callable_ellipsis_used(context: &Context, expr: &Expr) {
 
     builder.into_diagnostic(
         "Using `...` in `Callable` type annotations can lead to runtime type errors.",
+    );
+}
+
+pub(crate) fn report_mutable_generic_default(context: &Context, expr: &Expr) {
+    let Some(builder) = context.report_lint(&MUTABLE_GENERIC_DEFAULT, expr.range()) else {
+        return;
+    };
+
+    builder.into_diagnostic(
+        "Using a mutable default argument for a generic parameter in a function can lead to runtime type errors.",
     );
 }

@@ -12,25 +12,51 @@ use crate::{
     rules::{report_callable_ellipsis_used, report_typing_any_used},
 };
 
-struct AnnotationChecker<'db, 'ctx> {
+struct AnyAnnotationChecker<'db, 'ctx> {
     context: &'ctx Context<'db>,
 
     model: &'db SemanticModel<'db>,
 }
 
-impl<'db, 'ctx> AnnotationChecker<'db, 'ctx> {
-    #[must_use]
+impl<'db, 'ctx> AnyAnnotationChecker<'db, 'ctx> {
     pub(crate) const fn new(context: &'ctx Context<'db>, model: &'db SemanticModel<'db>) -> Self {
         Self { context, model }
     }
 }
 
-impl SourceOrderVisitor<'_> for AnnotationChecker<'_, '_> {
+impl SourceOrderVisitor<'_> for AnyAnnotationChecker<'_, '_> {
     fn visit_expr(&mut self, expr: &'_ Expr) {
         let ty = expr.inferred_type(self.model);
 
         if matches!(ty, Type::Dynamic(DynamicType::Any)) {
             report_typing_any_used(self.context, expr);
+        }
+
+        source_order::walk_expr(self, expr);
+    }
+}
+
+struct GenericAnnotationChecker<'db> {
+    model: &'db SemanticModel<'db>,
+
+    contains_generic: bool,
+}
+
+impl<'db> GenericAnnotationChecker<'db> {
+    pub(crate) const fn new(model: &'db SemanticModel<'db>) -> Self {
+        Self {
+            model,
+            contains_generic: false,
+        }
+    }
+}
+
+impl SourceOrderVisitor<'_> for GenericAnnotationChecker<'_> {
+    fn visit_expr(&mut self, expr: &'_ Expr) {
+        let ty = expr.inferred_type(self.model);
+
+        if matches!(ty, Type::NonInferableTypeVar(_)) {
+            self.contains_generic = true;
         }
 
         source_order::walk_expr(self, expr);
@@ -53,7 +79,15 @@ pub(super) fn check_annotation<'ast>(
         }
     }
 
-    let mut annotation_checker = AnnotationChecker::new(context, model);
+    let mut annotation_checker = AnyAnnotationChecker::new(context, model);
 
     annotation_checker.visit_expr(expr);
+}
+
+pub(super) fn is_generic_annotation(model: &SemanticModel<'_>, expr: &Expr) -> bool {
+    let mut generic_checker = GenericAnnotationChecker::new(model);
+
+    generic_checker.visit_expr(expr);
+
+    generic_checker.contains_generic
 }
