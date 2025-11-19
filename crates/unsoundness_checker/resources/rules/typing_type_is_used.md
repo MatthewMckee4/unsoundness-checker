@@ -4,7 +4,7 @@ Detects usage of `typing.TypeIs` in return type annotations, which can lead to r
 
 `typing.TypeIs` is used for type narrowing functions that tell type checkers to narrow the type of a variable. Type checkers trust TypeIs functions completely, so incorrect implementations bypass all type safety guarantees.
 
-## Example
+## What gets flagged
 
 ```python
 from typing_extensions import TypeIs

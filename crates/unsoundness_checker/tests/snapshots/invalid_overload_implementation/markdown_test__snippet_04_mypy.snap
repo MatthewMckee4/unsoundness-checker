@@ -1,6 +1,0 @@
----
-source: crates/unsoundness_checker/tests/markdown_test.rs
-expression: output
----
-<temp_dir>/snippet_04.py:8: error: Incompatible return value type (got "bytes", expected "int | str")  [return-value]
-Found 1 error in 1 file (checked 1 source file)

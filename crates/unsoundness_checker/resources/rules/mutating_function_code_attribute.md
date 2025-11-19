@@ -18,3 +18,21 @@ foo.__code__ = bar.__code__
 # Type checker things `result` is an `int`, but it is a string
 result = foo(10)
 ```
+
+## What we can't catch
+
+Sometimes users will mutate `__code__` in a type safe way:
+
+```python
+def foo(x: int) -> int:
+    return 1
+
+def bar(x: int) -> int:
+    return 1
+
+foo.__code__ = bar.__code__
+
+result = foo(10)
+```
+
+This is very hard to validate, and therefor we only emit a warning that you probably shouldn't be messing with the `__code__` attribute.
