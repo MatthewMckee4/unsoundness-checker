@@ -136,56 +136,30 @@ impl TestRunner {
     }
 
     #[must_use]
+    pub fn run_ty(&self) -> String {
+        self.run_external_tool(&["ty", "check"])
+    }
+
+    #[must_use]
     pub fn run_mypy(&self) -> String {
-        self.run_external_tool("mypy")
+        self.run_external_tool(&["mypy"])
     }
 
     #[must_use]
     pub fn run_pyright(&self) -> String {
-        self.run_external_tool("pyright")
+        self.run_external_tool(&["pyright"])
     }
 
-    fn run_external_tool(&self, tool: &str) -> String {
-        let venv_output = std::process::Command::new("uv")
-            .arg("venv")
-            .arg(self.venv_dir())
-            .arg("--clear")
-            .arg("-p")
-            .arg("3.12")
-            .output()
-            .expect("Failed to create virtual environment");
+    #[must_use]
+    pub fn run_pyrefly(&self) -> String {
+        self.run_external_tool(&["pyrefly", "check"])
+    }
 
-        if !venv_output.status.success() {
-            eprintln!(
-                "Failed to create virtual environment: {}",
-                String::from_utf8_lossy(&venv_output.stderr)
-            );
-        }
-
-        let install_output = std::process::Command::new("uv")
-            .arg("pip")
-            .arg("install")
-            .arg("--python")
-            .arg(self.venv_dir())
-            .arg(tool)
-            .output()
-            .expect("Failed to install tool");
-
-        if !install_output.status.success() {
-            eprintln!(
-                "Failed to install {}: {}",
-                tool,
-                String::from_utf8_lossy(&install_output.stderr)
-            );
-        }
-
-        // Then run the tool
-        let output = std::process::Command::new("uv")
-            .arg("run")
-            .arg("--python")
-            .arg(self.venv_dir())
-            .arg(tool)
+    fn run_external_tool(&self, check_command: &[&str]) -> String {
+        let output = std::process::Command::new("uvx")
+            .args(check_command)
             .arg(self.temp_dir.path())
+            .current_dir(self.temp_dir.path())
             .output()
             .expect("Failed to run external tool");
 
@@ -319,6 +293,9 @@ pub fn run_rule_tests(rule_name: &str) -> Vec<(PathBuf, String, String)> {
         results.push((temp_path.clone(), test_name.to_string(), output));
 
         if cfg!(unix) && rule_name != "type_checking_directive_used" {
+            let ty_output = test_runner.run_ty();
+            results.push((temp_path.clone(), format!("{test_name}_ty"), ty_output));
+
             let mypy_output = test_runner.run_mypy();
             results.push((temp_path.clone(), format!("{test_name}_mypy"), mypy_output));
 

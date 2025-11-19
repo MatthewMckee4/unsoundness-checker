@@ -54,7 +54,7 @@ def get_snapshots_for_rule(rule_name: str) -> Dict[str, Dict[str, str]]:
         filename = os.path.basename(filepath)
 
         # Try matching with checker suffix first
-        match = re.search(r"snippet_(\d+)_(mypy|pyright)", filename)
+        match = re.search(r"snippet_(\d+)_(mypy|pyright|ty)", filename)
         if match:
             snippet_num = match.group(1)
             checker = match.group(2)
@@ -89,7 +89,7 @@ def embed_diagnostics_in_markdown(markdown_path: str, rule_name: str):
         content = f.read()
 
     lines = content.split("\n")
-    new_lines = []
+    new_lines: list[str] = []
     code_block_count = 0
     in_code_block = False
 
@@ -111,18 +111,32 @@ def embed_diagnostics_in_markdown(markdown_path: str, rule_name: str):
 
                 new_lines.append("")
 
-                for checker in ["unsoundness-checker", "mypy", "pyright"]:
+                for checker in ["unsoundness-checker", "mypy", "pyright", "ty"]:
                     if checker in checker_outputs:
                         diagnostic = checker_outputs[checker].strip()
-                        display_name = "Unsoundness Checker" if checker == "unsoundness-checker" else checker.capitalize()
+                        display_name = (
+                            "Unsoundness Checker"
+                            if checker == "unsoundness-checker"
+                            else checker.capitalize()
+                        )
 
                         # Check if diagnostic is empty or indicates no issues
                         is_empty = not diagnostic
-                        is_mypy_clean = checker == "mypy" and "no issues" in diagnostic.lower()
-                        is_pyright_clean = checker == "pyright" and "0 errors" in diagnostic.lower()
+                        is_mypy_clean = (
+                            checker == "mypy" and "no issues" in diagnostic.lower()
+                        )
+                        is_pyright_clean = (
+                            checker == "pyright" and "0 errors" in diagnostic.lower()
+                        )
+                        is_ty_clean = (
+                            checker == "ty"
+                            and "all checks passed" in diagnostic.lower()
+                        )
 
-                        if is_empty or is_mypy_clean or is_pyright_clean:
-                            new_lines.append(f'!!! info "{display_name}: No Diagnostic Emitted"')
+                        if is_empty or is_mypy_clean or is_pyright_clean or is_ty_clean:
+                            new_lines.append(
+                                f'!!! info "{display_name}: No Diagnostic Emitted"'
+                            )
                             new_lines.append("")
                         else:
                             new_lines.append(f'??? note "{display_name} Output"')

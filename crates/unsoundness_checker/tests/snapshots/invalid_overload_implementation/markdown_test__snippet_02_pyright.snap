@@ -2,4 +2,9 @@
 source: crates/unsoundness_checker/tests/markdown_test.rs
 expression: output
 ---
-0 errors, 0 warnings, 0 informations
+<temp_dir>/snippet_02.py
+  <temp_dir>/snippet_02.py:8:12 - error: Type "Literal[b""]" is not assignable to return type "int | str"
+    Type "Literal[b""]" is not assignable to type "int | str"
+      "Literal[b""]" is not assignable to "int"
+      "Literal[b""]" is not assignable to "str" (reportReturnType)
+1 error, 0 warnings, 0 informations

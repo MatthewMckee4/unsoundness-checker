@@ -25,7 +25,7 @@ bar.__defaults__ = (1, "string")
 
 ```
 
-*We currently do not emit an error for this case, in future we will not*
+## What is okay
 
 We do not emit errors if the types of the new defaults match the expected parameter types.
 
@@ -33,7 +33,6 @@ We do not emit errors if the types of the new defaults match the expected parame
 def foo(x: str = "string") -> str:
     return x
 
-# This is type safe
 foo.__defaults__ = ("another_string",)
 
 foo.__defaults__ = ("another_string", "another_string")

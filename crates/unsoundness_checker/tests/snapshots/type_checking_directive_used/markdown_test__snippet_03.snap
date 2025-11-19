@@ -3,19 +3,21 @@ source: crates/unsoundness_checker/tests/markdown_test.rs
 expression: output
 ---
 error[type-checking-directive-used]: Type checking directive `ty: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> snippet_03.py:1:30
+ --> snippet_03.py:1:14
   |
-1 | result = unsafe_operation()  # ty: ignore[unresolved-import]
-  |                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-2 | data = get_data()  # ty: ignore[attr-defined]
+1 | res = foo()  # ty: ignore
+  |              ^^^^^^^^^^^^
+2 |
+3 | res = foo()  # ty: ignore[unresolved-reference]
   |
 info: rule `type-checking-directive-used` was selected in the configuration file
 
 error[type-checking-directive-used]: Type checking directive `ty: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> snippet_03.py:2:20
+ --> snippet_03.py:3:14
   |
-1 | result = unsafe_operation()  # ty: ignore[unresolved-import]
-2 | data = get_data()  # ty: ignore[attr-defined]
-  |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+1 | res = foo()  # ty: ignore
+2 |
+3 | res = foo()  # ty: ignore[unresolved-reference]
+  |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   |
 info: rule `type-checking-directive-used` was selected in the configuration file

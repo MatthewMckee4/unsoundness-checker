@@ -4,24 +4,11 @@ Detects use of overloaded functions.
 
 Overloaded functions can often lead to runtime errors if the implementations are not consistent with the overload definitions.
 
-## Examples
+We only emit a warning here as just using `typing.overload` will not necessarily lead to a runtime type error.
 
-Here is an example of an overloaded function that is implemented correctly:
+## What gets flagged
 
-```py
-from typing import overload
-
-@overload
-def add(a: int, b: int) -> int: ...
-
-@overload
-def add(a: float, b: float) -> float: ...
-
-def add(a: float, b: float) -> float | int:
-    return a + b
-```
-
-Whereas this one is not:
+Here is an example of an overloaded function that is not implemented correctly, but type checkers will not emit diagnostics for this:
 
 ```py
 from typing import overload
@@ -35,5 +22,3 @@ def foo(x: str) -> int: ...
 def foo(x: int | str) -> str | int:
     return x
 ```
-
-It is very hard for us to detect when an overloaded function is implemented incorrectly, so with this rule we can try to eliminate all uses of overloaded functions.

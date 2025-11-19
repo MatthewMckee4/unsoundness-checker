@@ -4,14 +4,13 @@ Detects usage of `typing.cast()` function calls, which can lead to runtime error
 
 `typing.cast()` tells the type checker to treat a value as a specific type without performing any runtime checks. Type checkers trust casts completely, so incorrect casts bypass all type safety guarantees.
 
-## Example
+## What gets flagged
 
 ```python
 from typing import cast
 
 def foo() -> int:
     return cast(int, "hello")
-
 ```
 
 ## Better alternative

@@ -39,3 +39,19 @@ fn test_all_rules_from_markdown(fixture: Fixture<&str>) {
 fn tempdir_filter(path: &Path) -> String {
     format!(r"{}\\?/?", regex::escape(path.to_str().unwrap()))
 }
+
+#[dir_test(
+    dir: "$CARGO_MANIFEST_DIR/resources/rules",
+    glob: "**/*.md"
+)]
+#[expect(clippy::needless_pass_by_value)]
+fn test_rule_has_what_gets_flagged_heading(fixture: Fixture<&str>) {
+    let rule_path = fixture.path();
+    let content = fs::read_to_string(rule_path)
+        .unwrap_or_else(|_| panic!("Failed to read rule file: {rule_path}"));
+
+    assert!(
+        content.contains("## What gets flagged"),
+        "Rule file '{rule_path}' is missing the '## What gets flagged' heading"
+    );
+}

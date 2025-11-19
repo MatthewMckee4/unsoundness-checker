@@ -2,4 +2,4 @@
 source: crates/unsoundness_checker/tests/markdown_test.rs
 expression: output
 ---
-0 errors, 0 warnings, 0 informations
+All checks passed!

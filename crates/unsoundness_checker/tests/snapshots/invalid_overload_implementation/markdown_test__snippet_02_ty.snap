@@ -1,0 +1,17 @@
+---
+source: crates/unsoundness_checker/tests/markdown_test.rs
+expression: output
+---
+error[invalid-return-type]: Return type does not match returned value
+ --> snippet_02.py:7:26
+  |
+5 | @overload
+6 | def bar(x: str) -> int: ...
+7 | def bar(x: int | str) -> int | str:
+  |                          --------- Expected `int | str` because of return type
+8 |     return b""
+  |            ^^^ expected `int | str`, found `Literal[b""]`
+  |
+info: rule `invalid-return-type` is enabled by default
+
+Found 1 diagnostic

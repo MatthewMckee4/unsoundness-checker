@@ -36,21 +36,3 @@ def get_user() -> dict[str, str | int]:
 
 user_info: Any = get_user()
 ```
-
-## Why this matters
-
-Using `Any` removes type safety. For example:
-
-```python
-from typing import Any
-
-def calculate_total(items: Any) -> int:
-    return sum(item for item in items)
-```
-
-Instead, be specific about what you expect:
-
-```python
-def calculate_total(items: list[int]) -> int:
-    return sum(item for item in items)
-```
