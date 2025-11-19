@@ -44,12 +44,11 @@ impl SourceOrderVisitor<'_> for ASTChecker<'_, '_> {
                     if let Some(annotation) = parameter.annotation() {
                         annotation_checker::check_annotation(self.context, &self.model, annotation);
 
-                        if annotation_checker::is_generic_annotation(&self.model, annotation) {
-                            if let Some(default) = parameter.default() {
-                                if is_mutable_expr(default) {
-                                    report_mutable_generic_default(self.context, default);
-                                }
-                            }
+                        if let Some(default) = parameter.default()
+                            && is_mutable_expr(default)
+                            && annotation_checker::is_generic_annotation(&self.model, annotation)
+                        {
+                            report_mutable_generic_default(self.context, default);
                         }
                     }
                 }
