@@ -254,9 +254,9 @@ dependencies = [
 
 [[package]]
 name = "clap"
-version = "4.5.51"
+version = "4.5.52"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4c26d721170e0295f191a69bd9a1f93efcdb0aff38684b61ab5750468972e5f5"
+checksum = "aa8120877db0e5c011242f96806ce3c94e0737ab8108532a76a3300a01db2ab8"
 dependencies = [
  "clap_builder",
  "clap_derive",
@@ -264,9 +264,9 @@ dependencies = [
 
 [[package]]
 name = "clap_builder"
-version = "4.5.51"
+version = "4.5.52"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "75835f0c7bf681bfd05abe44e965760fea999a5286c6eb2d59883634fd02011a"
+checksum = "02576b399397b659c26064fbc92a75fede9d18ffd5f80ca1cd74ddab167016e1"
 dependencies = [
  "anstream",
  "anstyle",
@@ -565,13 +565,12 @@ dependencies = [
 
 [[package]]
 name = "etcetera"
-version = "0.10.0"
+version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "26c7b13d0780cb82722fd59f6f57f925e143427e4a75313a6c77243bf5326ae6"
+checksum = "de48cc4d1c1d97a20fd819def54b890cadde72ed3ad0c614822a0a433361be96"
 dependencies = [
  "cfg-if",
- "home",
- "windows-sys 0.59.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -682,6 +681,7 @@ dependencies = [
  "compact_str",
  "get-size-derive2",
  "hashbrown 0.16.0",
+ "indexmap",
  "smallvec",
 ]
 
@@ -776,15 +776,6 @@ name = "heck"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2304e00983f87ffb38b55b444b5e3b60a884b5d30c0fca7d82fe33449bbe55ea"
-
-[[package]]
-name = "home"
-version = "0.5.12"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cc627f471c528ff0c4a49e1d5e60450c8f6461dd6d10ba9dcd3a61d3dff7728d"
-dependencies = [
- "windows-sys 0.61.2",
-]
 
 [[package]]
 name = "iana-time-zone"
@@ -1278,9 +1269,9 @@ checksum = "2532096657941c2fea9c289d370a250971c689d4f143798ff67113ec042024a5"
 
 [[package]]
 name = "matchit"
-version = "0.8.6"
+version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2f926ade0c4e170215ae43342bf13b9310a437609c81f29f86c5df6657582ef9"
+checksum = "9ea5f97102eb9e54ab99fb70bb175589073f554bdadfb74d9bd656482ea73e2a"
 
 [[package]]
 name = "memchr"
@@ -1868,7 +1859,7 @@ checksum = "7a2d987857b319362043e95f5353c0535c1f58eec5336fdfcf626430af7def58"
 [[package]]
 name = "ruff_annotate_snippets"
 version = "0.1.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#4a047ceedebe650763ffb9edc6d7ceccc64efcbd"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#9c81e33fa108287994e08c23243be904fcec98ec"
 dependencies = [
  "anstyle",
  "memchr",
@@ -1878,7 +1869,7 @@ dependencies = [
 [[package]]
 name = "ruff_cache"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#4a047ceedebe650763ffb9edc6d7ceccc64efcbd"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#9c81e33fa108287994e08c23243be904fcec98ec"
 dependencies = [
  "filetime",
  "glob",
@@ -1891,7 +1882,7 @@ dependencies = [
 [[package]]
 name = "ruff_db"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#4a047ceedebe650763ffb9edc6d7ceccc64efcbd"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#9c81e33fa108287994e08c23243be904fcec98ec"
 dependencies = [
  "anstyle",
  "arc-swap",
@@ -1922,6 +1913,7 @@ dependencies = [
  "serde",
  "serde_json",
  "similar",
+ "supports-hyperlinks",
  "thiserror 2.0.17",
  "tracing",
  "ty_static",
@@ -1932,7 +1924,7 @@ dependencies = [
 [[package]]
 name = "ruff_diagnostics"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#4a047ceedebe650763ffb9edc6d7ceccc64efcbd"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#9c81e33fa108287994e08c23243be904fcec98ec"
 dependencies = [
  "get-size2",
  "is-macro",
@@ -1943,7 +1935,7 @@ dependencies = [
 [[package]]
 name = "ruff_index"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#4a047ceedebe650763ffb9edc6d7ceccc64efcbd"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#9c81e33fa108287994e08c23243be904fcec98ec"
 dependencies = [
  "get-size2",
  "ruff_macros",
@@ -1952,8 +1944,8 @@ dependencies = [
 
 [[package]]
 name = "ruff_linter"
-version = "0.13.2"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#4a047ceedebe650763ffb9edc6d7ceccc64efcbd"
+version = "0.14.5"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#9c81e33fa108287994e08c23243be904fcec98ec"
 dependencies = [
  "aho-corasick",
  "anyhow",
@@ -2011,7 +2003,7 @@ dependencies = [
 [[package]]
 name = "ruff_macros"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#4a047ceedebe650763ffb9edc6d7ceccc64efcbd"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#9c81e33fa108287994e08c23243be904fcec98ec"
 dependencies = [
  "heck",
  "itertools 0.14.0",
@@ -2024,7 +2016,7 @@ dependencies = [
 [[package]]
 name = "ruff_memory_usage"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#4a047ceedebe650763ffb9edc6d7ceccc64efcbd"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#9c81e33fa108287994e08c23243be904fcec98ec"
 dependencies = [
  "get-size2",
  "ordermap",
@@ -2033,7 +2025,7 @@ dependencies = [
 [[package]]
 name = "ruff_notebook"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#4a047ceedebe650763ffb9edc6d7ceccc64efcbd"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#9c81e33fa108287994e08c23243be904fcec98ec"
 dependencies = [
  "anyhow",
  "itertools 0.14.0",
@@ -2051,12 +2043,12 @@ dependencies = [
 [[package]]
 name = "ruff_options_metadata"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#4a047ceedebe650763ffb9edc6d7ceccc64efcbd"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#9c81e33fa108287994e08c23243be904fcec98ec"
 
 [[package]]
 name = "ruff_python_ast"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#4a047ceedebe650763ffb9edc6d7ceccc64efcbd"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#9c81e33fa108287994e08c23243be904fcec98ec"
 dependencies = [
  "aho-corasick",
  "bitflags 2.10.0",
@@ -2079,7 +2071,7 @@ dependencies = [
 [[package]]
 name = "ruff_python_codegen"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#4a047ceedebe650763ffb9edc6d7ceccc64efcbd"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#9c81e33fa108287994e08c23243be904fcec98ec"
 dependencies = [
  "ruff_python_ast",
  "ruff_python_literal",
@@ -2091,7 +2083,7 @@ dependencies = [
 [[package]]
 name = "ruff_python_importer"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#4a047ceedebe650763ffb9edc6d7ceccc64efcbd"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#9c81e33fa108287994e08c23243be904fcec98ec"
 dependencies = [
  "anyhow",
  "ruff_diagnostics",
@@ -2106,7 +2098,7 @@ dependencies = [
 [[package]]
 name = "ruff_python_index"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#4a047ceedebe650763ffb9edc6d7ceccc64efcbd"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#9c81e33fa108287994e08c23243be904fcec98ec"
 dependencies = [
  "ruff_python_ast",
  "ruff_python_parser",
@@ -2118,7 +2110,7 @@ dependencies = [
 [[package]]
 name = "ruff_python_literal"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#4a047ceedebe650763ffb9edc6d7ceccc64efcbd"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#9c81e33fa108287994e08c23243be904fcec98ec"
 dependencies = [
  "bitflags 2.10.0",
  "itertools 0.14.0",
@@ -2129,7 +2121,7 @@ dependencies = [
 [[package]]
 name = "ruff_python_parser"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#4a047ceedebe650763ffb9edc6d7ceccc64efcbd"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#9c81e33fa108287994e08c23243be904fcec98ec"
 dependencies = [
  "bitflags 2.10.0",
  "bstr",
@@ -2149,7 +2141,7 @@ dependencies = [
 [[package]]
 name = "ruff_python_semantic"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#4a047ceedebe650763ffb9edc6d7ceccc64efcbd"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#9c81e33fa108287994e08c23243be904fcec98ec"
 dependencies = [
  "bitflags 2.10.0",
  "is-macro",
@@ -2167,7 +2159,7 @@ dependencies = [
 [[package]]
 name = "ruff_python_stdlib"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#4a047ceedebe650763ffb9edc6d7ceccc64efcbd"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#9c81e33fa108287994e08c23243be904fcec98ec"
 dependencies = [
  "bitflags 2.10.0",
  "unicode-ident",
@@ -2176,7 +2168,7 @@ dependencies = [
 [[package]]
 name = "ruff_python_trivia"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#4a047ceedebe650763ffb9edc6d7ceccc64efcbd"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#9c81e33fa108287994e08c23243be904fcec98ec"
 dependencies = [
  "itertools 0.14.0",
  "ruff_source_file",
@@ -2187,7 +2179,7 @@ dependencies = [
 [[package]]
 name = "ruff_source_file"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#4a047ceedebe650763ffb9edc6d7ceccc64efcbd"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#9c81e33fa108287994e08c23243be904fcec98ec"
 dependencies = [
  "get-size2",
  "memchr",
@@ -2198,7 +2190,7 @@ dependencies = [
 [[package]]
 name = "ruff_text_size"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#4a047ceedebe650763ffb9edc6d7ceccc64efcbd"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#9c81e33fa108287994e08c23243be904fcec98ec"
 dependencies = [
  "get-size2",
  "serde",
@@ -2247,8 +2239,8 @@ checksum = "28d3b2b1366ec20994f1fd18c3c594f05c5dd4bc44d8bb0c1c632c8d6829481f"
 
 [[package]]
 name = "salsa"
-version = "0.23.0"
-source = "git+https://github.com/salsa-rs/salsa.git?rev=29ab321b45d00daa4315fa2a06f7207759a8c87e#29ab321b45d00daa4315fa2a06f7207759a8c87e"
+version = "0.24.0"
+source = "git+https://github.com/salsa-rs/salsa.git?rev=a885bb4c4c192741b8a17418fef81a71e33d111e#a885bb4c4c192741b8a17418fef81a71e33d111e"
 dependencies = [
  "boxcar",
  "compact_str",
@@ -2271,13 +2263,13 @@ dependencies = [
 
 [[package]]
 name = "salsa-macro-rules"
-version = "0.23.0"
-source = "git+https://github.com/salsa-rs/salsa.git?rev=29ab321b45d00daa4315fa2a06f7207759a8c87e#29ab321b45d00daa4315fa2a06f7207759a8c87e"
+version = "0.24.0"
+source = "git+https://github.com/salsa-rs/salsa.git?rev=a885bb4c4c192741b8a17418fef81a71e33d111e#a885bb4c4c192741b8a17418fef81a71e33d111e"
 
 [[package]]
 name = "salsa-macros"
-version = "0.23.0"
-source = "git+https://github.com/salsa-rs/salsa.git?rev=29ab321b45d00daa4315fa2a06f7207759a8c87e#29ab321b45d00daa4315fa2a06f7207759a8c87e"
+version = "0.24.0"
+source = "git+https://github.com/salsa-rs/salsa.git?rev=a885bb4c4c192741b8a17418fef81a71e33d111e#a885bb4c4c192741b8a17418fef81a71e33d111e"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2466,6 +2458,12 @@ dependencies = [
  "quote",
  "syn",
 ]
+
+[[package]]
+name = "supports-hyperlinks"
+version = "3.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "804f44ed3c63152de6a9f90acbea1a110441de43006ea51bcce8f436196a288b"
 
 [[package]]
 name = "syn"
@@ -2757,7 +2755,7 @@ dependencies = [
 [[package]]
 name = "ty_combine"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#4a047ceedebe650763ffb9edc6d7ceccc64efcbd"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#9c81e33fa108287994e08c23243be904fcec98ec"
 dependencies = [
  "ordermap",
  "ruff_db",
@@ -2768,7 +2766,7 @@ dependencies = [
 [[package]]
 name = "ty_project"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#4a047ceedebe650763ffb9edc6d7ceccc64efcbd"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#9c81e33fa108287994e08c23243be904fcec98ec"
 dependencies = [
  "anyhow",
  "camino",
@@ -2804,7 +2802,7 @@ dependencies = [
 [[package]]
 name = "ty_python_semantic"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#4a047ceedebe650763ffb9edc6d7ceccc64efcbd"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#9c81e33fa108287994e08c23243be904fcec98ec"
 dependencies = [
  "anyhow",
  "bitflags 2.10.0",
@@ -2848,7 +2846,7 @@ dependencies = [
 [[package]]
 name = "ty_static"
 version = "0.0.1"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#4a047ceedebe650763ffb9edc6d7ceccc64efcbd"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#9c81e33fa108287994e08c23243be904fcec98ec"
 dependencies = [
  "ruff_macros",
 ]
@@ -2856,7 +2854,7 @@ dependencies = [
 [[package]]
 name = "ty_vendored"
 version = "0.0.0"
-source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#4a047ceedebe650763ffb9edc6d7ceccc64efcbd"
+source = "git+https://github.com/MatthewMckee4/ruff/?branch=unsoundness-checker#9c81e33fa108287994e08c23243be904fcec98ec"
 dependencies = [
  "path-slash",
  "ruff_db",

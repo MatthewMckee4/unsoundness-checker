@@ -55,7 +55,7 @@ impl SourceOrderVisitor<'_> for GenericAnnotationChecker<'_> {
     fn visit_expr(&mut self, expr: &'_ Expr) {
         let ty = expr.inferred_type(self.model);
 
-        if matches!(ty, Type::NonInferableTypeVar(_)) {
+        if matches!(ty, Type::TypeVar(_)) {
             self.contains_generic = true;
         }
 
