@@ -60,8 +60,14 @@ declare_rule! {
     /// ```python
     /// from typing import Callable
     ///
-    /// def process(callback: Callable[..., int]) -> int:
+    /// def foo(callback: Callable[..., int]) -> int:
     ///     return callback("wrong", "types")
+    ///
+    /// def bar(x: int) -> int:
+    ///     return x
+    ///
+    /// # This passes type checking but fails at runtime.
+    /// foo(bar)
     /// ```
     pub (crate) static CALLABLE_ELLIPSIS_USED = {
         summary: "detects usage of `...` in the first argument of `Callable` type annotations",

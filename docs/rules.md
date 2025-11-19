@@ -156,8 +156,14 @@ runtime type errors as the type checker cannot verify argument types or counts.
 ```python
 from typing import Callable
 
-def process(callback: Callable[..., int]) -> int:
+def foo(callback: Callable[..., int]) -> int:
     return callback("wrong", "types")
+
+def bar(x: int) -> int:
+    return x
+
+# This passes type checking but fails at runtime.
+foo(bar)
 ```
 
 <small>
