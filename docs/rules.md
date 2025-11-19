@@ -157,7 +157,7 @@ runtime type errors as the type checker cannot verify argument types or counts.
 from typing import Callable
 
 def process(callback: Callable[..., int]) -> int:
-    return callback("wrong", "types")  # Type checks but may fail at runtime!
+    return callback("wrong", "types")
 ```
 
 <small>
