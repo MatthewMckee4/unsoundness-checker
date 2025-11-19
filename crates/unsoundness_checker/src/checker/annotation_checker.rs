@@ -7,7 +7,10 @@ use ty_python_semantic::{
     types::{DynamicType, Type},
 };
 
-use crate::{checker::Context, rules::report_typing_any_used};
+use crate::{
+    checker::Context,
+    rules::{report_callable_ellipsis_used, report_typing_any_used},
+};
 
 struct AnnotationChecker<'db, 'ctx> {
     context: &'ctx Context<'db>,
@@ -39,6 +42,17 @@ pub(super) fn check_annotation<'ast>(
     model: &'ast SemanticModel<'ast>,
     expr: &'ast Expr,
 ) {
+    if let Type::Callable(_) = expr.inferred_type(model) {
+        if let Expr::Subscript(expr_subscript) = expr
+            && let slice = expr_subscript.slice.as_ref()
+            && let Expr::Tuple(tuple) = slice
+            && let Some(first_element) = tuple.elts.first()
+            && let Expr::EllipsisLiteral(_) = first_element
+        {
+            report_callable_ellipsis_used(context, expr);
+        }
+    }
+
     let mut annotation_checker = AnnotationChecker::new(context, model);
 
     annotation_checker.visit_expr(expr);

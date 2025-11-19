@@ -20,6 +20,7 @@ pub(crate) fn register_rules(registry: &mut RuleRegistryBuilder) {
     registry.register_rule(&TYPING_CAST_USED);
     registry.register_rule(&MUTATING_GLOBALS_DICT);
     registry.register_rule(&TYPING_TYPE_IS_USED);
+    registry.register_rule(&CALLABLE_ELLIPSIS_USED);
 }
 
 declare_rule! {
@@ -40,6 +41,36 @@ declare_rule! {
     /// ```
     pub (crate) static TYPING_ANY_USED = {
         summary: "detects usage of `typing.Any` in type annotations",
+        status: RuleStatus::stable("1.0.0"),
+        categories: &[&TYPE_CHECKING_SUPPRESSION],
+        default_level: Level::Warn,
+    }
+}
+
+declare_rule! {
+    /// ## What it does
+    /// Checks for usage of `...` (ellipsis) in the first argument of `Callable` type annotations.
+    ///
+    /// ## Why is this bad?
+    /// Using `Callable[..., ReturnType]` indicates that the callable accepts any number
+    /// of arguments of any type, which bypasses parameter type checking. This can lead to
+    /// runtime type errors as the type checker cannot verify argument types or counts.
+    ///
+    /// ## Examples
+    /// ```python
+    /// from typing import Callable
+    ///
+    /// def foo(callback: Callable[..., int]) -> int:
+    ///     return callback("wrong", "types")
+    ///
+    /// def bar(x: int) -> int:
+    ///     return x
+    ///
+    /// # This passes type checking but fails at runtime.
+    /// foo(bar)
+    /// ```
+    pub (crate) static CALLABLE_ELLIPSIS_USED = {
+        summary: "detects usage of `...` in the first argument of `Callable` type annotations",
         status: RuleStatus::stable("1.0.0"),
         categories: &[&TYPE_CHECKING_SUPPRESSION],
         default_level: Level::Warn,
@@ -420,4 +451,14 @@ pub(crate) fn report_typing_type_is_used(context: &Context, expr: &Expr) {
     };
 
     builder.into_diagnostic("Using `typing.TypeIs` can lead to runtime type errors.");
+}
+
+pub(crate) fn report_callable_ellipsis_used(context: &Context, expr: &Expr) {
+    let Some(builder) = context.report_lint(&CALLABLE_ELLIPSIS_USED, expr.range()) else {
+        return;
+    };
+
+    builder.into_diagnostic(
+        "Using `...` in `Callable` type annotations can lead to runtime type errors.",
+    );
 }

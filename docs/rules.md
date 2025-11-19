@@ -138,6 +138,44 @@ Categories: [`runtime-modification`](categories.md#runtime-modification).
 
 [See more](rules/mutating_globals_dict.md)
 
+## `callable-ellipsis-used`
+
+
+**What it does**
+
+Checks for usage of `...` (ellipsis) in the first argument of `Callable` type annotations.
+
+**Why is this bad?**
+
+Using `Callable[..., ReturnType]` indicates that the callable accepts any number
+of arguments of any type, which bypasses parameter type checking. This can lead to
+runtime type errors as the type checker cannot verify argument types or counts.
+
+**Examples**
+
+```python
+from typing import Callable
+
+def foo(callback: Callable[..., int]) -> int:
+    return callback("wrong", "types")
+
+def bar(x: int) -> int:
+    return x
+
+# This passes type checking but fails at runtime.
+foo(bar)
+```
+
+<small>
+Default level: `warn`.
+</small>
+
+<small>
+Categories: [`type-checking-suppression`](categories.md#type-checking-suppression).
+</small>
+
+[See more](rules/callable_ellipsis_used.md)
+
 ## `if-type-checking-used`
 
 

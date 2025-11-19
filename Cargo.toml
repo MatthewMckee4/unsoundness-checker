@@ -12,7 +12,6 @@ authors = ["Matthew McKee <matthewmckee4@yahoo.co.uk>"]
 license = "MIT"
 
 [workspace.dependencies]
-
 anyhow = "1.0.100"
 argfile = "0.2.1"
 chrono = "0.4.42"

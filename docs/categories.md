@@ -22,3 +22,4 @@ Mechanisms that suppress or bypass type checker warnings.
 - [`if-type-checking-used`](rules.md#if-type-checking-used) - detects usage of `if TYPE_CHECKING:` blocks
 - [`typing-cast-used`](rules.md#typing-cast-used) - detects usage of `typing.cast()` function calls
 - [`typing-type-is-used`](rules.md#typing-type-is-used) - detects usage of `typing.TypeIs` in return type annotations
+- [`callable-ellipsis-used`](rules.md#callable-ellipsis-used) - detects usage of `...` in the first argument of `Callable` type annotations
