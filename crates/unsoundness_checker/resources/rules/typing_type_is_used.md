@@ -15,7 +15,7 @@ def is_int(x: object) -> TypeIs[int]:
 value = "hello"
 if is_int(value):
     # Type checker thinks value is int, but it's actually str
-    result = value + 1  # Type checks but fails at runtime!
+    result = value + 1
 ```
 
 ## Better alternative
@@ -26,11 +26,11 @@ This provides actual runtime safety instead of just telling the type checker to 
 
 ## What is okay
 
-If your TypeIs function correctly validates the type at runtime, it should be safe. However, since there's no way for type checkers to verify the implementation matches the signature, it's easy to introduce bugs.
+If your `TypeIs` function correctly validates the type at runtime, it should be safe. However, since there's no way for type checkers to verify the implementation matches the signature, it's easy to introduce bugs.
 
 ```python
 from typing_extensions import TypeIs
 
 def is_int(x: object) -> TypeIs[int]:
-    return isinstance(x, int)  # Correctly validates the type
+    return isinstance(x, int)
 ```
