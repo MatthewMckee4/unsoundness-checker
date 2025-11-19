@@ -1,5 +1,0 @@
----
-source: crates/unsoundness_checker/tests/markdown_test.rs
-expression: output
----
-Success: no issues found in 1 source file

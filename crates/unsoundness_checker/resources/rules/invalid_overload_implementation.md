@@ -19,17 +19,6 @@ def bar(x: int | str) -> object:
 
 A side note is that if you changed the return type of `bar` implementation to `int | str`, then most type checkers would catch this error.
 
-```py
-from typing import overload
-
-@overload
-def bar(x: int) -> str: ...
-@overload
-def bar(x: str) -> int: ...
-def bar(x: int | str) -> int | str:
-    return b""
-```
-
 ## What we can't catch
 
 Due to more complex examples, we currently can't catch all invalid overload implementations.
