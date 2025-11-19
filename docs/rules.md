@@ -281,9 +281,8 @@ class HiddenDunderVariables:
     def get_str_x(self) -> str:
         return self.__str_x
 
-def func(x: int) -> str:
-    hidden_dunder_variables = HiddenDunderVariables(x)
-    return hidden_dunder_variables.get_str_x()
+# Here, x is a string at type check time, but an integer at runtime.
+x = hidden_dunder_variables.get_str_x()
 ```
 
 <small>
@@ -291,7 +290,7 @@ Default level: `warn`.
 </small>
 
 <small>
-Categories: [`type-checking-suppression`](categories.md#type-checking-suppression).
+Categories: None.
 </small>
 
 [See more](rules/mangled_dunder_instance_variable.md)

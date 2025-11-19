@@ -23,4 +23,3 @@ Mechanisms that suppress or bypass type checker warnings.
 - [`typing-cast-used`](rules.md#typing-cast-used) - detects usage of `typing.cast()` function calls
 - [`typing-type-is-used`](rules.md#typing-type-is-used) - detects usage of `typing.TypeIs` in return type annotations
 - [`callable-ellipsis-used`](rules.md#callable-ellipsis-used) - detects usage of `...` in the first argument of `Callable` type annotations
-- [`mangled-dunder-instance-variable`](rules.md#mangled-dunder-instance-variable) - detects explicit usage of mangled dunder instance variables

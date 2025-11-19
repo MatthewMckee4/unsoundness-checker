@@ -373,9 +373,8 @@ declare_rule! {
     ///     def get_str_x(self) -> str:
     ///         return self.__str_x
     ///
-    /// def func(x: int) -> str:
-    ///     hidden_dunder_variables = HiddenDunderVariables(x)
-    ///     return hidden_dunder_variables.get_str_x()
+    /// # Here, x is a string at type check time, but an integer at runtime.
+    /// x = hidden_dunder_variables.get_str_x()
     /// ```
     pub (crate) static MANGLED_DUNDER_INSTANCE_VARIABLE = {
         summary: "detects explicit usage of mangled dunder instance variables",
