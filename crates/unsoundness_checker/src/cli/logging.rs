@@ -221,7 +221,6 @@ pub enum VerbosityLevel {
 }
 
 impl VerbosityLevel {
-    #[must_use]
     pub(crate) const fn level_filter(self) -> LevelFilter {
         match self {
             Self::Default => LevelFilter::WARN,
@@ -231,12 +230,10 @@ impl VerbosityLevel {
         }
     }
 
-    #[must_use]
     pub(crate) const fn is_trace(self) -> bool {
         matches!(self, Self::Trace)
     }
 
-    #[must_use]
     pub(crate) const fn is_extra_verbose(self) -> bool {
         matches!(self, Self::ExtraVerbose)
     }

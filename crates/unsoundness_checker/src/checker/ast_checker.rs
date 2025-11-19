@@ -10,8 +10,9 @@ use crate::{
     Context,
     checker::{
         annotation_checker, assignment_checker::check_assignment, expr_checker::check_expr,
-        function_checker, if_checker::check_if_statement,
+        function_checker, if_checker::check_if_statement, utils::is_mutable_expr,
     },
+    rules::report_mutable_generic_default,
 };
 
 pub struct ASTChecker<'db, 'ctx> {
@@ -42,6 +43,14 @@ impl SourceOrderVisitor<'_> for ASTChecker<'_, '_> {
                 for parameter in &stmt_function_def.parameters {
                     if let Some(annotation) = parameter.annotation() {
                         annotation_checker::check_annotation(self.context, &self.model, annotation);
+
+                        if annotation_checker::is_generic_annotation(&self.model, annotation) {
+                            if let Some(default) = parameter.default() {
+                                if is_mutable_expr(default) {
+                                    report_mutable_generic_default(self.context, default);
+                                }
+                            }
+                        }
                     }
                 }
 

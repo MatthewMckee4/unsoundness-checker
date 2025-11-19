@@ -23,7 +23,6 @@ pub(crate) struct Context<'db> {
 }
 
 impl<'db> Context<'db> {
-    #[must_use]
     pub(crate) const fn new(
         db: &'db dyn Db,
         file: File,

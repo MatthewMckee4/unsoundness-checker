@@ -95,7 +95,6 @@ impl TryFrom<Level> for Severity {
 }
 
 impl RuleMetadata {
-    #[must_use]
     pub const fn name(&self) -> LintName {
         self.name
     }
@@ -109,7 +108,6 @@ impl RuleMetadata {
         })
     }
 
-    #[must_use]
     pub const fn default_level(&self) -> Level {
         self.default_level
     }
@@ -240,7 +238,6 @@ pub struct RuleRegistry {
 
 impl RuleRegistry {
     /// Returns all registered, non-removed rules.
-    #[must_use]
     pub fn rules(&self) -> &[RuleId] {
         &self.rules
     }
@@ -283,7 +280,6 @@ impl RuleSelection {
         Self::from_registry_with_default(registry, None)
     }
 
-    #[must_use]
     pub fn from_registry_with_default(
         registry: &RuleRegistry,
         default_severity: Option<Severity>,

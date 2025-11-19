@@ -68,6 +68,47 @@ Categories: None.
 
 [See more](rules/invalid_overload_implementation.md)
 
+## `mutable-generic-default`
+
+
+**What it does**
+
+Checks for generic functions or methods that accept mutable objects as default parameter values.
+
+**Why is this bad?**
+
+When a generic function uses a mutable default value (like a list, dict, or set), that default
+is shared across all invocations of the function. This creates a scenario where the mutable
+object can accumulate values of different types from different calls.
+
+Type checkers assume that `list[T]` only contains values of type `T`. However, when a mutable
+default is reused across calls with different type parameters, the list can contain values of
+multiple different types, leading to runtime type errors.
+
+**Examples**
+
+```python
+def append_and_return[T](x: T, items: list[T] = []) -> list[T]:
+    items.append(x)
+    return items
+
+int_list = append_and_return(42)
+str_list = append_and_return("hello")
+
+# This is a int at runtime but str at type check time.
+value: str = str_list[0]
+```
+
+<small>
+Default level: `error`.
+</small>
+
+<small>
+Categories: None.
+</small>
+
+[See more](rules/mutable_generic_default.md)
+
 ## `mutating-function-code-attribute`
 
 

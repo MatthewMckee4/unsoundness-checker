@@ -132,7 +132,6 @@ struct ReturnStatementFinder<'ast> {
 }
 
 impl ReturnStatementFinder<'_> {
-    #[must_use]
     pub(crate) const fn new() -> Self {
         Self {
             return_statements: Vec::new(),
