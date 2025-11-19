@@ -290,7 +290,7 @@ Default level: `warn`.
 </small>
 
 <small>
-Categories: None.
+Categories: [`type-checking-suppression`](categories.md#type-checking-suppression).
 </small>
 
 [See more](rules/mangled_dunder_instance_variable.md)
