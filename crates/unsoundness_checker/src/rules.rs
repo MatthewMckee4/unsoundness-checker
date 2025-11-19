@@ -61,7 +61,7 @@ declare_rule! {
     /// from typing import Callable
     ///
     /// def process(callback: Callable[..., int]) -> int:
-    ///     return callback("wrong", "types")  # Type checks but may fail at runtime!
+    ///     return callback("wrong", "types")
     /// ```
     pub (crate) static CALLABLE_ELLIPSIS_USED = {
         summary: "detects usage of `...` in the first argument of `Callable` type annotations",
