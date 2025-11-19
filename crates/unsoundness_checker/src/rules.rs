@@ -1,4 +1,4 @@
-use ruff_python_ast::{Decorator, Expr, StmtReturn};
+use ruff_python_ast::{Decorator, Expr, ExprAttribute, StmtReturn};
 use ruff_text_size::Ranged;
 use ty_python_semantic::types::Type;
 
@@ -22,6 +22,7 @@ pub(crate) fn register_rules(registry: &mut RuleRegistryBuilder) {
     registry.register_rule(&TYPING_TYPE_IS_USED);
     registry.register_rule(&CALLABLE_ELLIPSIS_USED);
     registry.register_rule(&MUTABLE_GENERIC_DEFAULT);
+    registry.register_rule(&MANGLED_DUNDER_INSTANCE_VARIABLE);
 }
 
 declare_rule! {
@@ -352,6 +353,37 @@ declare_rule! {
     }
 }
 
+declare_rule! {
+    /// ## What it does
+    /// Checks for explicit usage of mangled dunder instance variables in attribute access.
+    ///
+    /// ## Why is this bad?
+    /// Python automatically mangles double-underscore (dunder) instance variables to
+    /// `_ClassName__variable` to provide name privacy. When code explicitly uses the
+    /// mangled form, it can bypass type checking by assigning different types to the
+    /// mangled name than what the non-mangled variable expects.
+    ///
+    /// ## Examples
+    /// ```python
+    /// class HiddenDunderVariables:
+    ///     def __init__(self, x: int) -> None:
+    ///         self.__str_x = str(x)
+    ///         self._HiddenDunderVariables__str_x = x
+    ///
+    ///     def get_str_x(self) -> str:
+    ///         return self.__str_x
+    ///
+    /// # Here, x is a string at type check time, but an integer at runtime.
+    /// x = hidden_dunder_variables.get_str_x()
+    /// ```
+    pub (crate) static MANGLED_DUNDER_INSTANCE_VARIABLE = {
+        summary: "detects explicit usage of mangled dunder instance variables",
+        status: RuleStatus::stable("1.0.0"),
+        categories: &[&TYPE_CHECKING_SUPPRESSION],
+        default_level: Level::Warn,
+    }
+}
+
 pub(crate) fn report_typing_any_used(context: &Context, expr: &Expr) {
     let Some(builder) = context.report_lint(&TYPING_ANY_USED, expr.range()) else {
         return;
@@ -504,4 +536,18 @@ pub(crate) fn report_mutable_generic_default(context: &Context, expr: &Expr) {
     builder.into_diagnostic(
         "Using a mutable default argument for a generic parameter in a function can lead to runtime type errors.",
     );
+}
+
+pub(crate) fn report_mangled_dunder_instance_variable(
+    context: &Context,
+    expr: &ExprAttribute,
+    attr_name: &str,
+) {
+    let Some(builder) = context.report_lint(&MANGLED_DUNDER_INSTANCE_VARIABLE, expr.range()) else {
+        return;
+    };
+
+    builder.into_diagnostic(format!(
+        "Explicit use of mangled attribute `{attr_name}` can bypass type checking and lead to runtime type errors.",
+    ));
 }

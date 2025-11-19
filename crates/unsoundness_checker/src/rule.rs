@@ -334,7 +334,7 @@ impl RuleSelection {
                     ValueSource::File(_) => RuleSource::File,
                     ValueSource::Cli => RuleSource::Cli,
 
-                    ValueSource::PythonVSCodeExtension => {
+                    ValueSource::Editor => {
                         unreachable!("Can't configure rules from the Python VSCode extension")
                     }
                 };

@@ -1,5 +1,8 @@
 use ruff_python_ast::{Expr, StmtAssign, name::Name};
-use ty_python_semantic::{HasType, SemanticModel, types::Type};
+use ty_python_semantic::{
+    HasType, SemanticModel,
+    types::{Type, TypeContext},
+};
 
 use crate::{
     Context,
@@ -32,12 +35,10 @@ pub(super) fn check_assignment<'ast>(
                         // Try promote literal types like `Literal[1]`.
                         //
                         // A definition like `x = 1` gives x type `Literal[1]`. But we want to be able to assign `Literal[2]` to it.
-                        let current_promotion = current_type.literal_promotion_type(model.db());
+                        let current_promotion =
+                            current_type.promote_literals(model.db(), TypeContext::default());
 
-                        if !value_type.is_assignable_to(
-                            context.db(),
-                            current_promotion.unwrap_or(current_type),
-                        ) {
+                        if !value_type.is_assignable_to(context.db(), current_promotion) {
                             report_mutating_globals_dict(context, target);
                         }
                     }
@@ -55,12 +56,7 @@ pub(super) fn check_assignment<'ast>(
                                 continue;
                             };
 
-                            let function_literal = function_ty.literal(context.db());
-
-                            let signature = implementation.signature(
-                                context.db(),
-                                function_literal.inherited_generic_context(context.db()),
-                            );
+                            let signature = implementation.signature(context.db());
 
                             let annotated_types = signature.parameter_annotated_types();
 

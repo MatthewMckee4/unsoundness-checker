@@ -256,6 +256,45 @@ Categories: [`type-checking-suppression`](categories.md#type-checking-suppressio
 
 [See more](rules/if_type_checking_used.md)
 
+## `mangled-dunder-instance-variable`
+
+
+**What it does**
+
+Checks for explicit usage of mangled dunder instance variables in attribute access.
+
+**Why is this bad?**
+
+Python automatically mangles double-underscore (dunder) instance variables to
+`_ClassName__variable` to provide name privacy. When code explicitly uses the
+mangled form, it can bypass type checking by assigning different types to the
+mangled name than what the non-mangled variable expects.
+
+**Examples**
+
+```python
+class HiddenDunderVariables:
+    def __init__(self, x: int) -> None:
+        self.__str_x = str(x)
+        self._HiddenDunderVariables__str_x = x
+
+    def get_str_x(self) -> str:
+        return self.__str_x
+
+# Here, x is a string at type check time, but an integer at runtime.
+x = hidden_dunder_variables.get_str_x()
+```
+
+<small>
+Default level: `warn`.
+</small>
+
+<small>
+Categories: [`type-checking-suppression`](categories.md#type-checking-suppression).
+</small>
+
+[See more](rules/mangled_dunder_instance_variable.md)
+
 ## `type-checking-directive-used`
 
 

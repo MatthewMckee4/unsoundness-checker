@@ -59,14 +59,7 @@ pub(super) fn check_function_statement<'ast>(
 
     let overload_signatures = overloads
         .iter()
-        .map(|overload| {
-            overload.signature(
-                context.db(),
-                function_type_ty
-                    .literal(context.db())
-                    .inherited_generic_context(context.db()),
-            )
-        })
+        .map(|overload| overload.signature(context.db()))
         .collect::<Vec<_>>();
 
     let overload_return_types = overload_signatures
