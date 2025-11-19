@@ -1,0 +1,14 @@
+---
+source: crates/unsoundness_checker/tests/markdown_test.rs
+expression: output
+---
+error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+ --> snippet_01.py:3:19
+  |
+1 | from typing import Callable
+2 |
+3 | def foo(callback: Callable[..., int]) -> int:
+  |                   ^^^^^^^^^^^^^^^^^^
+4 |     return callback("wrong", "types")
+  |
+info: rule `callable-ellipsis-used` was selected in the configuration file
