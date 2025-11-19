@@ -9,6 +9,6 @@ error[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type error
 2 |
 3 | def is_int(x: object) -> TypeIs[int]:
   |                          ^^^^^^^^^^^
-4 |     return isinstance(x, int)  # Correctly validates the type
+4 |     return isinstance(x, int)
   |
 info: rule `typing-type-is-used` was selected in the configuration file
