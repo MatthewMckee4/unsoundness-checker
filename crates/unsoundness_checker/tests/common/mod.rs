@@ -1,4 +1,4 @@
-use std::{fmt::Write, fs, path::PathBuf, sync::OnceLock};
+use std::{fmt::Write, fs, path::PathBuf, process::Command, sync::OnceLock};
 
 use ruff_db::{
     diagnostic::{DisplayDiagnosticConfig, DisplayDiagnostics},
@@ -22,23 +22,19 @@ pub struct TestRunner {
 }
 
 impl TestRunner {
-    #[must_use]
     pub fn new() -> Self {
         let temp_dir = TempDir::new().expect("Failed to create temp dir");
         Self { temp_dir }
     }
 
-    #[must_use]
     pub const fn temp_dir(&self) -> &TempDir {
         &self.temp_dir
     }
 
-    #[must_use]
     pub fn venv_dir(&self) -> PathBuf {
         self.temp_dir.path().join(".venv")
     }
 
-    #[must_use]
     pub fn from_file(filename: &str, content: &str) -> Self {
         let mut runner = Self::new();
         runner.add_file(filename, content);
@@ -91,7 +87,6 @@ impl TestRunner {
     }
 
     /// Runs the unsoundness checker on all files in the test directory
-    #[must_use]
     pub fn run_test(&self) -> String {
         Self::run_test_impl(self.temp_dir.path())
     }
@@ -135,28 +130,31 @@ impl TestRunner {
         format!("{rule_display}{display}")
     }
 
-    #[must_use]
     pub fn run_ty(&self) -> String {
-        self.run_external_tool(&["ty", "check"])
+        self.run_external_tool("ty", &["ty", "check"])
     }
 
-    #[must_use]
     pub fn run_mypy(&self) -> String {
-        self.run_external_tool(&["mypy"])
+        self.run_external_tool("mypy", &["mypy"])
     }
 
-    #[must_use]
     pub fn run_pyright(&self) -> String {
-        self.run_external_tool(&["pyright"])
+        self.run_external_tool("pyright", &["pyright"])
     }
 
-    #[must_use]
     pub fn run_pyrefly(&self) -> String {
-        self.run_external_tool(&["pyrefly", "check"])
+        self.run_external_tool("pyrefly", &["pyrefly", "check"])
     }
 
-    fn run_external_tool(&self, check_command: &[&str]) -> String {
-        let output = std::process::Command::new("uvx")
+    fn run_external_tool(&self, tool: &str, check_command: &[&str]) -> String {
+        // Download the tool if it's not already installed
+        Command::new("uvx")
+            .arg(tool)
+            .arg("--help")
+            .output()
+            .expect("Failed to run external tool");
+
+        let output = Command::new("uvx")
             .args(check_command)
             .arg(self.temp_dir.path())
             .current_dir(self.temp_dir.path())
@@ -200,7 +198,6 @@ impl RuleTestFile {
     }
 
     /// Parses markdown content into a `RuleTestFile`
-    #[must_use]
     pub fn from_markdown_content(content: &str) -> Self {
         let parser = Parser::new(content);
         let mut snippets = Vec::new();
@@ -256,7 +253,6 @@ impl RuleTestFile {
 
 const RESOURCE_DIR: &str = "resources/rules";
 
-#[must_use]
 pub fn run_rule_tests(rule_name: &str) -> Vec<(PathBuf, String, String)> {
     let file_path = format!("{RESOURCE_DIR}/{rule_name}.md");
     let rule_tests = RuleTestFile::from_markdown_file(file_path);
