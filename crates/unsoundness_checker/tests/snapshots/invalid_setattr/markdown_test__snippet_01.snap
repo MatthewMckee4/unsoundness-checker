@@ -1,0 +1,13 @@
+---
+source: crates/unsoundness_checker/tests/markdown_test.rs
+expression: output
+---
+error[invalid-setattr]: Using `setattr()` bypasses type checking and can lead to runtime type errors.
+ --> snippet_01.py:6:1
+  |
+5 | foo = Foo()
+6 | setattr(foo, "x", 1)
+  | ^^^^^^^^^^^^^^^^^^^^
+  |
+info: Object of type Literal[1] is not assignable to type str
+info: rule `invalid-setattr` was selected in the configuration file
