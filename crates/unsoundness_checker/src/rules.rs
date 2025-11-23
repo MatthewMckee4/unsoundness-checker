@@ -595,7 +595,7 @@ pub(crate) fn report_invalid_setattr(
 
     diagnostic.info(format!(
         "Object of type {:?} is not assignable to type {:?}",
+        new_type.display(context.db()),
         original_ty.display(context.db()),
-        new_type.display(context.db())
     ));
 }

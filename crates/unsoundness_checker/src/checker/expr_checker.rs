@@ -142,6 +142,6 @@ fn check_setattr_call(context: &Context, model: &SemanticModel, expr_call: &Expr
     let value_type = third_argument.inferred_type(model);
 
     if !value_type.is_assignable_to(context.db(), current_attribute_promotion) {
-        report_invalid_setattr(context, expr_call, value_type, current_attribute_promotion);
+        report_invalid_setattr(context, expr_call, current_attribute_promotion, value_type);
     }
 }
