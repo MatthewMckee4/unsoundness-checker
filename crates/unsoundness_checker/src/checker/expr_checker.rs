@@ -1,12 +1,14 @@
-use ruff_python_ast::{Expr, ExprAttribute};
+use ruff_python_ast::{Expr, ExprAttribute, ExprCall};
 use ty_python_semantic::{
     HasType, SemanticModel,
-    types::{KnownFunction, Type, TypeContext},
+    types::{KnownFunction, Type, TypeContext, ide_support::all_members},
 };
 
 use crate::{
     Context,
-    rules::{report_mangled_dunder_instance_variable, report_typing_cast_used},
+    rules::{
+        report_invalid_setattr, report_mangled_dunder_instance_variable, report_typing_cast_used,
+    },
 };
 
 pub(super) fn check_expr<'ast>(
@@ -16,6 +18,11 @@ pub(super) fn check_expr<'ast>(
 ) {
     match expr {
         Expr::Call(expr_call) => {
+            if is_setattr_call(&expr_call.func) {
+                check_setattr_call(context, model, expr_call);
+                return;
+            }
+
             let func_ty = expr_call.func.inferred_type(model);
 
             if let Type::FunctionLiteral(function_type) = func_ty {
@@ -90,4 +97,51 @@ fn is_mangled_dunder_variable(attr_name: &str, class_name: &str) -> bool {
 
     // Ensure there's at least one character after the prefix (variable name)
     attr_name.len() > expected_prefix.len()
+}
+
+/// Checks if an expression is a call to `setattr()`
+fn is_setattr_call(expr: &Expr) -> bool {
+    match expr {
+        Expr::Name(name_expr) => name_expr.id.as_str() == "setattr",
+        _ => false,
+    }
+}
+
+fn check_setattr_call(context: &Context, model: &SemanticModel, expr_call: &ExprCall) {
+    let Some(first_argument) = expr_call.arguments.find_positional(0) else {
+        return;
+    };
+
+    let Some(second_argument) = expr_call.arguments.find_positional(1) else {
+        return;
+    };
+
+    let Some(third_argument) = expr_call.arguments.find_positional(2) else {
+        return;
+    };
+
+    let Some(second_argument_string) = second_argument.as_string_literal_expr() else {
+        return;
+    };
+
+    let first_ty = first_argument.inferred_type(model);
+
+    let members = all_members(context.db(), first_ty);
+
+    let Some(type_of_attribute) = members
+        .iter()
+        .find(|member| member.name == second_argument_string.value.to_str())
+        .map(|member| member.ty)
+    else {
+        return;
+    };
+
+    let current_attribute_promotion =
+        type_of_attribute.promote_literals(model.db(), TypeContext::default());
+
+    let value_type = third_argument.inferred_type(model);
+
+    if !value_type.is_assignable_to(context.db(), current_attribute_promotion) {
+        report_invalid_setattr(context, expr_call, value_type, current_attribute_promotion);
+    }
 }

@@ -256,6 +256,40 @@ Categories: [`type-checking-suppression`](categories.md#type-checking-suppressio
 
 [See more](rules/if_type_checking_used.md)
 
+## `invalid-setattr`
+
+
+**What it does**
+
+Checks for invalid `setattr()` usage.
+
+**Why is this bad?**
+
+`setattr()` bypasses type checking by allowing "dynamic" attribute assignment.
+You can assign any type to any attribute, which can lead to runtime type errors
+when the actual type doesn't match the declared type annotation.
+
+**Examples**
+
+```python
+class Foo:
+    def __init__(self) -> None:
+        self.x: str = "hello"
+
+foo = Foo()
+setattr(foo, "x", 1)
+```
+
+<small>
+Default level: `warn`.
+</small>
+
+<small>
+Categories: [`runtime-modification`](categories.md#runtime-modification).
+</small>
+
+[See more](rules/invalid_setattr.md)
+
 ## `mangled-dunder-instance-variable`
 
 

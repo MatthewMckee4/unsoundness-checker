@@ -1,4 +1,4 @@
-use ruff_python_ast::{Decorator, Expr, ExprAttribute, StmtReturn};
+use ruff_python_ast::{Decorator, Expr, ExprAttribute, ExprCall, StmtReturn};
 use ruff_text_size::Ranged;
 use ty_python_semantic::types::Type;
 
@@ -23,6 +23,7 @@ pub(crate) fn register_rules(registry: &mut RuleRegistryBuilder) {
     registry.register_rule(&CALLABLE_ELLIPSIS_USED);
     registry.register_rule(&MUTABLE_GENERIC_DEFAULT);
     registry.register_rule(&MANGLED_DUNDER_INSTANCE_VARIABLE);
+    registry.register_rule(&INVALID_SETATTR);
 }
 
 declare_rule! {
@@ -384,6 +385,32 @@ declare_rule! {
     }
 }
 
+declare_rule! {
+    /// ## What it does
+    /// Checks for invalid `setattr()` usage.
+    ///
+    /// ## Why is this bad?
+    /// `setattr()` bypasses type checking by allowing "dynamic" attribute assignment.
+    /// You can assign any type to any attribute, which can lead to runtime type errors
+    /// when the actual type doesn't match the declared type annotation.
+    ///
+    /// ## Examples
+    /// ```python
+    /// class Foo:
+    ///     def __init__(self) -> None:
+    ///         self.x: str = "hello"
+    ///
+    /// foo = Foo()
+    /// setattr(foo, "x", 1)
+    /// ```
+    pub (crate) static INVALID_SETATTR = {
+        summary: "detects invalid usage of `setattr()` built-in function",
+        status: RuleStatus::stable("1.0.0"),
+        categories: &[&RUNTIME_MODIFICATION],
+        default_level: Level::Warn,
+    }
+}
+
 pub(crate) fn report_typing_any_used(context: &Context, expr: &Expr) {
     let Some(builder) = context.report_lint(&TYPING_ANY_USED, expr.range()) else {
         return;
@@ -549,5 +576,26 @@ pub(crate) fn report_mangled_dunder_instance_variable(
 
     builder.into_diagnostic(format!(
         "Explicit use of mangled attribute `{attr_name}` can bypass type checking and lead to runtime type errors.",
+    ));
+}
+
+pub(crate) fn report_invalid_setattr(
+    context: &Context,
+    expr: &ExprCall,
+    original_ty: Type<'_>,
+    new_type: Type<'_>,
+) {
+    let Some(builder) = context.report_lint(&INVALID_SETATTR, expr.range()) else {
+        return;
+    };
+
+    let mut diagnostic = builder.into_diagnostic(
+        "Using `setattr()` bypasses type checking and can lead to runtime type errors.",
+    );
+
+    diagnostic.info(format!(
+        "Object of type {:?} is not assignable to type {:?}",
+        original_ty.display(context.db()),
+        new_type.display(context.db())
     ));
 }
