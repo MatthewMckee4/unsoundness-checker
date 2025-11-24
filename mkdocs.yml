@@ -7,7 +7,6 @@ nav:
   - Rules: rules.md
   - Categories: categories.md
   - Configuration: configuration.md
-  - Future Rules: future_rules.md
 
 theme:
   name: material
