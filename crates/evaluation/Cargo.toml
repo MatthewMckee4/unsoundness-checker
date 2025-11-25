@@ -1,0 +1,28 @@
+[package]
+name = "evaluation"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+repository.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "evaluation"
+path = "src/main.rs"
+
+[dependencies]
+anyhow.workspace = true
+camino.workspace = true
+clap.workspace = true
+colored.workspace = true
+ruff_db.workspace = true
+ruff_python_ast.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+unsoundness_checker.workspace = true
+ty_project.workspace = true
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"

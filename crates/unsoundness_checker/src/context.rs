@@ -5,6 +5,7 @@ use ruff_db::{
         Annotation, Diagnostic, DiagnosticId, Severity, Span, SubDiagnostic, SubDiagnosticSeverity,
     },
     files::File,
+    parsed::{ParsedModuleRef, parsed_module},
 };
 use ruff_text_size::{Ranged, TextRange};
 use ty_project::Db;
@@ -20,19 +21,19 @@ pub(crate) struct Context<'db> {
     diagnostics: RefCell<Vec<Diagnostic>>,
     /// The rule selection.
     rule_selection: &'db RuleSelection,
+    /// The ast.
+    ast: ParsedModuleRef,
 }
 
 impl<'db> Context<'db> {
-    pub(crate) const fn new(
-        db: &'db dyn Db,
-        file: File,
-        rule_selection: &'db RuleSelection,
-    ) -> Self {
+    pub(crate) fn new(db: &'db dyn Db, file: File, rule_selection: &'db RuleSelection) -> Self {
+        let ast = parsed_module(db, file).load(db);
         Self {
             db,
             file,
             diagnostics: RefCell::new(Vec::new()),
             rule_selection,
+            ast,
         }
     }
 
@@ -58,6 +59,10 @@ impl<'db> Context<'db> {
 
     pub(crate) fn into_diagnostics(self) -> Vec<Diagnostic> {
         self.diagnostics.into_inner()
+    }
+
+    pub(crate) const fn ast(&self) -> &ParsedModuleRef {
+        &self.ast
     }
 }
 

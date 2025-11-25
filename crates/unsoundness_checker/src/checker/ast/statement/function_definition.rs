@@ -1,33 +1,26 @@
-use ruff_db::parsed::parsed_module;
 use ruff_python_ast::{
     Stmt, StmtFunctionDef, StmtReturn,
     visitor::source_order::{self, SourceOrderVisitor},
 };
 use ty_python_semantic::{
     HasType, SemanticModel,
-    types::{KnownFunction, Type, UnionBuilder},
+    types::{Type, UnionBuilder},
 };
 
 use crate::{
     Context,
+    checker::ast::{annotation::is_generic_annotation, check_annotation, utils::is_mutable_expr},
     rules::{
-        report_invalid_overload_implementation, report_typing_overload_used,
-        report_typing_type_is_used,
+        report_invalid_overload_implementation, report_mutable_generic_default,
+        report_typing_overload_used, report_typing_type_is_used,
     },
 };
 
-pub(super) fn check_function_statement<'ast>(
+pub(super) fn check_overloads<'ast>(
     context: &Context,
     model: &'ast SemanticModel<'ast>,
     stmt_function_def: &StmtFunctionDef,
 ) {
-    if let Some(return_type) = stmt_function_def.returns.as_ref() {
-        let inferred_return_type = return_type.inferred_type(model);
-        if let Type::TypeIs(_) = inferred_return_type {
-            report_typing_type_is_used(context, return_type);
-        }
-    }
-
     let function_ty = stmt_function_def.inferred_type(model);
 
     let Type::FunctionLiteral(function_type_ty) = function_ty else {
@@ -36,20 +29,11 @@ pub(super) fn check_function_statement<'ast>(
 
     let (overloads, implementation) = function_type_ty.overloads_and_implementation(context.db());
 
-    let ast = parsed_module(context.db(), context.file()).load(context.db());
-
     if implementation.is_some() {
         for overload in overloads {
-            let overload_stmt = overload.node(context.db(), context.file(), &ast);
+            let overload_stmt = overload.node(context.db(), context.file(), context.ast());
 
-            for decorator in &overload_stmt.decorator_list {
-                let decorator_ty = decorator.expression.inferred_type(model);
-                if let Type::FunctionLiteral(decorator_type_ty) = decorator_ty {
-                    if decorator_type_ty.is_known(context.db(), KnownFunction::Overload) {
-                        report_typing_overload_used(context, decorator);
-                    }
-                }
-            }
+            report_typing_overload_used(context, overload_stmt);
         }
     }
 
@@ -139,5 +123,37 @@ impl<'ast> SourceOrderVisitor<'ast> for ReturnStatementFinder<'ast> {
         }
 
         source_order::walk_stmt(self, stmt);
+    }
+}
+
+pub(super) fn check_function_definition_statement(
+    context: &Context,
+    model: &SemanticModel,
+    stmt_function_def: &StmtFunctionDef,
+) {
+    check_overloads(context, model, stmt_function_def);
+
+    if let Some(return_type) = stmt_function_def.returns.as_ref() {
+        let inferred_return_type = return_type.inferred_type(model);
+        if let Type::TypeIs(_) = inferred_return_type {
+            report_typing_type_is_used(context, return_type);
+        }
+    }
+
+    for parameter in &stmt_function_def.parameters {
+        if let Some(annotation) = parameter.annotation() {
+            check_annotation(context, model, annotation);
+
+            if let Some(default) = parameter.default()
+                && is_mutable_expr(default)
+                && is_generic_annotation(model, annotation)
+            {
+                report_mutable_generic_default(context, default);
+            }
+        }
+    }
+
+    if let Some(return_annotation) = stmt_function_def.returns.as_ref() {
+        check_annotation(context, model, return_annotation);
     }
 }

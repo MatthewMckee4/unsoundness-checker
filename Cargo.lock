@@ -574,6 +574,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "evaluation"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "camino",
+ "clap",
+ "colored",
+ "ruff_db",
+ "ruff_python_ast",
+ "serde",
+ "serde_json",
+ "tracing",
+ "tracing-subscriber",
+ "ty_project",
+ "unsoundness_checker",
+]
+
+[[package]]
 name = "fastrand"
 version = "2.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2999,6 +3017,7 @@ dependencies = [
  "insta-cmd",
  "itertools 0.14.0",
  "pulldown-cmark",
+ "rayon",
  "regex",
  "ruff_db",
  "ruff_linter",

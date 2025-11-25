@@ -107,25 +107,25 @@ def foo(x: int | str) -> int | str:
     let output = runner.run_test();
     insta::assert_snapshot!(output, @r#"
     warning[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
-     --> test.py:4:1
+     --> test.py:5:5
       |
-    2 | from typing import overload
-    3 |
     4 | @overload
-      | ^^^^^^^^^
     5 | def foo(x: int) -> str: ...
+      |     ^^^
+    6 |
+    7 | @overload
       |
     info: rule `typing-overload-used` is enabled by default
 
     warning[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
-     --> test.py:7:1
-      |
-    5 | def foo(x: int) -> str: ...
-    6 |
-    7 | @overload
-      | ^^^^^^^^^
-    8 | def foo(x: str) -> int: ...
-      |
+      --> test.py:8:5
+       |
+     7 | @overload
+     8 | def foo(x: str) -> int: ...
+       |     ^^^
+     9 |
+    10 | def foo(x: int | str) -> int | str:
+       |
     info: rule `typing-overload-used` is enabled by default
 
     error[invalid-overload-implementation]: Invalid overload implementation can lead to runtime errors.
@@ -171,25 +171,25 @@ def foo(x: int | str) -> int | str:
     let output = runner.run_test();
     insta::assert_snapshot!(output, @r"
     warning[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
-     --> test.py:4:1
+     --> test.py:5:5
       |
-    2 | from typing import overload
-    3 |
     4 | @overload
-      | ^^^^^^^^^
     5 | def foo(x: int) -> str: ...
+      |     ^^^
+    6 |
+    7 | @overload
       |
     info: rule `typing-overload-used` is enabled by default
 
     warning[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
-     --> test.py:7:1
-      |
-    5 | def foo(x: int) -> str: ...
-    6 |
-    7 | @overload
-      | ^^^^^^^^^
-    8 | def foo(x: str) -> int: ...
-      |
+      --> test.py:8:5
+       |
+     7 | @overload
+     8 | def foo(x: str) -> int: ...
+       |     ^^^
+     9 |
+    10 | def foo(x: int | str) -> int | str:
+       |
     info: rule `typing-overload-used` is enabled by default
     ");
 }
@@ -251,24 +251,24 @@ def overload_func(x: int | str) -> int | str:
     info: rule `typing-any-used` was selected in the configuration file
 
     warning[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
-     --> test.py:7:1
-      |
-    5 |     return x + 1
-    6 |
-    7 | @overload
-      | ^^^^^^^^^
-    8 | def overload_func(x: int) -> str: ...
-      |
+      --> test.py:8:5
+       |
+     7 | @overload
+     8 | def overload_func(x: int) -> str: ...
+       |     ^^^^^^^^^^^^^
+     9 |
+    10 | @overload
+       |
     info: rule `typing-overload-used` is enabled by default
 
     warning[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
-      --> test.py:10:1
+      --> test.py:11:5
        |
-     8 | def overload_func(x: int) -> str: ...
-     9 |
     10 | @overload
-       | ^^^^^^^^^
     11 | def overload_func(x: str) -> int: ...
+       |     ^^^^^^^^^^^^^
+    12 |
+    13 | def overload_func(x: int | str) -> int | str:
        |
     info: rule `typing-overload-used` is enabled by default
 
@@ -319,24 +319,24 @@ def overload_func(x: int | str) -> int | str:
     let output = runner.run_test();
     insta::assert_snapshot!(output, @r"
     warning[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
-     --> test.py:7:1
-      |
-    5 |     return x + 1
-    6 |
-    7 | @overload
-      | ^^^^^^^^^
-    8 | def overload_func(x: int) -> str: ...
-      |
+      --> test.py:8:5
+       |
+     7 | @overload
+     8 | def overload_func(x: int) -> str: ...
+       |     ^^^^^^^^^^^^^
+     9 |
+    10 | @overload
+       |
     info: rule `typing-overload-used` is enabled by default
 
     warning[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
-      --> test.py:10:1
+      --> test.py:11:5
        |
-     8 | def overload_func(x: int) -> str: ...
-     9 |
     10 | @overload
-       | ^^^^^^^^^
     11 | def overload_func(x: str) -> int: ...
+       |     ^^^^^^^^^^^^^
+    12 |
+    13 | def overload_func(x: int | str) -> int | str:
        |
     info: rule `typing-overload-used` is enabled by default
     ");
@@ -399,24 +399,24 @@ def overload_func(x: int | str) -> int | str:
     info: rule `typing-any-used` was selected in the configuration file
 
     warning[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
-     --> test.py:7:1
-      |
-    5 |     return x + 1
-    6 |
-    7 | @overload
-      | ^^^^^^^^^
-    8 | def overload_func(x: int) -> str: ...
-      |
+      --> test.py:8:5
+       |
+     7 | @overload
+     8 | def overload_func(x: int) -> str: ...
+       |     ^^^^^^^^^^^^^
+     9 |
+    10 | @overload
+       |
     info: rule `typing-overload-used` is enabled by default
 
     warning[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
-      --> test.py:10:1
+      --> test.py:11:5
        |
-     8 | def overload_func(x: int) -> str: ...
-     9 |
     10 | @overload
-       | ^^^^^^^^^
     11 | def overload_func(x: str) -> int: ...
+       |     ^^^^^^^^^^^^^
+    12 |
+    13 | def overload_func(x: int | str) -> int | str:
        |
     info: rule `typing-overload-used` is enabled by default
     ");
@@ -518,24 +518,24 @@ def overload_func(x: int | str) -> int | str:
     info: rule `typing-any-used` is enabled by default
 
     warning[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
-     --> test.py:7:1
-      |
-    5 |     return x + 1
-    6 |
-    7 | @overload
-      | ^^^^^^^^^
-    8 | def overload_func(x: int) -> str: ...
-      |
+      --> test.py:8:5
+       |
+     7 | @overload
+     8 | def overload_func(x: int) -> str: ...
+       |     ^^^^^^^^^^^^^
+     9 |
+    10 | @overload
+       |
     info: rule `typing-overload-used` is enabled by default
 
     warning[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
-      --> test.py:10:1
+      --> test.py:11:5
        |
-     8 | def overload_func(x: int) -> str: ...
-     9 |
     10 | @overload
-       | ^^^^^^^^^
     11 | def overload_func(x: str) -> int: ...
+       |     ^^^^^^^^^^^^^
+    12 |
+    13 | def overload_func(x: int | str) -> int | str:
        |
     info: rule `typing-overload-used` is enabled by default
     ");
@@ -620,25 +620,25 @@ def foo(x: int | str) -> int | str:
     let output = runner.run_test();
     insta::assert_snapshot!(output, @r"
     warning[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
-     --> test.py:4:1
+     --> test.py:5:5
       |
-    2 | from typing import overload
-    3 |
     4 | @overload
-      | ^^^^^^^^^
     5 | def foo(x: int) -> str: ...
+      |     ^^^
+    6 |
+    7 | @overload
       |
     info: rule `typing-overload-used` is enabled by default
 
     warning[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
-     --> test.py:7:1
-      |
-    5 | def foo(x: int) -> str: ...
-    6 |
-    7 | @overload
-      | ^^^^^^^^^
-    8 | def foo(x: str) -> int: ...
-      |
+      --> test.py:8:5
+       |
+     7 | @overload
+     8 | def foo(x: str) -> int: ...
+       |     ^^^
+     9 |
+    10 | def foo(x: int | str) -> int | str:
+       |
     info: rule `typing-overload-used` is enabled by default
     ");
 }
@@ -722,25 +722,25 @@ def foo(x: int | str) -> int | str:
     let output = runner.run_test();
     insta::assert_snapshot!(output, @r"
     warning[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
-     --> test.py:4:1
+     --> test.py:5:5
       |
-    2 | from typing import overload
-    3 |
     4 | @overload
-      | ^^^^^^^^^
     5 | def foo(x: int) -> str: ...
+      |     ^^^
+    6 |
+    7 | @overload
       |
     info: rule `typing-overload-used` is enabled by default
 
     warning[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
-     --> test.py:7:1
-      |
-    5 | def foo(x: int) -> str: ...
-    6 |
-    7 | @overload
-      | ^^^^^^^^^
-    8 | def foo(x: str) -> int: ...
-      |
+      --> test.py:8:5
+       |
+     7 | @overload
+     8 | def foo(x: str) -> int: ...
+       |     ^^^
+     9 |
+    10 | def foo(x: int | str) -> int | str:
+       |
     info: rule `typing-overload-used` is enabled by default
     ");
 }
@@ -802,24 +802,24 @@ def overload_func(x: int | str) -> int | str:
     info: rule `typing-any-used` was selected in the configuration file
 
     warning[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
-     --> test.py:7:1
-      |
-    5 |     return x + 1
-    6 |
-    7 | @overload
-      | ^^^^^^^^^
-    8 | def overload_func(x: int) -> str: ...
-      |
+      --> test.py:8:5
+       |
+     7 | @overload
+     8 | def overload_func(x: int) -> str: ...
+       |     ^^^^^^^^^^^^^
+     9 |
+    10 | @overload
+       |
     info: rule `typing-overload-used` is enabled by default
 
     warning[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
-      --> test.py:10:1
+      --> test.py:11:5
        |
-     8 | def overload_func(x: int) -> str: ...
-     9 |
     10 | @overload
-       | ^^^^^^^^^
     11 | def overload_func(x: str) -> int: ...
+       |     ^^^^^^^^^^^^^
+    12 |
+    13 | def overload_func(x: int | str) -> int | str:
        |
     info: rule `typing-overload-used` is enabled by default
 
@@ -892,24 +892,24 @@ def overload_func(x: int | str) -> int | str:
     info: rule `typing-any-used` was selected in the configuration file
 
     warning[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
-     --> test.py:7:1
-      |
-    5 |     return x + 1
-    6 |
-    7 | @overload
-      | ^^^^^^^^^
-    8 | def overload_func(x: int) -> str: ...
-      |
+      --> test.py:8:5
+       |
+     7 | @overload
+     8 | def overload_func(x: int) -> str: ...
+       |     ^^^^^^^^^^^^^
+     9 |
+    10 | @overload
+       |
     info: rule `typing-overload-used` is enabled by default
 
     warning[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
-      --> test.py:10:1
+      --> test.py:11:5
        |
-     8 | def overload_func(x: int) -> str: ...
-     9 |
     10 | @overload
-       | ^^^^^^^^^
     11 | def overload_func(x: str) -> int: ...
+       |     ^^^^^^^^^^^^^
+    12 |
+    13 | def overload_func(x: int | str) -> int | str:
        |
     info: rule `typing-overload-used` is enabled by default
 
@@ -993,24 +993,24 @@ def overload_func(x: int | str) -> int | str:
     info: rule `typing-any-used` was selected in the configuration file
 
     warning[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
-     --> test.py:7:1
-      |
-    5 |     return x + 1
-    6 |
-    7 | @overload
-      | ^^^^^^^^^
-    8 | def overload_func(x: int) -> str: ...
-      |
+      --> test.py:8:5
+       |
+     7 | @overload
+     8 | def overload_func(x: int) -> str: ...
+       |     ^^^^^^^^^^^^^
+     9 |
+    10 | @overload
+       |
     info: rule `typing-overload-used` is enabled by default
 
     warning[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
-      --> test.py:10:1
+      --> test.py:11:5
        |
-     8 | def overload_func(x: int) -> str: ...
-     9 |
     10 | @overload
-       | ^^^^^^^^^
     11 | def overload_func(x: str) -> int: ...
+       |     ^^^^^^^^^^^^^
+    12 |
+    13 | def overload_func(x: int | str) -> int | str:
        |
     info: rule `typing-overload-used` is enabled by default
 
