@@ -97,7 +97,7 @@ impl<'a> Checkout<'a> {
         self.path.join(".venv")
     }
 
-    fn project(&self) -> &RealWorldProject<'a> {
+    const fn project(&self) -> &RealWorldProject<'a> {
         &self.project
     }
 }
@@ -110,7 +110,7 @@ pub struct InstalledProject<'a> {
     pub config: RealWorldProject<'a>,
 }
 
-impl<'a> InstalledProject<'a> {
+impl InstalledProject<'_> {
     /// Get the benchmark paths
     pub fn check_paths(&self) -> Vec<PathBuf> {
         self.config
@@ -319,7 +319,7 @@ pub struct Benchmark<'a> {
 
 impl<'a> Benchmark<'a> {
     /// Create the pydantic benchmark
-    pub fn pydantic() -> Self {
+    pub const fn pydantic() -> Self {
         Self {
             project: RealWorldProject {
                 name: "pydantic",
@@ -339,7 +339,7 @@ impl<'a> Benchmark<'a> {
     }
 
     /// Create the pytest benchmark
-    pub fn pytest() -> Self {
+    pub const fn pytest() -> Self {
         Self {
             project: RealWorldProject {
                 name: "pytest",
@@ -354,7 +354,7 @@ impl<'a> Benchmark<'a> {
     }
 
     /// Get the project name
-    pub fn project_name(&self) -> &str {
+    pub const fn project_name(&self) -> &str {
         self.project.name
     }
 
@@ -362,64 +362,63 @@ impl<'a> Benchmark<'a> {
     pub fn setup(&self) -> Result<InstalledProject<'a>> {
         self.project.clone().setup()
     }
+}
 
-    /// Run the unsoundness checker on the installed project
-    pub fn run_checker(&self, installed_project: &InstalledProject) -> Result<usize> {
-        use ruff_db::system::OsSystem;
-        use ty_project::{
-            Db, ProjectDatabase, ProjectMetadata,
-            metadata::{
-                Options,
-                options::EnvironmentOptions,
-                value::{RangedValue, RelativePathBuf},
-            },
-        };
+/// Run the unsoundness checker on the installed project
+pub fn run_checker(installed_project: &InstalledProject) -> Result<usize> {
+    use ruff_db::system::OsSystem;
+    use ty_project::{
+        Db, ProjectDatabase, ProjectMetadata,
+        metadata::{
+            Options,
+            options::EnvironmentOptions,
+            value::{RangedValue, RelativePathBuf},
+        },
+    };
 
-        let root = SystemPathBuf::from_path_buf(installed_project.path.clone()).map_err(|p| {
-            anyhow::anyhow!("Failed to convert path to SystemPathBuf: {}", p.display())
-        })?;
-        let system = OsSystem::new(&root);
+    let root = SystemPathBuf::from_path_buf(installed_project.path.clone())
+        .map_err(|p| anyhow::anyhow!("Failed to convert path to SystemPathBuf: {}", p.display()))?;
+    let system = OsSystem::new(&root);
 
-        let mut metadata = ProjectMetadata::discover(&root, &system)
-            .context("Failed to discover project metadata")?;
+    let mut metadata =
+        ProjectMetadata::discover(&root, &system).context("Failed to discover project metadata")?;
 
-        metadata.apply_options(Options {
-            environment: Some(EnvironmentOptions {
-                python_version: Some(RangedValue::cli(installed_project.config.python_version)),
-                python: Some(RelativePathBuf::cli(SystemPath::new(".venv"))),
-                ..EnvironmentOptions::default()
-            }),
-            ..Options::default()
-        });
+    metadata.apply_options(Options {
+        environment: Some(EnvironmentOptions {
+            python_version: Some(RangedValue::cli(installed_project.config.python_version)),
+            python: Some(RelativePathBuf::cli(SystemPath::new(".venv"))),
+            ..EnvironmentOptions::default()
+        }),
+        ..Options::default()
+    });
 
-        // Get rules before moving metadata
-        let rules = metadata.options().rules.clone();
+    // Get rules before moving metadata
+    let rules = metadata.options().rules.clone();
 
-        let mut db =
-            ProjectDatabase::new(metadata, system).context("Failed to create project database")?;
+    let mut db =
+        ProjectDatabase::new(metadata, system).context("Failed to create project database")?;
 
-        let check_paths: Vec<_> = installed_project
-            .check_paths()
-            .iter()
-            .filter_map(|path| SystemPathBuf::from_path_buf(path.clone()).ok())
-            .map(|path| SystemPath::absolute(&path, &root))
-            .collect();
+    let check_paths: Vec<_> = installed_project
+        .check_paths()
+        .iter()
+        .filter_map(|path| SystemPathBuf::from_path_buf(path.clone()).ok())
+        .map(|path| SystemPath::absolute(&path, &root))
+        .collect();
 
-        db.project().set_included_paths(&mut db, check_paths);
+    db.project().set_included_paths(&mut db, check_paths);
 
-        // Get all files in the project
+    // Get all files in the project
 
-        // Get the default rule registry and selection
-        let rule_registry = unsoundness_checker::default_rule_registry();
-        let (rule_selection, _rule_diagnostics) =
-            unsoundness_checker::rule::RuleSelection::from_rules_selection(
-                rule_registry,
-                rules.as_ref(),
-                &db,
-            );
+    // Get the default rule registry and selection
+    let rule_registry = unsoundness_checker::default_rule_registry();
+    let (rule_selection, _rule_diagnostics) =
+        unsoundness_checker::rule::RuleSelection::from_rules_selection(
+            rule_registry,
+            rules.as_ref(),
+            &db,
+        );
 
-        let diagnostics = check_project(&db, &rule_selection);
+    let diagnostics = check_project(&db, &rule_selection);
 
-        Ok(diagnostics.len())
-    }
+    Ok(diagnostics.len())
 }

@@ -7,6 +7,8 @@ use colored::Colorize;
 mod real_world_projects;
 use real_world_projects::Benchmark;
 
+use crate::real_world_projects::run_checker;
+
 #[derive(Parser, Debug)]
 #[command(name = "evaluation")]
 #[command(about = "Evaluation tool for unsoundness-checker", long_about = None)]
@@ -32,10 +34,10 @@ fn main() -> Result<()> {
     tracing_subscriber::fmt()
         .with_env_filter(
             tracing_subscriber::EnvFilter::default()
-                .add_directive("ty=info".parse().unwrap())
+                .add_directive("ty=warn".parse().unwrap())
                 .add_directive("ruff=warn".parse().unwrap())
                 .add_directive(
-                    "unsoundness_checker=info"
+                    "unsoundness_checker=warn"
                         .parse()
                         .expect("Hardcoded directive to be valid"),
                 ),
@@ -89,7 +91,7 @@ fn run_performance_benchmarks(project_names: &[String]) -> Result<()> {
         // Collect the selected benchmarks
         all_benchmarks
             .iter()
-            .filter(|(n, _)| project_names.contains(&n.to_string()))
+            .filter(|(n, _)| project_names.contains(&(*n).to_string()))
             .map(|(_, b)| b)
             .collect()
     };
@@ -125,17 +127,15 @@ fn run_single_benchmark(benchmark: &Benchmark) -> Result<BenchmarkResult> {
     println!("{} {}", "Benchmarking:".bold(), project_name.bold().green());
 
     // Setup phase (clone repo, install dependencies)
-    print!("  {} project...", "Setting up".dimmed());
-    std::io::Write::flush(&mut std::io::stdout())?;
+    println!("  {} project...", "Setting up".dimmed());
     let installed_project = benchmark.setup()?;
 
     // Run the unsoundness checker
-    print!("  {} unsoundness checker...", "Running".dimmed());
-    std::io::Write::flush(&mut std::io::stdout())?;
+    println!("  {} unsoundness checker...", "Running".dimmed());
     let check_start = Instant::now();
-    let diagnostics = benchmark.run_checker(&installed_project)?;
+    let diagnostics = run_checker(&installed_project)?;
     let check_duration = check_start.elapsed();
-    println!(" {} ({:.2}s)", "done".green(), check_duration.as_secs_f64());
+    println!("  {}", "done".green(),);
     println!();
 
     Ok(BenchmarkResult {
