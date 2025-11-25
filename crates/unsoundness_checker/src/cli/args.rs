@@ -1,8 +1,19 @@
-use std::path::PathBuf;
-
-use clap::Parser;
+use clap::{Parser, ValueEnum};
 
 use crate::cli::logging::Verbosity;
+
+/// Summary output mode for diagnostics
+#[derive(Debug, Clone, Copy, Default, ValueEnum)]
+#[clap(rename_all = "lowercase")]
+pub enum SummaryMode {
+    /// Don't show summary (default)
+    #[default]
+    False,
+    /// Show diagnostics and summary
+    True,
+    /// Show only summary, not individual diagnostics
+    Only,
+}
 
 #[derive(Debug, Parser)]
 #[command(
@@ -32,7 +43,11 @@ pub struct CheckCommand {
         help = "List of files or directories to check [default: the project root]",
         value_name = "PATH"
     )]
-    pub(crate) paths: Vec<PathBuf>,
+    pub(crate) paths: Vec<camino::Utf8PathBuf>,
+
+    /// Show summary of diagnostic counts by rule
+    #[clap(long, value_enum, default_value = "false")]
+    pub(crate) summary: SummaryMode,
 
     #[clap(flatten)]
     pub(crate) verbosity: Verbosity,

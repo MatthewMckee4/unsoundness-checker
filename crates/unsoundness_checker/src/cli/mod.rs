@@ -1,4 +1,5 @@
 use std::{
+    collections::BTreeMap,
     io::{self, BufWriter, Write},
     process::{ExitCode, Termination},
 };
@@ -6,7 +7,7 @@ use std::{
 use anyhow::{Context, Result, anyhow};
 use clap::Parser;
 use ruff_db::{
-    diagnostic::{DisplayDiagnosticConfig, DisplayDiagnostics},
+    diagnostic::{DiagnosticId, DisplayDiagnosticConfig, DisplayDiagnostics},
     system::{OsSystem, SystemPath, SystemPathBuf},
 };
 use ty_project::{
@@ -16,7 +17,7 @@ use ty_project::{
 use crate::{
     checker::check_file,
     cli::{
-        args::{CheckCommand, Command},
+        args::{CheckCommand, Command, SummaryMode},
         logging::setup_tracing,
     },
     default_rule_registry,
@@ -69,7 +70,9 @@ pub(crate) fn test(args: &CheckCommand) -> Result<ExitStatus> {
     let check_paths: Vec<_> = args
         .paths
         .iter()
-        .map(|path| SystemPath::absolute(SystemPath::from_std_path(path).unwrap(), &cwd))
+        .map(|path| {
+            SystemPath::absolute(SystemPath::from_std_path(path.as_std_path()).unwrap(), &cwd)
+        })
         .collect();
 
     let system = OsSystem::new(&cwd);
@@ -115,20 +118,51 @@ pub(crate) fn test(args: &CheckCommand) -> Result<ExitStatus> {
     if diagnostics.is_empty() {
         writeln!(stdout, "All checks passed")?;
     } else {
-        write!(
-            stdout,
-            "{}",
-            DisplayDiagnostics::new(&db, &display_config, &diagnostics)
-        )?;
+        // Display individual diagnostics unless summary mode is "only"
+        if !matches!(args.summary, SummaryMode::Only) {
+            write!(
+                stdout,
+                "{}",
+                DisplayDiagnostics::new(&db, &display_config, &diagnostics)
+            )?;
+        }
 
         let num_diagnostics = diagnostics.len();
 
-        writeln!(
-            stdout,
-            "Found {} diagnostic{}",
-            num_diagnostics,
-            if num_diagnostics > 1 { "s" } else { "" }
-        )?;
+        // Display diagnostic count unless summary mode is "only"
+        if !matches!(args.summary, SummaryMode::Only) {
+            writeln!(
+                stdout,
+                "Found {} diagnostic{}",
+                num_diagnostics,
+                if num_diagnostics > 1 { "s" } else { "" }
+            )?;
+        }
+
+        // Display summary if summary mode is "true" or "only"
+        if matches!(args.summary, SummaryMode::True | SummaryMode::Only) {
+            // Count diagnostics by rule name
+            let mut summary: BTreeMap<String, usize> = BTreeMap::new();
+            for diagnostic in &diagnostics {
+                if let DiagnosticId::Lint(lint_name) = diagnostic.id() {
+                    *summary.entry(lint_name.as_str().to_string()).or_insert(0) += 1;
+                }
+            }
+
+            // Display summary
+            if !summary.is_empty() {
+                writeln!(stdout)?;
+                writeln!(stdout, "Summary:")?;
+                for (rule_name, count) in &summary {
+                    writeln!(stdout, "  {rule_name}: {count}")?;
+                }
+                writeln!(
+                    stdout,
+                    "\nTotal: {num_diagnostics} diagnostic{}",
+                    if num_diagnostics > 1 { "s" } else { "" }
+                )?;
+            }
+        }
     }
 
     Ok(ExitStatus::Success)
