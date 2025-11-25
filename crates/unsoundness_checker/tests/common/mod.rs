@@ -309,6 +309,11 @@ pub fn run_rule_tests(rule_name: &str) -> Vec<(PathBuf, String, String, usize)> 
         })
         .collect::<Vec<_>>();
 
+    // Only run external type checkers if explicitly enabled
+    let run_external = std::env::var("UNSOUNDNESS_TEST_EXTERNAL")
+        .map(|v| v == "1" || v.to_lowercase() == "true")
+        .unwrap_or(false);
+
     for (idx, snippet) in rule_tests.python_snippets().enumerate() {
         let snippet_name = format!("snippet_{:02}", idx + 1);
         let test_name = snippet.name.as_deref().unwrap_or("unnamed");
@@ -329,7 +334,7 @@ pub fn run_rule_tests(rule_name: &str) -> Vec<(PathBuf, String, String, usize)> 
             heading_level,
         ));
 
-        if cfg!(unix) && rule_name != "type_checking_directive_used" {
+        if cfg!(unix) && run_external && rule_name != "type_checking_directive_used" {
             let ty_output = test_runner.run_ty();
             results.push((
                 temp_path.clone(),

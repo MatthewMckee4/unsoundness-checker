@@ -121,14 +121,68 @@ info: rule `callable-ellipsis-used` was selected in the configuration file
 
 ### Ellipsis in list of callables
 
+error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+ --> Ellipsis in list of callables.py:3:16
+  |
+1 | from typing import Callable
+2 |
+3 | handlers: list[Callable[..., None]] = [
+  |                ^^^^^^^^^^^^^^^^^^^
+4 |     lambda: None,
+5 |     lambda x: print(x),
+  |
+info: rule `callable-ellipsis-used` was selected in the configuration file
+
 
 ### Ellipsis in dict values
+
+error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+ --> Ellipsis in dict values.py:3:23
+  |
+1 | from typing import Callable
+2 |
+3 | processors: dict[str, Callable[..., int]] = {
+  |                       ^^^^^^^^^^^^^^^^^^
+4 |     "add": lambda x, y: x + y,
+5 |     "mul": lambda x, y: x * y
+  |
+info: rule `callable-ellipsis-used` was selected in the configuration file
 
 
 ### Ellipsis with Optional
 
+error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+ --> Ellipsis with Optional.py:3:25
+  |
+1 | from typing import Callable, Optional
+2 |
+3 | maybe_handler: Optional[Callable[..., str]] = None
+  |                         ^^^^^^^^^^^^^^^^^^
+  |
+info: rule `callable-ellipsis-used` was selected in the configuration file
+
 
 ### Ellipsis in Union
+
+error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+ --> Ellipsis in Union.py:3:16
+  |
+1 | from typing import Callable, Union
+2 |
+3 | handler: Union[Callable[..., int], Callable[..., str]] = lambda: 42
+  |                ^^^^^^^^^^^^^^^^^^
+  |
+info: rule `callable-ellipsis-used` was selected in the configuration file
+
+error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+ --> Ellipsis in Union.py:3:36
+  |
+1 | from typing import Callable, Union
+2 |
+3 | handler: Union[Callable[..., int], Callable[..., str]] = lambda: 42
+  |                                    ^^^^^^^^^^^^^^^^^^
+  |
+info: rule `callable-ellipsis-used` was selected in the configuration file
 
 
 ### Ellipsis in method signature
@@ -152,6 +206,17 @@ error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can le
 3 | def higher_order(
 4 |     maker: Callable[..., Callable[..., int]]
   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+5 | ) -> Callable[..., int]:
+6 |     return maker()
+  |
+info: rule `callable-ellipsis-used` was selected in the configuration file
+
+error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+ --> Ellipsis in nested callable.py:4:26
+  |
+3 | def higher_order(
+4 |     maker: Callable[..., Callable[..., int]]
+  |                          ^^^^^^^^^^^^^^^^^^
 5 | ) -> Callable[..., int]:
 6 |     return maker()
   |
@@ -182,6 +247,16 @@ info: rule `callable-ellipsis-used` was selected in the configuration file
 
 
 ### Ellipsis in lambda type
+
+error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+ --> Ellipsis in lambda type.py:3:31
+  |
+1 | from typing import Callable
+2 |
+3 | make_handler: Callable[[str], Callable[..., int]] = lambda name: lambda *args: 42
+  |                               ^^^^^^^^^^^^^^^^^^
+  |
+info: rule `callable-ellipsis-used` was selected in the configuration file
 
 
 ### Multiple ellipsis in same function
