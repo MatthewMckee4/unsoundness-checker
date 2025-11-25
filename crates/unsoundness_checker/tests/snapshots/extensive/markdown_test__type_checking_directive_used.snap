@@ -393,3 +393,6 @@ error[type-checking-directive-used]: Type checking directive `type: ignore` supp
   |                            ^^^^^^^^^^^^^^
   |
 info: rule `type-checking-directive-used` was selected in the configuration file
+
+
+## Ensure we don't catch examples of "type: ignore" randomly in a comment
