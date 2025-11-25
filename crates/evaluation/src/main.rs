@@ -67,6 +67,9 @@ fn run_performance_benchmarks(project_names: &[String]) -> Result<()> {
     let all_benchmarks = [
         ("pydantic", Benchmark::pydantic()),
         ("pytest", Benchmark::pytest()),
+        ("fastapi", Benchmark::fastapi()),
+        ("black", Benchmark::black()),
+        ("flask", Benchmark::flask()),
     ];
 
     // If no projects specified, run all

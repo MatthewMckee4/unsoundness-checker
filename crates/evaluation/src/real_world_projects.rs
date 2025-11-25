@@ -24,9 +24,6 @@ pub struct RealWorldProject<'a> {
     pub paths: &'a [&'a str],
     /// Dependencies to install via uv
     pub dependencies: &'a [&'a str],
-    /// Limit candidate packages to those that were uploaded prior to a given point in time (ISO 8601 format).
-    /// Maps to uv's `exclude-newer`.
-    pub max_dep_date: &'a str,
     /// Python version to use
     pub python_version: PythonVersion,
 }
@@ -265,15 +262,8 @@ fn install_dependencies(checkout: &Checkout) -> Result<()> {
 
     // Install dependencies with date constraint in the isolated environment
     let mut cmd = Command::new("uv");
-    cmd.args([
-        "pip",
-        "install",
-        "--python",
-        venv_path.to_str().unwrap(),
-        "--exclude-newer",
-        checkout.project().max_dep_date,
-    ])
-    .args(checkout.project().dependencies);
+    cmd.args(["pip", "install", "--python", venv_path.to_str().unwrap()])
+        .args(checkout.project().dependencies);
 
     let output = cmd
         .output()
@@ -318,7 +308,6 @@ pub struct Benchmark<'a> {
 }
 
 impl<'a> Benchmark<'a> {
-    /// Create the pydantic benchmark
     pub const fn pydantic() -> Self {
         Self {
             project: RealWorldProject {
@@ -332,13 +321,11 @@ impl<'a> Benchmark<'a> {
                     "typing-extensions",
                     "typing-inspection",
                 ],
-                max_dep_date: "2025-06-17",
-                python_version: PythonVersion::PY39,
+                python_version: PythonVersion::PY313,
             },
         }
     }
 
-    /// Create the pytest benchmark
     pub const fn pytest() -> Self {
         Self {
             project: RealWorldProject {
@@ -347,7 +334,51 @@ impl<'a> Benchmark<'a> {
                 commit: "94f4922d9a73236d88d637e71316ceb446695158",
                 paths: &["src/_pytest"],
                 dependencies: &["iniconfig", "packaging", "pluggy", "exceptiongroup"],
-                max_dep_date: "2025-06-17",
+                python_version: PythonVersion::PY313,
+            },
+        }
+    }
+
+    pub const fn fastapi() -> Self {
+        Self {
+            project: RealWorldProject {
+                name: "fastapi",
+                repository: "https://github.com/fastapi/fastapi",
+                commit: "5b0625df96e4ea11b54fcb2a76f21f7ad94764fe",
+                paths: &["fastapi"],
+                dependencies: &["starlette", "pydantic", "typing-extensions"],
+                python_version: PythonVersion::PY313,
+            },
+        }
+    }
+
+    pub const fn black() -> Self {
+        Self {
+            project: RealWorldProject {
+                name: "black",
+                repository: "https://github.com/psf/black",
+                commit: "cde9494ac5b89bd4c9154f746a543685961983a8",
+                paths: &["src/black"],
+                dependencies: &[
+                    "click",
+                    "mypy-extensions",
+                    "pathspec",
+                    "platformdirs",
+                    "packaging",
+                ],
+                python_version: PythonVersion::PY313,
+            },
+        }
+    }
+
+    pub const fn flask() -> Self {
+        Self {
+            project: RealWorldProject {
+                name: "flask",
+                repository: "https://github.com/pallets/flask",
+                commit: "2579ce9f18e67ec3213c6eceb5240310ccd46af8",
+                paths: &["src/flask"],
+                dependencies: &["werkzeug", "jinja2", "itsdangerous", "click"],
                 python_version: PythonVersion::PY39,
             },
         }
