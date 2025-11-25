@@ -3,7 +3,7 @@ source: crates/unsoundness_checker/tests/markdown_test.rs
 expression: output
 ---
 error[mutating-globals-dict]: Mutating the `globals()` dictionary may lead to runtime type errors.
- --> What gets flagged.py:3:1
+ --> main.py:3:1
   |
 1 | x: int = 5
 2 |

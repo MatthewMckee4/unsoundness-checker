@@ -3,7 +3,7 @@ source: crates/unsoundness_checker/tests/markdown_test.rs
 expression: output
 ---
 error[type-checking-directive-used]: Type checking directive `pyrefly: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> pyrefly.py:1:14
+ --> main.py:1:14
   |
 1 | res = foo()  # pyrefly: ignore
   |              ^^^^^^^^^^^^^^^^^
@@ -13,7 +13,7 @@ error[type-checking-directive-used]: Type checking directive `pyrefly: ignore` s
 info: rule `type-checking-directive-used` was selected in the configuration file
 
 error[type-checking-directive-used]: Type checking directive `pyrefly: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> pyrefly.py:3:14
+ --> main.py:3:14
   |
 1 | res = foo()  # pyrefly: ignore
 2 |

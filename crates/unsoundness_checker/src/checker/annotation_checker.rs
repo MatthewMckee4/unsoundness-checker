@@ -12,24 +12,34 @@ use crate::{
     rules::{report_callable_ellipsis_used, report_typing_any_used},
 };
 
-struct AnyAnnotationChecker<'db, 'ctx> {
+struct DynamicAnnotationChecker<'db, 'ctx> {
     context: &'ctx Context<'db>,
 
     model: &'db SemanticModel<'db>,
 }
 
-impl<'db, 'ctx> AnyAnnotationChecker<'db, 'ctx> {
+impl<'db, 'ctx> DynamicAnnotationChecker<'db, 'ctx> {
     pub(crate) const fn new(context: &'ctx Context<'db>, model: &'db SemanticModel<'db>) -> Self {
         Self { context, model }
     }
 }
 
-impl SourceOrderVisitor<'_> for AnyAnnotationChecker<'_, '_> {
+impl SourceOrderVisitor<'_> for DynamicAnnotationChecker<'_, '_> {
     fn visit_expr(&mut self, expr: &'_ Expr) {
         let ty = expr.inferred_type(self.model);
 
         if matches!(ty, Type::Dynamic(DynamicType::Any)) {
             report_typing_any_used(self.context, expr);
+        }
+
+        if matches!(ty, Type::Callable(_))
+            && let Expr::Subscript(expr_subscript) = expr
+            && let slice = expr_subscript.slice.as_ref()
+            && let Expr::Tuple(tuple) = slice
+            && let Some(first_element) = tuple.elts.first()
+            && let Expr::EllipsisLiteral(_) = first_element
+        {
+            report_callable_ellipsis_used(self.context, expr);
         }
 
         source_order::walk_expr(self, expr);
@@ -68,18 +78,7 @@ pub(super) fn check_annotation<'ast>(
     model: &'ast SemanticModel<'ast>,
     expr: &'ast Expr,
 ) {
-    if let Type::Callable(_) = expr.inferred_type(model) {
-        if let Expr::Subscript(expr_subscript) = expr
-            && let slice = expr_subscript.slice.as_ref()
-            && let Expr::Tuple(tuple) = slice
-            && let Some(first_element) = tuple.elts.first()
-            && let Expr::EllipsisLiteral(_) = first_element
-        {
-            report_callable_ellipsis_used(context, expr);
-        }
-    }
-
-    let mut annotation_checker = AnyAnnotationChecker::new(context, model);
+    let mut annotation_checker = DynamicAnnotationChecker::new(context, model);
 
     annotation_checker.visit_expr(expr);
 }

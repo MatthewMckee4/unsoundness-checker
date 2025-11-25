@@ -3,7 +3,7 @@ source: crates/unsoundness_checker/tests/markdown_test.rs
 expression: output
 ---
 error[mangled-dunder-instance-variable]: Explicit use of mangled attribute `_HiddenDunderVariables__str_x` can bypass type checking and lead to runtime type errors.
- --> What gets flagged.py:4:9
+ --> main.py:4:9
   |
 2 |     def __init__(self, x: int) -> None:
 3 |         self.__str_x = str(x)
@@ -15,7 +15,7 @@ error[mangled-dunder-instance-variable]: Explicit use of mangled attribute `_Hid
 info: rule `mangled-dunder-instance-variable` was selected in the configuration file
 
 error[mangled-dunder-instance-variable]: Explicit use of mangled attribute `_HiddenDunderVariables__str_x` can bypass type checking and lead to runtime type errors.
-  --> What gets flagged.py:16:1
+  --> main.py:16:1
    |
 15 | # We should also not be able to set it
 16 | hidden_dunder_variables._HiddenDunderVariables__str_x = 1

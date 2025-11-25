@@ -5,7 +5,7 @@ expression: combined_output
 ### Basic wrong type assignment
 
 error[mutating-globals-dict]: Mutating the `globals()` dictionary may lead to runtime type errors.
- --> Basic wrong type assignment.py:3:1
+ --> main.py:3:1
   |
 1 | x: int = 5
 2 |
@@ -20,7 +20,7 @@ info: rule `mutating-globals-dict` was selected in the configuration file
 ### Multiple global mutations
 
 error[mutating-globals-dict]: Mutating the `globals()` dictionary may lead to runtime type errors.
- --> Multiple global mutations.py:5:1
+ --> main.py:5:1
   |
 3 | c: bool = True
 4 |
@@ -32,7 +32,7 @@ error[mutating-globals-dict]: Mutating the `globals()` dictionary may lead to ru
 info: rule `mutating-globals-dict` was selected in the configuration file
 
 error[mutating-globals-dict]: Mutating the `globals()` dictionary may lead to runtime type errors.
- --> Multiple global mutations.py:6:1
+ --> main.py:6:1
   |
 5 | globals()['a'] = "wrong"
 6 | globals()['b'] = 123
@@ -42,7 +42,7 @@ error[mutating-globals-dict]: Mutating the `globals()` dictionary may lead to ru
 info: rule `mutating-globals-dict` was selected in the configuration file
 
 error[mutating-globals-dict]: Mutating the `globals()` dictionary may lead to runtime type errors.
- --> Multiple global mutations.py:7:1
+ --> main.py:7:1
   |
 5 | globals()['a'] = "wrong"
 6 | globals()['b'] = 123
@@ -55,7 +55,7 @@ info: rule `mutating-globals-dict` was selected in the configuration file
 ### Mutation in function
 
 error[mutating-globals-dict]: Mutating the `globals()` dictionary may lead to runtime type errors.
- --> Mutation in function.py:4:5
+ --> main.py:4:5
   |
 3 | def increment() -> None:
 4 |     globals()['count'] = "not_int"
@@ -73,7 +73,7 @@ info: rule `mutating-globals-dict` was selected in the configuration file
 ### Mutation in class method
 
 error[mutating-globals-dict]: Mutating the `globals()` dictionary may lead to runtime type errors.
- --> Mutation in class method.py:5:9
+ --> main.py:5:9
   |
 3 | class Counter:
 4 |     def update(self) -> None:
@@ -86,7 +86,7 @@ info: rule `mutating-globals-dict` was selected in the configuration file
 ### Mutation in loop
 
 error[mutating-globals-dict]: Mutating the `globals()` dictionary may lead to runtime type errors.
- --> Mutation in loop.py:4:5
+ --> main.py:4:5
   |
 3 | for i in range(5):
 4 |     globals()['data'] = "wrong"
@@ -98,7 +98,7 @@ info: rule `mutating-globals-dict` was selected in the configuration file
 ### Conditional mutation
 
 error[mutating-globals-dict]: Mutating the `globals()` dictionary may lead to runtime type errors.
- --> Conditional mutation.py:4:5
+ --> main.py:4:5
   |
 3 | if flag:
 4 |     globals()['flag'] = "not_bool"
@@ -110,7 +110,7 @@ info: rule `mutating-globals-dict` was selected in the configuration file
 ### Nested function mutation
 
 error[mutating-globals-dict]: Mutating the `globals()` dictionary may lead to runtime type errors.
- --> Nested function mutation.py:5:9
+ --> main.py:5:9
   |
 3 | def outer():
 4 |     def inner():

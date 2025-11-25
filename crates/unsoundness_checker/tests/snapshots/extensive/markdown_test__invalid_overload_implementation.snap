@@ -5,7 +5,7 @@ expression: combined_output
 ### Basic object return type
 
 error[invalid-overload-implementation]: Invalid overload implementation can lead to runtime errors.
- --> Basic object return type.py:8:5
+ --> main.py:8:5
   |
 6 | def bar(x: str) -> int: ...
 7 | def bar(x: int | str) -> object:
@@ -19,7 +19,7 @@ info: rule `invalid-overload-implementation` was selected in the configuration f
 ### Wrong concrete return type
 
 error[invalid-overload-implementation]: Invalid overload implementation can lead to runtime errors.
- --> Wrong concrete return type.py:8:5
+ --> main.py:8:5
   |
 6 | def foo(x: str) -> int: ...
 7 | def foo(x: int | str) -> bytes:
@@ -36,7 +36,7 @@ info: rule `invalid-overload-implementation` was selected in the configuration f
 ### Multiple overloads with object
 
 error[invalid-overload-implementation]: Invalid overload implementation can lead to runtime errors.
-  --> Multiple overloads with object.py:10:5
+  --> main.py:10:5
    |
  8 | def multi(x: bool, y: bool) -> bool: ...
  9 | def multi(x: int | str | bool, y: int | str | bool) -> object:
@@ -50,7 +50,7 @@ info: rule `invalid-overload-implementation` was selected in the configuration f
 ### Class method with wrong return
 
 error[invalid-overload-implementation]: Invalid overload implementation can lead to runtime errors.
- --> Class method with wrong return.py:9:9
+ --> main.py:9:9
   |
 7 |     def process(self, x: str) -> int: ...
 8 |     def process(self, x: int | str) -> object:
@@ -64,7 +64,7 @@ info: rule `invalid-overload-implementation` was selected in the configuration f
 ### Classmethod with object return
 
 error[invalid-overload-implementation]: Invalid overload implementation can lead to runtime errors.
-  --> Classmethod with object return.py:12:9
+  --> main.py:12:9
    |
 10 |     @classmethod
 11 |     def create(cls, x: int | str) -> object:
@@ -78,7 +78,7 @@ info: rule `invalid-overload-implementation` was selected in the configuration f
 ### Staticmethod with wrong return
 
 error[invalid-overload-implementation]: Invalid overload implementation can lead to runtime errors.
-  --> Staticmethod with wrong return.py:12:9
+  --> main.py:12:9
    |
 10 |     @staticmethod
 11 |     def convert(x: int | str) -> object:
@@ -95,7 +95,7 @@ info: rule `invalid-overload-implementation` was selected in the configuration f
 ### Overload with None not in union
 
 error[invalid-overload-implementation]: Invalid overload implementation can lead to runtime errors.
- --> Overload with None not in union.py:8:5
+ --> main.py:8:5
   |
 6 | def maybe(x: str) -> str: ...
 7 | def maybe(x: int | str) -> int | str | None:
@@ -112,7 +112,7 @@ info: rule `invalid-overload-implementation` was selected in the configuration f
 ### Tuple return too generic
 
 error[invalid-overload-implementation]: Invalid overload implementation can lead to runtime errors.
- --> Tuple return too generic.py:8:5
+ --> main.py:8:5
   |
 6 | def pair(x: str) -> tuple[str, str]: ...
 7 | def pair(x: int | str) -> tuple:

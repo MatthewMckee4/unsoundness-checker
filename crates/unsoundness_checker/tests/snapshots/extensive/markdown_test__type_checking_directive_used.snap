@@ -5,7 +5,7 @@ expression: combined_output
 ### mypy type ignore
 
 error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> mypy type ignore.py:1:14
+ --> main.py:1:14
   |
 1 | res = foo()  # type: ignore
   |              ^^^^^^^^^^^^^^
@@ -16,7 +16,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### mypy with specific error code
 
 error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> mypy with specific error code.py:1:14
+ --> main.py:1:14
   |
 1 | res = foo()  # type: ignore[name-defined]
   |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -27,7 +27,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### Multiple mypy error codes
 
 error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> Multiple mypy error codes.py:1:14
+ --> main.py:1:14
   |
 1 | res = foo()  # type: ignore[name-defined, arg-type]
   |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -38,7 +38,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### pyright ignore
 
 error[type-checking-directive-used]: Type checking directive `pyright: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> pyright ignore.py:1:14
+ --> main.py:1:14
   |
 1 | res = foo()  # pyright: ignore
   |              ^^^^^^^^^^^^^^^^^
@@ -49,7 +49,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### pyright with error code
 
 error[type-checking-directive-used]: Type checking directive `pyright: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> pyright with error code.py:1:14
+ --> main.py:1:14
   |
 1 | res = foo()  # pyright: ignore[reportUndefinedVariable]
   |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -60,7 +60,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### ty ignore
 
 error[type-checking-directive-used]: Type checking directive `ty: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> ty ignore.py:1:14
+ --> main.py:1:14
   |
 1 | res = foo()  # ty: ignore
   |              ^^^^^^^^^^^^
@@ -71,7 +71,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### ty with error code
 
 error[type-checking-directive-used]: Type checking directive `ty: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> ty with error code.py:1:14
+ --> main.py:1:14
   |
 1 | res = foo()  # ty: ignore[unresolved-reference]
   |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -82,7 +82,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### pyrefly ignore
 
 error[type-checking-directive-used]: Type checking directive `pyrefly: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> pyrefly ignore.py:1:14
+ --> main.py:1:14
   |
 1 | res = foo()  # pyrefly: ignore
   |              ^^^^^^^^^^^^^^^^^
@@ -93,7 +93,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### pyrefly with error code
 
 error[type-checking-directive-used]: Type checking directive `pyrefly: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> pyrefly with error code.py:1:14
+ --> main.py:1:14
   |
 1 | res = foo()  # pyrefly: ignore[unknown-name]
   |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -104,7 +104,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### Inline type ignore on assignment
 
 error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> Inline type ignore on assignment.py:1:19
+ --> main.py:1:19
   |
 1 | x: int = "wrong"  # type: ignore
   |                   ^^^^^^^^^^^^^^
@@ -115,7 +115,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### Type ignore on function call
 
 error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> Type ignore on function call.py:4:28
+ --> main.py:4:28
   |
 2 |     return x
 3 |
@@ -128,7 +128,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### Type ignore on method call
 
 error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> Type ignore on method call.py:6:20
+ --> main.py:6:20
   |
 5 | h = Handler()
 6 | h.handle("wrong")  # type: ignore
@@ -140,7 +140,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### Type ignore on import
 
 error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> Type ignore on import.py:1:36
+ --> main.py:1:36
   |
 1 | from nonexistent import something  # type: ignore
   |                                    ^^^^^^^^^^^^^^
@@ -151,7 +151,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### Type ignore on attribute access
 
 error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> Type ignore on attribute access.py:2:26
+ --> main.py:2:26
   |
 1 | obj = get_object()
 2 | value = obj.nonexistent  # type: ignore
@@ -163,7 +163,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### Type ignore in class
 
 error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> Type ignore in class.py:2:27
+ --> main.py:2:27
   |
 1 | class MyClass:
 2 |     value: int = "wrong"  # type: ignore
@@ -175,7 +175,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### Type ignore on return
 
 error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> Type ignore on return.py:2:23
+ --> main.py:2:23
   |
 1 | def get_number() -> int:
 2 |     return "not_int"  # type: ignore
@@ -187,7 +187,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### Multiple directives same line
 
 error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> Multiple directives same line.py:1:12
+ --> main.py:1:12
   |
 1 | x = foo()  # type: ignore  # pyright: ignore
   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -198,7 +198,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### Type ignore with other comments
 
 error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> Type ignore with other comments.py:1:18
+ --> main.py:1:18
   |
 1 | x = calculate()  # type: ignore - TODO: fix this later
   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -209,7 +209,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### Type ignore in list comprehension
 
 error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> Type ignore in list comprehension.py:1:35
+ --> main.py:1:35
   |
 1 | values = [foo(x) for x in items]  # type: ignore
   |                                   ^^^^^^^^^^^^^^
@@ -220,7 +220,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### Type ignore in dict comprehension
 
 error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> Type ignore in dict comprehension.py:1:44
+ --> main.py:1:44
   |
 1 | mapping = {k: wrong(v) for k, v in pairs}  # type: ignore
   |                                            ^^^^^^^^^^^^^^
@@ -231,7 +231,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### Type ignore on generator
 
 error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> Type ignore on generator.py:1:36
+ --> main.py:1:36
   |
 1 | gen = (process(x) for x in items)  # type: ignore
   |                                    ^^^^^^^^^^^^^^
@@ -242,7 +242,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### Type ignore with cast
 
 error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> Type ignore with cast.py:2:30
+ --> main.py:2:30
   |
 1 | from typing import cast
 2 | value = cast(int, "string")  # type: ignore
@@ -254,7 +254,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### Type ignore on decorator
 
 error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> Type ignore on decorator.py:1:18
+ --> main.py:1:18
   |
 1 | @some_decorator  # type: ignore
   |                  ^^^^^^^^^^^^^^
@@ -267,7 +267,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### Type ignore on with statement
 
 error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> Type ignore on with statement.py:1:26
+ --> main.py:1:26
   |
 1 | with open("file") as f:  # type: ignore
   |                          ^^^^^^^^^^^^^^
@@ -279,7 +279,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### Type ignore on context manager
 
 error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> Type ignore on context manager.py:1:32
+ --> main.py:1:32
   |
 1 | with wrong_context_manager():  # type: ignore
   |                                ^^^^^^^^^^^^^^
@@ -291,7 +291,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### Type ignore on assert
 
 error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> Type ignore on assert.py:1:27
+ --> main.py:1:27
   |
 1 | assert wrong_condition()  # type: ignore
   |                           ^^^^^^^^^^^^^^
@@ -302,7 +302,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### Type ignore on raise
 
 error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> Type ignore on raise.py:1:25
+ --> main.py:1:25
   |
 1 | raise WrongException()  # type: ignore
   |                         ^^^^^^^^^^^^^^
@@ -313,7 +313,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### Type ignore on try-except
 
 error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> Type ignore on try-except.py:2:24
+ --> main.py:2:24
   |
 1 | try:
 2 |     risky_operation()  # type: ignore
@@ -327,7 +327,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### Type ignore in f-string
 
 error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> Type ignore in f-string.py:1:37
+ --> main.py:1:37
   |
 1 | message = f"Value: {wrong_func()}"  # type: ignore
   |                                     ^^^^^^^^^^^^^^
@@ -338,7 +338,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### Ignore on binary operation
 
 error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> Ignore on binary operation.py:1:26
+ --> main.py:1:26
   |
 1 | result = "string" + 123  # type: ignore
   |                          ^^^^^^^^^^^^^^
@@ -349,7 +349,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### Ignore on comparison
 
 error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> Ignore on comparison.py:1:21
+ --> main.py:1:21
   |
 1 | if "string" > 123:  # type: ignore
   |                     ^^^^^^^^^^^^^^
@@ -361,7 +361,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### Hidden runtime error
 
 error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> Hidden runtime error.py:4:41
+ --> main.py:4:41
   |
 2 |     return sum(items)
 3 |
@@ -374,7 +374,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### Masking attribute error
 
 error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> Masking attribute error.py:5:14
+ --> main.py:5:14
   |
 4 | p = Person()
 5 | age = p.age  # type: ignore
@@ -386,7 +386,7 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 ### Hiding incompatible return
 
 error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> Hiding incompatible return.py:2:28
+ --> main.py:2:28
   |
 1 | def get_number() -> int:
 2 |     return "not a number"  # type: ignore
