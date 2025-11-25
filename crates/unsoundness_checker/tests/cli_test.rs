@@ -176,12 +176,10 @@ x: Any = 1
       |
     info: rule `typing-any-used` is enabled by default
 
-    Found 1 diagnostic
-
-    Summary:
+    summary:
       typing-any-used: 1
 
-    Total: 1 diagnostic
+    Found 1 diagnostic
 
     ----- stderr -----
     ");
@@ -190,11 +188,9 @@ x: Any = 1
     success: true
     exit_code: 0
     ----- stdout -----
-
-    Summary:
+    summary:
       typing-any-used: 1
 
-    Total: 1 diagnostic
 
     ----- stderr -----
     ");
@@ -238,13 +234,11 @@ y: Callable[..., str] = lambda s: s.upper()
       |
     info: rule `callable-ellipsis-used` is enabled by default
 
-    Found 2 diagnostics
-
-    Summary:
+    summary:
       callable-ellipsis-used: 1
       typing-any-used: 1
 
-    Total: 2 diagnostics
+    Found 2 diagnostics
 
     ----- stderr -----
     ");
@@ -253,12 +247,10 @@ y: Callable[..., str] = lambda s: s.upper()
     success: true
     exit_code: 0
     ----- stdout -----
-
-    Summary:
+    summary:
       callable-ellipsis-used: 1
       typing-any-used: 1
 
-    Total: 2 diagnostics
 
     ----- stderr -----
     ");
