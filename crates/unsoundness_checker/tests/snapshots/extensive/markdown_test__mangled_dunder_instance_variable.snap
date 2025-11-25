@@ -5,7 +5,7 @@ expression: combined_output
 ### Basic mangled variable assignment
 
 error[mangled-dunder-instance-variable]: Explicit use of mangled attribute `_HiddenDunderVariables__str_x` can bypass type checking and lead to runtime type errors.
- --> Basic mangled variable assignment.py:4:9
+ --> main.py:4:9
   |
 2 |     def __init__(self, x: int) -> None:
 3 |         self.__str_x = str(x)
@@ -20,7 +20,7 @@ info: rule `mangled-dunder-instance-variable` was selected in the configuration 
 ### External mangled variable access
 
 error[mangled-dunder-instance-variable]: Explicit use of mangled attribute `_HiddenDunderVariables__str_x` can bypass type checking and lead to runtime type errors.
- --> External mangled variable access.py:6:1
+ --> main.py:6:1
   |
 5 | hidden_dunder_variables = HiddenDunderVariables(42)
 6 | hidden_dunder_variables._HiddenDunderVariables__str_x = 1
@@ -32,7 +32,7 @@ info: rule `mangled-dunder-instance-variable` was selected in the configuration 
 ### Multiple mangled variables
 
 error[mangled-dunder-instance-variable]: Explicit use of mangled attribute `_Container__data` can bypass type checking and lead to runtime type errors.
- --> Multiple mangled variables.py:7:1
+ --> main.py:7:1
   |
 6 | obj = Container()
 7 | obj._Container__data = 123
@@ -42,7 +42,7 @@ error[mangled-dunder-instance-variable]: Explicit use of mangled attribute `_Con
 info: rule `mangled-dunder-instance-variable` was selected in the configuration file
 
 error[mangled-dunder-instance-variable]: Explicit use of mangled attribute `_Container__count` can bypass type checking and lead to runtime type errors.
- --> Multiple mangled variables.py:8:1
+ --> main.py:8:1
   |
 6 | obj = Container()
 7 | obj._Container__data = 123
@@ -55,7 +55,7 @@ info: rule `mangled-dunder-instance-variable` was selected in the configuration 
 ### Mangled in method
 
 error[mangled-dunder-instance-variable]: Explicit use of mangled attribute `_Processor__value` can bypass type checking and lead to runtime type errors.
- --> Mangled in method.py:6:9
+ --> main.py:6:9
   |
 5 |     def update(self) -> None:
 6 |         self._Processor__value = "wrong_type"
@@ -67,7 +67,7 @@ info: rule `mangled-dunder-instance-variable` was selected in the configuration 
 ### Reading mangled variable
 
 error[mangled-dunder-instance-variable]: Explicit use of mangled attribute `_Secret__secret` can bypass type checking and lead to runtime type errors.
- --> Reading mangled variable.py:6:1
+ --> main.py:6:1
   |
 5 | obj = Secret()
 6 | obj._Secret__secret = 123
@@ -77,7 +77,7 @@ error[mangled-dunder-instance-variable]: Explicit use of mangled attribute `_Sec
 info: rule `mangled-dunder-instance-variable` was selected in the configuration file
 
 error[mangled-dunder-instance-variable]: Explicit use of mangled attribute `_Secret__secret` can bypass type checking and lead to runtime type errors.
- --> Reading mangled variable.py:7:9
+ --> main.py:7:9
   |
 5 | obj = Secret()
 6 | obj._Secret__secret = 123
@@ -90,7 +90,7 @@ info: rule `mangled-dunder-instance-variable` was selected in the configuration 
 ### Mangled in property
 
 error[mangled-dunder-instance-variable]: Explicit use of mangled attribute `_Managed__data` can bypass type checking and lead to runtime type errors.
- --> Mangled in property.py:7:16
+ --> main.py:7:16
   |
 5 |     @property
 6 |     def data(self) -> int:
@@ -102,7 +102,7 @@ error[mangled-dunder-instance-variable]: Explicit use of mangled attribute `_Man
 info: rule `mangled-dunder-instance-variable` was selected in the configuration file
 
 error[mangled-dunder-instance-variable]: Explicit use of mangled attribute `_Managed__data` can bypass type checking and lead to runtime type errors.
-  --> Mangled in property.py:10:1
+  --> main.py:10:1
    |
  9 | obj = Managed()
 10 | obj._Managed__data = "not_int"
@@ -114,7 +114,7 @@ info: rule `mangled-dunder-instance-variable` was selected in the configuration 
 ### Mangled in inheritance
 
 error[mangled-dunder-instance-variable]: Explicit use of mangled attribute `_Child__child_var` can bypass type checking and lead to runtime type errors.
-  --> Mangled in inheritance.py:12:1
+  --> main.py:12:1
    |
 10 | child = Child()
 11 | child._Parent__parent_var = 123
@@ -130,7 +130,7 @@ info: rule `mangled-dunder-instance-variable` was selected in the configuration 
 ### Nested class mangled
 
 error[mangled-dunder-instance-variable]: Explicit use of mangled attribute `_Inner__value` can bypass type checking and lead to runtime type errors.
- --> Nested class mangled.py:7:1
+ --> main.py:7:1
   |
 6 | inner = Outer.Inner()
 7 | inner._Inner__value = "wrong"
@@ -142,7 +142,7 @@ info: rule `mangled-dunder-instance-variable` was selected in the configuration 
 ### Mangled in init vs method
 
 error[mangled-dunder-instance-variable]: Explicit use of mangled attribute `_State__state` can bypass type checking and lead to runtime type errors.
- --> Mangled in init vs method.py:6:9
+ --> main.py:6:9
   |
 5 |     def update(self) -> None:
 6 |         self._State__state = 123
@@ -154,7 +154,7 @@ info: rule `mangled-dunder-instance-variable` was selected in the configuration 
 ### Multiple classes same mangled name
 
 error[mangled-dunder-instance-variable]: Explicit use of mangled attribute `_First__data` can bypass type checking and lead to runtime type errors.
-  --> Multiple classes same mangled name.py:11:1
+  --> main.py:11:1
    |
  9 | f = First()
 10 | s = Second()
@@ -165,7 +165,7 @@ error[mangled-dunder-instance-variable]: Explicit use of mangled attribute `_Fir
 info: rule `mangled-dunder-instance-variable` was selected in the configuration file
 
 error[mangled-dunder-instance-variable]: Explicit use of mangled attribute `_Second__data` can bypass type checking and lead to runtime type errors.
-  --> Multiple classes same mangled name.py:12:1
+  --> main.py:12:1
    |
 10 | s = Second()
 11 | f._First__data = "wrong"
@@ -181,7 +181,7 @@ info: rule `mangled-dunder-instance-variable` was selected in the configuration 
 ### Mangled with del
 
 error[mangled-dunder-instance-variable]: Explicit use of mangled attribute `_Temporary__temp` can bypass type checking and lead to runtime type errors.
- --> Mangled with del.py:6:1
+ --> main.py:6:1
   |
 5 | obj = Temporary()
 6 | obj._Temporary__temp = 123
@@ -196,7 +196,7 @@ info: rule `mangled-dunder-instance-variable` was selected in the configuration 
 ### Complex mangled access
 
 error[mangled-dunder-instance-variable]: Explicit use of mangled attribute `_Complex__x` can bypass type checking and lead to runtime type errors.
- --> Complex mangled access.py:8:1
+ --> main.py:8:1
   |
 6 | obj = Complex()
 7 | values = {"x": "wrong", "y": 123}
@@ -207,7 +207,7 @@ error[mangled-dunder-instance-variable]: Explicit use of mangled attribute `_Com
 info: rule `mangled-dunder-instance-variable` was selected in the configuration file
 
 error[mangled-dunder-instance-variable]: Explicit use of mangled attribute `_Complex__y` can bypass type checking and lead to runtime type errors.
- --> Complex mangled access.py:9:1
+ --> main.py:9:1
   |
 7 | values = {"x": "wrong", "y": 123}
 8 | obj._Complex__x = values["x"]

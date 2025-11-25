@@ -3,7 +3,7 @@ source: crates/unsoundness_checker/tests/markdown_test.rs
 expression: output
 ---
 error[invalid-overload-implementation]: Invalid overload implementation can lead to runtime errors.
- --> What gets flagged.py:8:5
+ --> main.py:8:5
   |
 6 | def bar(x: str) -> int: ...
 7 | def bar(x: int | str) -> object:

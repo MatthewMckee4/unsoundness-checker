@@ -3,7 +3,7 @@ source: crates/unsoundness_checker/tests/markdown_test.rs
 expression: output
 ---
 error[if-type-checking-used]: Using `if TYPE_CHECKING:` blocks can lead to runtime errors if imports or definitions are incorrectly referenced at runtime.
- --> What gets flagged.py:3:4
+ --> main.py:3:4
   |
 1 | from typing import TYPE_CHECKING
 2 |

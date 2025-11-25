@@ -48,7 +48,8 @@ impl TestRunner {
             fs::create_dir_all(parent).expect("Failed to create directory");
         }
 
-        fs::write(&file_path, content).expect("Failed to write test file");
+        fs::write(&file_path, content)
+            .unwrap_or_else(|_| panic!("Failed to write test file: {}", file_path.display()));
         self
     }
 
@@ -309,13 +310,16 @@ pub fn run_rule_tests(rule_name: &str) -> Vec<(PathBuf, String, String, usize)> 
         })
         .collect::<Vec<_>>();
 
+    // Only run external type checkers if explicitly enabled
+    let run_external = std::env::var("UNSOUNDNESS_TEST_EXTERNAL")
+        .map(|v| v == "1" || v.to_lowercase() == "true")
+        .unwrap_or(false);
+
     for (idx, snippet) in rule_tests.python_snippets().enumerate() {
         let snippet_name = format!("snippet_{:02}", idx + 1);
-        let test_name = snippet.name.as_deref().unwrap_or("unnamed");
-        let filename = format!("{test_name}.py");
         let heading_level = snippet.heading_level;
 
-        let mut test_runner = TestRunner::from_file(&filename, &snippet.content);
+        let mut test_runner = TestRunner::from_file("main.py", &snippet.content);
 
         test_runner.with_rules(rule_levels.clone().into_iter());
 
@@ -329,7 +333,7 @@ pub fn run_rule_tests(rule_name: &str) -> Vec<(PathBuf, String, String, usize)> 
             heading_level,
         ));
 
-        if cfg!(unix) && rule_name != "type_checking_directive_used" {
+        if cfg!(unix) && run_external && rule_name != "type_checking_directive_used" {
             let ty_output = test_runner.run_ty();
             results.push((
                 temp_path.clone(),
@@ -383,10 +387,9 @@ pub fn run_rule_tests_extensive(rule_name: &str) -> Vec<(PathBuf, String, String
 
     for snippet in rule_tests.python_snippets() {
         let test_name = snippet.name.as_deref().unwrap_or("unnamed");
-        let filename = format!("{test_name}.py");
         let heading_level = snippet.heading_level;
 
-        let mut test_runner = TestRunner::from_file(&filename, &snippet.content);
+        let mut test_runner = TestRunner::from_file("main.py", &snippet.content);
 
         test_runner.with_rules(rule_levels.clone().into_iter());
 

@@ -3,7 +3,7 @@ source: crates/unsoundness_checker/tests/markdown_test.rs
 expression: output
 ---
 error[invalid-function-defaults]: Setting `__defaults__` to an object of type `tuple[Literal["string"]]` on a function may lead to runtime type errors.
- --> What gets flagged.py:4:1
+ --> main.py:4:1
   |
 2 |     return x
 3 |
@@ -15,7 +15,7 @@ error[invalid-function-defaults]: Setting `__defaults__` to an object of type `t
 info: rule `invalid-function-defaults` was selected in the configuration file
 
 error[invalid-function-defaults]: Setting `__defaults__` to an object of type `None` on a function may lead to runtime type errors.
- --> What gets flagged.py:6:1
+ --> main.py:6:1
   |
 4 | foo.__defaults__ = ("string",)
 5 |
@@ -27,7 +27,7 @@ error[invalid-function-defaults]: Setting `__defaults__` to an object of type `N
 info: rule `invalid-function-defaults` was selected in the configuration file
 
 error[invalid-function-defaults]: Setting `__defaults__` to an object of type `tuple[Literal[1], Literal["string"], Literal["string"]]` on a function may lead to runtime type errors.
-  --> What gets flagged.py:11:1
+  --> main.py:11:1
    |
  9 |     return x
 10 |
@@ -39,7 +39,7 @@ error[invalid-function-defaults]: Setting `__defaults__` to an object of type `t
 info: rule `invalid-function-defaults` was selected in the configuration file
 
 error[invalid-function-defaults]: Setting `__defaults__` to an object of type `None` on a function may lead to runtime type errors.
-  --> What gets flagged.py:13:1
+  --> main.py:13:1
    |
 11 | bar.__defaults__ = (1, "string", "string")
 12 |
@@ -51,7 +51,7 @@ error[invalid-function-defaults]: Setting `__defaults__` to an object of type `N
 info: rule `invalid-function-defaults` was selected in the configuration file
 
 error[invalid-function-defaults]: Setting `__defaults__` to an object of type `tuple[Literal[1], Literal["string"]]` on a function may lead to runtime type errors.
-  --> What gets flagged.py:15:1
+  --> main.py:15:1
    |
 13 | bar.__defaults__ = None
 14 |

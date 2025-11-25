@@ -3,7 +3,7 @@ source: crates/unsoundness_checker/tests/markdown_test.rs
 expression: output
 ---
 error[mutating-function-code-attribute]: Mutating `__code__` attribute on a function may lead to runtime type errors.
- --> What we can't catch.py:7:1
+ --> main.py:7:1
   |
 5 |     return 1
 6 |

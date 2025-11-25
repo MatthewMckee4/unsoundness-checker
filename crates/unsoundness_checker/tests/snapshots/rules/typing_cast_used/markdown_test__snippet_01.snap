@@ -3,7 +3,7 @@ source: crates/unsoundness_checker/tests/markdown_test.rs
 expression: output
 ---
 error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
- --> What gets flagged.py:4:12
+ --> main.py:4:12
   |
 3 | def foo() -> int:
 4 |     return cast(int, "hello")
