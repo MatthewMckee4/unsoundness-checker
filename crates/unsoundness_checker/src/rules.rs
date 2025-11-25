@@ -1,4 +1,4 @@
-use ruff_python_ast::{Expr, ExprAttribute, ExprCall, StmtFunctionDef, StmtReturn};
+use ruff_python_ast::{Expr, ExprAttribute, ExprCall, StmtReturn};
 use ruff_text_size::Ranged;
 use ty_python_semantic::types::Type;
 
@@ -458,8 +458,8 @@ pub(crate) fn report_invalid_overload_implementation<'db>(
     ));
 }
 
-pub(crate) fn report_typing_overload_used(context: &Context, overload_stmt: &StmtFunctionDef) {
-    let Some(builder) = context.report_lint(&TYPING_OVERLOAD_USED, overload_stmt.name.range) else {
+pub(crate) fn report_typing_overload_used(context: &Context, expr: &impl Ranged) {
+    let Some(builder) = context.report_lint(&TYPING_OVERLOAD_USED, expr.range()) else {
         return;
     };
 
