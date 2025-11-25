@@ -5,7 +5,7 @@ expression: combined_output
 ### Basic TYPE_CHECKING with else
 
 error[if-type-checking-used]: Using `if TYPE_CHECKING:` blocks can lead to runtime errors if imports or definitions are incorrectly referenced at runtime.
- --> Basic TYPE_CHECKING with else.py:3:4
+ --> main.py:3:4
   |
 1 | from typing import TYPE_CHECKING
 2 |
@@ -20,7 +20,7 @@ info: rule `if-type-checking-used` was selected in the configuration file
 ### TYPE_CHECKING for imports
 
 error[if-type-checking-used]: Using `if TYPE_CHECKING:` blocks can lead to runtime errors if imports or definitions are incorrectly referenced at runtime.
- --> TYPE_CHECKING for imports.py:3:4
+ --> main.py:3:4
   |
 1 | from typing import TYPE_CHECKING
 2 |
@@ -35,7 +35,7 @@ info: rule `if-type-checking-used` was selected in the configuration file
 ### TYPE_CHECKING with class definition
 
 error[if-type-checking-used]: Using `if TYPE_CHECKING:` blocks can lead to runtime errors if imports or definitions are incorrectly referenced at runtime.
- --> TYPE_CHECKING with class definition.py:3:4
+ --> main.py:3:4
   |
 1 | from typing import TYPE_CHECKING
 2 |
@@ -50,7 +50,7 @@ info: rule `if-type-checking-used` was selected in the configuration file
 ### TYPE_CHECKING with variable annotation
 
 error[if-type-checking-used]: Using `if TYPE_CHECKING:` blocks can lead to runtime errors if imports or definitions are incorrectly referenced at runtime.
- --> TYPE_CHECKING with variable annotation.py:3:4
+ --> main.py:3:4
   |
 1 | from typing import TYPE_CHECKING
 2 |
@@ -65,7 +65,7 @@ info: rule `if-type-checking-used` was selected in the configuration file
 ### Nested TYPE_CHECKING blocks
 
 error[if-type-checking-used]: Using `if TYPE_CHECKING:` blocks can lead to runtime errors if imports or definitions are incorrectly referenced at runtime.
- --> Nested TYPE_CHECKING blocks.py:3:4
+ --> main.py:3:4
   |
 1 | from typing import TYPE_CHECKING
 2 |
@@ -80,7 +80,7 @@ info: rule `if-type-checking-used` was selected in the configuration file
 ### TYPE_CHECKING in class body
 
 error[if-type-checking-used]: Using `if TYPE_CHECKING:` blocks can lead to runtime errors if imports or definitions are incorrectly referenced at runtime.
- --> TYPE_CHECKING in class body.py:4:8
+ --> main.py:4:8
   |
 3 | class Container:
 4 |     if TYPE_CHECKING:
@@ -94,7 +94,7 @@ info: rule `if-type-checking-used` was selected in the configuration file
 ### TYPE_CHECKING with function overload
 
 error[if-type-checking-used]: Using `if TYPE_CHECKING:` blocks can lead to runtime errors if imports or definitions are incorrectly referenced at runtime.
- --> TYPE_CHECKING with function overload.py:3:4
+ --> main.py:3:4
   |
 1 | from typing import TYPE_CHECKING, overload
 2 |
@@ -109,7 +109,7 @@ info: rule `if-type-checking-used` was selected in the configuration file
 ### TYPE_CHECKING with type alias
 
 error[if-type-checking-used]: Using `if TYPE_CHECKING:` blocks can lead to runtime errors if imports or definitions are incorrectly referenced at runtime.
- --> TYPE_CHECKING with type alias.py:3:4
+ --> main.py:3:4
   |
 1 | from typing import TYPE_CHECKING
 2 |
@@ -124,7 +124,7 @@ info: rule `if-type-checking-used` was selected in the configuration file
 ### TYPE_CHECKING with multiple definitions
 
 error[if-type-checking-used]: Using `if TYPE_CHECKING:` blocks can lead to runtime errors if imports or definitions are incorrectly referenced at runtime.
- --> TYPE_CHECKING with multiple definitions.py:3:4
+ --> main.py:3:4
   |
 1 | from typing import TYPE_CHECKING
 2 |
@@ -139,7 +139,7 @@ info: rule `if-type-checking-used` was selected in the configuration file
 ### TYPE_CHECKING with global variable
 
 error[if-type-checking-used]: Using `if TYPE_CHECKING:` blocks can lead to runtime errors if imports or definitions are incorrectly referenced at runtime.
- --> TYPE_CHECKING with global variable.py:3:4
+ --> main.py:3:4
   |
 1 | from typing import TYPE_CHECKING
 2 |
@@ -154,7 +154,7 @@ info: rule `if-type-checking-used` was selected in the configuration file
 ### TYPE_CHECKING in module level
 
 error[if-type-checking-used]: Using `if TYPE_CHECKING:` blocks can lead to runtime errors if imports or definitions are incorrectly referenced at runtime.
- --> TYPE_CHECKING in module level.py:3:4
+ --> main.py:3:4
   |
 1 | from typing import TYPE_CHECKING
 2 |
@@ -169,7 +169,7 @@ info: rule `if-type-checking-used` was selected in the configuration file
 ### TYPE_CHECKING with method
 
 error[if-type-checking-used]: Using `if TYPE_CHECKING:` blocks can lead to runtime errors if imports or definitions are incorrectly referenced at runtime.
- --> TYPE_CHECKING with method.py:4:8
+ --> main.py:4:8
   |
 3 | class Handler:
 4 |     if TYPE_CHECKING:
@@ -183,7 +183,7 @@ info: rule `if-type-checking-used` was selected in the configuration file
 ### TYPE_CHECKING with conditional import
 
 error[if-type-checking-used]: Using `if TYPE_CHECKING:` blocks can lead to runtime errors if imports or definitions are incorrectly referenced at runtime.
- --> TYPE_CHECKING with conditional import.py:3:4
+ --> main.py:3:4
   |
 1 | from typing import TYPE_CHECKING
 2 |
@@ -198,7 +198,7 @@ info: rule `if-type-checking-used` was selected in the configuration file
 ### TYPE_CHECKING with future import
 
 error[if-type-checking-used]: Using `if TYPE_CHECKING:` blocks can lead to runtime errors if imports or definitions are incorrectly referenced at runtime.
- --> TYPE_CHECKING with future import.py:4:4
+ --> main.py:4:4
   |
 2 | from typing import TYPE_CHECKING
 3 |
@@ -213,7 +213,7 @@ info: rule `if-type-checking-used` was selected in the configuration file
 ### Multiple TYPE_CHECKING blocks
 
 error[if-type-checking-used]: Using `if TYPE_CHECKING:` blocks can lead to runtime errors if imports or definitions are incorrectly referenced at runtime.
- --> Multiple TYPE_CHECKING blocks.py:3:4
+ --> main.py:3:4
   |
 1 | from typing import TYPE_CHECKING
 2 |
@@ -225,7 +225,7 @@ error[if-type-checking-used]: Using `if TYPE_CHECKING:` blocks can lead to runti
 info: rule `if-type-checking-used` was selected in the configuration file
 
 error[if-type-checking-used]: Using `if TYPE_CHECKING:` blocks can lead to runtime errors if imports or definitions are incorrectly referenced at runtime.
-  --> Multiple TYPE_CHECKING blocks.py:8:4
+  --> main.py:8:4
    |
  6 |     x: str = "zero"
  7 |

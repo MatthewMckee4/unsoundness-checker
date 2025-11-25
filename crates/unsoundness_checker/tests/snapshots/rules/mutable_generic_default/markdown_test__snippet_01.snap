@@ -3,7 +3,7 @@ source: crates/unsoundness_checker/tests/markdown_test.rs
 expression: output
 ---
 error[mutable-generic-default]: Using a mutable default argument for a generic parameter in a function can lead to runtime type errors.
- --> What gets flagged.py:1:45
+ --> main.py:1:45
   |
 1 | def append_and_return[T](x: T, y: list[T] = []) -> list[T]:
   |                                             ^^

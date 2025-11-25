@@ -5,7 +5,7 @@ expression: combined_output
 ### Basic wrong type default
 
 error[invalid-function-defaults]: Setting `__defaults__` to an object of type `tuple[Literal["string"]]` on a function may lead to runtime type errors.
- --> Basic wrong type default.py:4:1
+ --> main.py:4:1
   |
 2 |     return x
 3 |
@@ -18,7 +18,7 @@ info: rule `invalid-function-defaults` was selected in the configuration file
 ### Setting defaults to None
 
 error[invalid-function-defaults]: Setting `__defaults__` to an object of type `None` on a function may lead to runtime type errors.
- --> Setting defaults to None.py:4:1
+ --> main.py:4:1
   |
 2 |     return x
 3 |
@@ -31,7 +31,7 @@ info: rule `invalid-function-defaults` was selected in the configuration file
 ### Multiple parameters wrong defaults
 
 error[invalid-function-defaults]: Setting `__defaults__` to an object of type `tuple[Literal[1], Literal["string"], Literal["string"]]` on a function may lead to runtime type errors.
- --> Multiple parameters wrong defaults.py:4:1
+ --> main.py:4:1
   |
 2 |     return x
 3 |
@@ -44,7 +44,7 @@ info: rule `invalid-function-defaults` was selected in the configuration file
 ### Clearing defaults
 
 error[invalid-function-defaults]: Setting `__defaults__` to an object of type `None` on a function may lead to runtime type errors.
- --> Clearing defaults.py:4:1
+ --> main.py:4:1
   |
 2 |     return x
 3 |
@@ -57,7 +57,7 @@ info: rule `invalid-function-defaults` was selected in the configuration file
 ### Too few defaults
 
 error[invalid-function-defaults]: Setting `__defaults__` to an object of type `tuple[Literal[1], Literal["string"]]` on a function may lead to runtime type errors.
- --> Too few defaults.py:4:1
+ --> main.py:4:1
   |
 2 |     return x
 3 |
@@ -70,7 +70,7 @@ info: rule `invalid-function-defaults` was selected in the configuration file
 ### Wrong type in tuple
 
 error[invalid-function-defaults]: Setting `__defaults__` to an object of type `tuple[Literal[1], Literal[2], Literal[True]]` on a function may lead to runtime type errors.
- --> Wrong type in tuple.py:4:1
+ --> main.py:4:1
   |
 2 |     pass
 3 |
@@ -83,7 +83,7 @@ info: rule `invalid-function-defaults` was selected in the configuration file
 ### All wrong types
 
 error[invalid-function-defaults]: Setting `__defaults__` to an object of type `tuple[Literal["wrong"], Literal[123]]` on a function may lead to runtime type errors.
- --> All wrong types.py:4:1
+ --> main.py:4:1
   |
 2 |     pass
 3 |
@@ -96,7 +96,7 @@ info: rule `invalid-function-defaults` was selected in the configuration file
 ### Class method defaults
 
 error[invalid-function-defaults]: Setting `__defaults__` to an object of type `tuple[Literal["string"]]` on a function may lead to runtime type errors.
- --> Class method defaults.py:5:1
+ --> main.py:5:1
   |
 3 |         return x
 4 |
@@ -112,7 +112,7 @@ info: rule `invalid-function-defaults` was selected in the configuration file
 ### Static method defaults
 
 error[invalid-function-defaults]: Setting `__defaults__` to an object of type `tuple[Literal["string"]]` on a function may lead to runtime type errors.
- --> Static method defaults.py:6:1
+ --> main.py:6:1
   |
 4 |         return x
 5 |
@@ -128,7 +128,7 @@ info: rule `invalid-function-defaults` was selected in the configuration file
 ### Nested function defaults
 
 error[invalid-function-defaults]: Setting `__defaults__` to an object of type `tuple[Literal["string"]]` on a function may lead to runtime type errors.
- --> Nested function defaults.py:4:5
+ --> main.py:4:5
   |
 2 |     def inner(x: int = 1) -> int:
 3 |         return x
@@ -145,7 +145,7 @@ info: rule `invalid-function-defaults` was selected in the configuration file
 ### Complex type defaults
 
 error[invalid-function-defaults]: Setting `__defaults__` to an object of type `tuple[list[Unknown | str]]` on a function may lead to runtime type errors.
- --> Complex type defaults.py:6:1
+ --> main.py:6:1
   |
 4 |     return items
 5 |
@@ -158,7 +158,7 @@ info: rule `invalid-function-defaults` was selected in the configuration file
 ### Optional parameter wrong default
 
 error[invalid-function-defaults]: Setting `__defaults__` to an object of type `tuple[Literal["not_none_or_int"]]` on a function may lead to runtime type errors.
- --> Optional parameter wrong default.py:6:1
+ --> main.py:6:1
   |
 4 |     return x
 5 |
@@ -171,7 +171,7 @@ info: rule `invalid-function-defaults` was selected in the configuration file
 ### Multiple defaults assignment
 
 error[invalid-function-defaults]: Setting `__defaults__` to an object of type `tuple[Literal[1], Literal[2]]` on a function may lead to runtime type errors.
- --> Multiple defaults assignment.py:4:1
+ --> main.py:4:1
   |
 2 |     pass
 3 |
@@ -182,7 +182,7 @@ error[invalid-function-defaults]: Setting `__defaults__` to an object of type `t
 info: rule `invalid-function-defaults` was selected in the configuration file
 
 error[invalid-function-defaults]: Setting `__defaults__` to an object of type `tuple[Literal["wrong"], Literal["types"]]` on a function may lead to runtime type errors.
- --> Multiple defaults assignment.py:5:1
+ --> main.py:5:1
   |
 4 | func.__defaults__ = (1, 2)
 5 | func.__defaults__ = ("wrong", "types")

@@ -317,11 +317,9 @@ pub fn run_rule_tests(rule_name: &str) -> Vec<(PathBuf, String, String, usize)> 
 
     for (idx, snippet) in rule_tests.python_snippets().enumerate() {
         let snippet_name = format!("snippet_{:02}", idx + 1);
-        let test_name = snippet.name.as_deref().unwrap_or("unnamed");
-        let filename = format!("{test_name}.py");
         let heading_level = snippet.heading_level;
 
-        let mut test_runner = TestRunner::from_file(&filename, &snippet.content);
+        let mut test_runner = TestRunner::from_file("main.py", &snippet.content);
 
         test_runner.with_rules(rule_levels.clone().into_iter());
 
@@ -389,10 +387,9 @@ pub fn run_rule_tests_extensive(rule_name: &str) -> Vec<(PathBuf, String, String
 
     for snippet in rule_tests.python_snippets() {
         let test_name = snippet.name.as_deref().unwrap_or("unnamed");
-        let filename = format!("{test_name}.py");
         let heading_level = snippet.heading_level;
 
-        let mut test_runner = TestRunner::from_file(&filename, &snippet.content);
+        let mut test_runner = TestRunner::from_file("main.py", &snippet.content);
 
         test_runner.with_rules(rule_levels.clone().into_iter());
 

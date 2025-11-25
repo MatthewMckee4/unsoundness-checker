@@ -3,7 +3,7 @@ source: crates/unsoundness_checker/tests/markdown_test.rs
 expression: output
 ---
 error[type-checking-directive-used]: Type checking directive `pyright: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> pyright.py:1:14
+ --> main.py:1:14
   |
 1 | res = foo()  # pyright: ignore
   |              ^^^^^^^^^^^^^^^^^
@@ -13,7 +13,7 @@ error[type-checking-directive-used]: Type checking directive `pyright: ignore` s
 info: rule `type-checking-directive-used` was selected in the configuration file
 
 error[type-checking-directive-used]: Type checking directive `pyright: ignore` suppresses type checker warnings, which may hide potential type errors.
- --> pyright.py:3:14
+ --> main.py:3:14
   |
 1 | res = foo()  # pyright: ignore
 2 |
