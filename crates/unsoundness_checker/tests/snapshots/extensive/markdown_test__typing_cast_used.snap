@@ -1,0 +1,226 @@
+---
+source: crates/unsoundness_checker/tests/markdown_test.rs
+expression: combined_output
+---
+### Basic unsafe cast
+
+error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+ --> Basic unsafe cast.py:4:12
+  |
+3 | def foo() -> int:
+4 |     return cast(int, "hello")
+  |            ^^^^
+  |
+info: Consider using `isinstance` checks to ensure types at runtime.
+info: rule `typing-cast-used` was selected in the configuration file
+
+
+### Casting between incompatible types
+
+error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+ --> Casting between incompatible types.py:4:13
+  |
+3 | def get_value() -> str:
+4 |     value = cast(str, 123)
+  |             ^^^^
+5 |     return value
+  |
+info: Consider using `isinstance` checks to ensure types at runtime.
+info: rule `typing-cast-used` was selected in the configuration file
+
+
+### Casting in variable assignment
+
+error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+ --> Casting in variable assignment.py:3:10
+  |
+1 | from typing import cast
+2 |
+3 | number = cast(int, "not a number")
+  |          ^^^^
+  |
+info: Consider using `isinstance` checks to ensure types at runtime.
+info: rule `typing-cast-used` was selected in the configuration file
+
+
+### Casting with complex types
+
+error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+ --> Casting with complex types.py:3:8
+  |
+1 | from typing import cast, List, Dict
+2 |
+3 | data = cast(List[int], ["a", "b", "c"])
+  |        ^^^^
+4 | mapping = cast(Dict[str, int], {"key": "not_an_int"})
+  |
+info: Consider using `isinstance` checks to ensure types at runtime.
+info: rule `typing-cast-used` was selected in the configuration file
+
+error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+ --> Casting with complex types.py:4:11
+  |
+3 | data = cast(List[int], ["a", "b", "c"])
+4 | mapping = cast(Dict[str, int], {"key": "not_an_int"})
+  |           ^^^^
+  |
+info: Consider using `isinstance` checks to ensure types at runtime.
+info: rule `typing-cast-used` was selected in the configuration file
+
+
+### Nested casts
+
+error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+ --> Nested casts.py:3:9
+  |
+1 | from typing import cast
+2 |
+3 | value = cast(int, cast(str, 42))
+  |         ^^^^
+  |
+info: Consider using `isinstance` checks to ensure types at runtime.
+info: rule `typing-cast-used` was selected in the configuration file
+
+error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+ --> Nested casts.py:3:19
+  |
+1 | from typing import cast
+2 |
+3 | value = cast(int, cast(str, 42))
+  |                   ^^^^
+  |
+info: Consider using `isinstance` checks to ensure types at runtime.
+info: rule `typing-cast-used` was selected in the configuration file
+
+
+### Casting with generics
+
+error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+ --> Casting with generics.py:6:12
+  |
+5 | def unsafe_cast(value: object) -> T:
+6 |     return cast(T, value)
+  |            ^^^^
+  |
+info: Consider using `isinstance` checks to ensure types at runtime.
+info: rule `typing-cast-used` was selected in the configuration file
+
+
+### Casting None to non-optional
+
+error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+ --> Casting None to non-optional.py:3:14
+  |
+1 | from typing import cast
+2 |
+3 | value: int = cast(int, None)
+  |              ^^^^
+  |
+info: Consider using `isinstance` checks to ensure types at runtime.
+info: rule `typing-cast-used` was selected in the configuration file
+
+
+### Casting in return statements
+
+error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+ --> Casting in return statements.py:5:12
+  |
+3 | def get_number() -> int:
+4 |     result = get_string_value()
+5 |     return cast(int, result)
+  |            ^^^^
+6 |
+7 | def get_string_value() -> str:
+  |
+info: Consider using `isinstance` checks to ensure types at runtime.
+info: rule `typing-cast-used` was selected in the configuration file
+
+
+### Casting with union types
+
+error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+ --> Casting with union types.py:4:12
+  |
+3 | def process(value: Union[int, str]) -> int:
+4 |     return cast(int, value)
+  |            ^^^^
+  |
+info: Consider using `isinstance` checks to ensure types at runtime.
+info: rule `typing-cast-used` was selected in the configuration file
+
+
+### Casting in list comprehension
+
+error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+ --> Casting in list comprehension.py:3:12
+  |
+1 | from typing import cast
+2 |
+3 | numbers = [cast(int, x) for x in ["1", "2", "3"]]
+  |            ^^^^
+  |
+info: Consider using `isinstance` checks to ensure types at runtime.
+info: rule `typing-cast-used` was selected in the configuration file
+
+
+### Casting function return values
+
+
+### Casting with custom classes
+
+error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+  --> Casting with custom classes.py:13:12
+   |
+11 | def wrong_pet() -> Dog:
+12 |     cat = Cat()
+13 |     return cast(Dog, cat)
+   |            ^^^^
+   |
+info: Consider using `isinstance` checks to ensure types at runtime.
+info: rule `typing-cast-used` was selected in the configuration file
+
+
+### Multiple casts in same function
+
+error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+ --> Multiple casts in same function.py:4:9
+  |
+3 | def multi_cast():
+4 |     a = cast(int, "hello")
+  |         ^^^^
+5 |     b = cast(str, 123)
+6 |     c = cast(bool, "yes")
+  |
+info: Consider using `isinstance` checks to ensure types at runtime.
+info: rule `typing-cast-used` was selected in the configuration file
+
+error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+ --> Multiple casts in same function.py:5:9
+  |
+3 | def multi_cast():
+4 |     a = cast(int, "hello")
+5 |     b = cast(str, 123)
+  |         ^^^^
+6 |     c = cast(bool, "yes")
+7 |     return a, b, c
+  |
+info: Consider using `isinstance` checks to ensure types at runtime.
+info: rule `typing-cast-used` was selected in the configuration file
+
+error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+ --> Multiple casts in same function.py:6:9
+  |
+4 |     a = cast(int, "hello")
+5 |     b = cast(str, 123)
+6 |     c = cast(bool, "yes")
+  |         ^^^^
+7 |     return a, b, c
+  |
+info: Consider using `isinstance` checks to ensure types at runtime.
+info: rule `typing-cast-used` was selected in the configuration file
+
+
+### Safe cast with compatible types
+
+
+### Narrowing cast

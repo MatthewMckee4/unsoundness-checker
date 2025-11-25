@@ -1,0 +1,222 @@
+---
+source: crates/unsoundness_checker/tests/markdown_test.rs
+expression: combined_output
+---
+### Basic ellipsis in callback
+
+error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+ --> Basic ellipsis in callback.py:3:19
+  |
+1 | from typing import Callable
+2 |
+3 | def foo(callback: Callable[..., int]) -> int:
+  |                   ^^^^^^^^^^^^^^^^^^
+4 |     return callback("wrong", "types")
+  |
+info: rule `callable-ellipsis-used` was selected in the configuration file
+
+
+### Ellipsis with multiple callbacks
+
+error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+ --> Ellipsis with multiple callbacks.py:4:15
+  |
+3 | def process(
+4 |     handler1: Callable[..., str],
+  |               ^^^^^^^^^^^^^^^^^^
+5 |     handler2: Callable[..., int]
+6 | ) -> tuple[str, int]:
+  |
+info: rule `callable-ellipsis-used` was selected in the configuration file
+
+error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+ --> Ellipsis with multiple callbacks.py:5:15
+  |
+3 | def process(
+4 |     handler1: Callable[..., str],
+5 |     handler2: Callable[..., int]
+  |               ^^^^^^^^^^^^^^^^^^
+6 | ) -> tuple[str, int]:
+7 |     return handler1(), handler2()
+  |
+info: rule `callable-ellipsis-used` was selected in the configuration file
+
+
+### Ellipsis in variable annotation
+
+error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+ --> Ellipsis in variable annotation.py:3:12
+  |
+1 | from typing import Callable
+2 |
+3 | processor: Callable[..., None] = lambda x, y: print(x, y)
+  |            ^^^^^^^^^^^^^^^^^^^
+  |
+info: rule `callable-ellipsis-used` was selected in the configuration file
+
+
+### Ellipsis in class attribute
+
+error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+ --> Ellipsis in class attribute.py:4:15
+  |
+3 | class Handler:
+4 |     callback: Callable[..., str]
+  |               ^^^^^^^^^^^^^^^^^^
+5 |
+6 |     def __init__(self, cb: Callable[..., str]):
+  |
+info: rule `callable-ellipsis-used` was selected in the configuration file
+
+error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+ --> Ellipsis in class attribute.py:6:28
+  |
+4 |     callback: Callable[..., str]
+5 |
+6 |     def __init__(self, cb: Callable[..., str]):
+  |                            ^^^^^^^^^^^^^^^^^^
+7 |         self.callback = cb
+  |
+info: rule `callable-ellipsis-used` was selected in the configuration file
+
+
+### Ellipsis in return type
+
+error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+ --> Ellipsis in return type.py:3:24
+  |
+1 | from typing import Callable
+2 |
+3 | def get_processor() -> Callable[..., int]:
+  |                        ^^^^^^^^^^^^^^^^^^
+4 |     return lambda *args, **kwargs: 42
+  |
+info: rule `callable-ellipsis-used` was selected in the configuration file
+
+
+### Ellipsis with generic return
+
+error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+ --> Ellipsis with generic return.py:5:16
+  |
+3 | T = TypeVar('T')
+4 |
+5 | def wrap(func: Callable[..., T]) -> Callable[..., T]:
+  |                ^^^^^^^^^^^^^^^^
+6 |     return func
+  |
+info: rule `callable-ellipsis-used` was selected in the configuration file
+
+error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+ --> Ellipsis with generic return.py:5:37
+  |
+3 | T = TypeVar('T')
+4 |
+5 | def wrap(func: Callable[..., T]) -> Callable[..., T]:
+  |                                     ^^^^^^^^^^^^^^^^
+6 |     return func
+  |
+info: rule `callable-ellipsis-used` was selected in the configuration file
+
+
+### Ellipsis in list of callables
+
+
+### Ellipsis in dict values
+
+
+### Ellipsis with Optional
+
+
+### Ellipsis in Union
+
+
+### Ellipsis in method signature
+
+error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+ --> Ellipsis in method signature.py:4:29
+  |
+3 | class Processor:
+4 |     def process(self, func: Callable[..., int]) -> int:
+  |                             ^^^^^^^^^^^^^^^^^^
+5 |         return func()
+  |
+info: rule `callable-ellipsis-used` was selected in the configuration file
+
+
+### Ellipsis in nested callable
+
+error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+ --> Ellipsis in nested callable.py:4:12
+  |
+3 | def higher_order(
+4 |     maker: Callable[..., Callable[..., int]]
+  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+5 | ) -> Callable[..., int]:
+6 |     return maker()
+  |
+info: rule `callable-ellipsis-used` was selected in the configuration file
+
+error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+ --> Ellipsis in nested callable.py:5:6
+  |
+3 | def higher_order(
+4 |     maker: Callable[..., Callable[..., int]]
+5 | ) -> Callable[..., int]:
+  |      ^^^^^^^^^^^^^^^^^^
+6 |     return maker()
+  |
+info: rule `callable-ellipsis-used` was selected in the configuration file
+
+
+### Ellipsis with Protocol
+
+error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+ --> Ellipsis with Protocol.py:4:15
+  |
+3 | class HandlerProtocol(Protocol):
+4 |     callback: Callable[..., str]
+  |               ^^^^^^^^^^^^^^^^^^
+  |
+info: rule `callable-ellipsis-used` was selected in the configuration file
+
+
+### Ellipsis in lambda type
+
+
+### Multiple ellipsis in same function
+
+error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+ --> Multiple ellipsis in same function.py:4:17
+  |
+3 | def multi_handler(
+4 |     on_success: Callable[..., None],
+  |                 ^^^^^^^^^^^^^^^^^^^
+5 |     on_error: Callable[..., None],
+6 |     on_complete: Callable[..., None]
+  |
+info: rule `callable-ellipsis-used` was selected in the configuration file
+
+error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+ --> Multiple ellipsis in same function.py:5:15
+  |
+3 | def multi_handler(
+4 |     on_success: Callable[..., None],
+5 |     on_error: Callable[..., None],
+  |               ^^^^^^^^^^^^^^^^^^^
+6 |     on_complete: Callable[..., None]
+7 | ) -> None:
+  |
+info: rule `callable-ellipsis-used` was selected in the configuration file
+
+error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+ --> Multiple ellipsis in same function.py:6:18
+  |
+4 |     on_success: Callable[..., None],
+5 |     on_error: Callable[..., None],
+6 |     on_complete: Callable[..., None]
+  |                  ^^^^^^^^^^^^^^^^^^^
+7 | ) -> None:
+8 |     pass
+  |
+info: rule `callable-ellipsis-used` was selected in the configuration file

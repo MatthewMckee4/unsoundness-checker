@@ -1,0 +1,192 @@
+---
+source: crates/unsoundness_checker/tests/markdown_test.rs
+expression: combined_output
+---
+### Basic code swapping
+
+error[mutating-function-code-attribute]: Mutating `__code__` attribute on a function may lead to runtime type errors.
+ --> Basic code swapping.py:7:1
+  |
+5 |     return "!"
+6 |
+7 | foo.__code__ = bar.__code__
+  | ^^^^^^^^^^^^
+8 | result = foo(10)
+  |
+info: rule `mutating-function-code-attribute` was selected in the configuration file
+
+
+### Code swapping with different signatures
+
+error[mutating-function-code-attribute]: Mutating `__code__` attribute on a function may lead to runtime type errors.
+ --> Code swapping with different signatures.py:7:1
+  |
+5 |     return s + "!"
+6 |
+7 | add.__code__ = concat.__code__
+  | ^^^^^^^^^^^^
+  |
+info: rule `mutating-function-code-attribute` was selected in the configuration file
+
+
+### Method code replacement
+
+error[mutating-function-code-attribute]: Mutating `__code__` attribute on a function may lead to runtime type errors.
+ --> Method code replacement.py:8:1
+  |
+6 |         return x + y
+7 |
+8 | Calculator.add.__code__ = Calculator.multiply.__code__
+  | ^^^^^^^^^^^^^^^^^^^^^^^
+  |
+info: rule `mutating-function-code-attribute` was selected in the configuration file
+
+
+### Lambda code replacement
+
+
+### Nested function code swap
+
+error[mutating-function-code-attribute]: Mutating `__code__` attribute on a function may lead to runtime type errors.
+ --> Nested function code swap.py:8:5
+  |
+6 |         return x
+7 |
+8 |     inner1.__code__ = inner2.__code__
+  |     ^^^^^^^^^^^^^^^
+9 |     return inner1
+  |
+info: rule `mutating-function-code-attribute` was selected in the configuration file
+
+
+### Class method code swap
+
+
+### Static method code swap
+
+error[mutating-function-code-attribute]: Mutating `__code__` attribute on a function may lead to runtime type errors.
+  --> Static method code swap.py:10:1
+   |
+ 8 |         return x
+ 9 |
+10 | Utils.process_int.__code__ = Utils.process_str.__code__
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+info: rule `mutating-function-code-attribute` was selected in the configuration file
+
+
+### Property code swap
+
+error[mutating-function-code-attribute]: Mutating `__code__` attribute on a function may lead to runtime type errors.
+ --> Property code swap.py:9:1
+  |
+7 |     return "wrong"
+8 |
+9 | Container.value.fget.__code__ = wrong_getter.__code__
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+info: rule `mutating-function-code-attribute` was selected in the configuration file
+
+
+### Swapping with builtin-like function
+
+error[mutating-function-code-attribute]: Mutating `__code__` attribute on a function may lead to runtime type errors.
+ --> Swapping with builtin-like function.py:7:1
+  |
+5 |     return ""
+6 |
+7 | custom_len.__code__ = custom_str.__code__
+  | ^^^^^^^^^^^^^^^^^^^
+  |
+info: rule `mutating-function-code-attribute` was selected in the configuration file
+
+
+### Code swap in loop
+
+error[mutating-function-code-attribute]: Mutating `__code__` attribute on a function may lead to runtime type errors.
+ --> Code swap in loop.py:8:5
+  |
+7 | for _ in range(5):
+8 |     func1.__code__ = func2.__code__
+  |     ^^^^^^^^^^^^^^
+  |
+info: rule `mutating-function-code-attribute` was selected in the configuration file
+
+
+### Conditional code swap
+
+error[mutating-function-code-attribute]: Mutating `__code__` attribute on a function may lead to runtime type errors.
+ --> Conditional code swap.py:8:5
+  |
+7 | if True:
+8 |     option_a.__code__ = option_b.__code__
+  |     ^^^^^^^^^^^^^^^^^
+  |
+info: rule `mutating-function-code-attribute` was selected in the configuration file
+
+
+### Multiple code swaps
+
+error[mutating-function-code-attribute]: Mutating `__code__` attribute on a function may lead to runtime type errors.
+  --> Multiple code swaps.py:10:1
+   |
+ 8 |     return x
+ 9 |
+10 | f1.__code__ = f2.__code__
+   | ^^^^^^^^^^^
+11 | f2.__code__ = f3.__code__
+   |
+info: rule `mutating-function-code-attribute` was selected in the configuration file
+
+error[mutating-function-code-attribute]: Mutating `__code__` attribute on a function may lead to runtime type errors.
+  --> Multiple code swaps.py:11:1
+   |
+10 | f1.__code__ = f2.__code__
+11 | f2.__code__ = f3.__code__
+   | ^^^^^^^^^^^
+   |
+info: rule `mutating-function-code-attribute` was selected in the configuration file
+
+
+### Code swap with different param count
+
+error[mutating-function-code-attribute]: Mutating `__code__` attribute on a function may lead to runtime type errors.
+ --> Code swap with different param count.py:7:1
+  |
+5 |     return x + y
+6 |
+7 | one_param.__code__ = two_params.__code__
+  | ^^^^^^^^^^^^^^^^^^
+  |
+info: rule `mutating-function-code-attribute` was selected in the configuration file
+
+
+### Code swap in class init
+
+error[mutating-function-code-attribute]: Mutating `__code__` attribute on a function may lead to runtime type errors.
+  --> Code swap in class init.py:9:9
+   |
+ 7 |             return x
+ 8 |
+ 9 |         func1.__code__ = func2.__code__
+   |         ^^^^^^^^^^^^^^
+10 |         self.func = func1
+   |
+info: rule `mutating-function-code-attribute` was selected in the configuration file
+
+
+### Code swap with decorator
+
+
+### Type-safe code swap
+
+error[mutating-function-code-attribute]: Mutating `__code__` attribute on a function may lead to runtime type errors.
+ --> Type-safe code swap.py:7:1
+  |
+5 |     return 1
+6 |
+7 | foo.__code__ = bar.__code__
+  | ^^^^^^^^^^^^
+8 | result = foo(10)
+  |
+info: rule `mutating-function-code-attribute` was selected in the configuration file

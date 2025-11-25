@@ -1,0 +1,295 @@
+---
+source: crates/unsoundness_checker/tests/markdown_test.rs
+expression: combined_output
+---
+### Function parameters with Any
+
+error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+ --> Function parameters with Any.py:3:24
+  |
+1 | from typing import Any
+2 |
+3 | def process_data(data: Any) -> str:
+  |                        ^^^
+4 |     return str(data)
+  |
+info: rule `typing-any-used` was selected in the configuration file
+
+
+### Multiple parameters with Any
+
+error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+ --> Multiple parameters with Any.py:3:25
+  |
+1 | from typing import Any
+2 |
+3 | def process_multiple(a: Any, b: Any, c: int) -> str:
+  |                         ^^^
+4 |     return str(a) + str(b) + str(c)
+  |
+info: rule `typing-any-used` was selected in the configuration file
+
+error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+ --> Multiple parameters with Any.py:3:33
+  |
+1 | from typing import Any
+2 |
+3 | def process_multiple(a: Any, b: Any, c: int) -> str:
+  |                                 ^^^
+4 |     return str(a) + str(b) + str(c)
+  |
+info: rule `typing-any-used` was selected in the configuration file
+
+
+### Return types with Any
+
+error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+ --> Return types with Any.py:3:24
+  |
+1 | from typing import Any
+2 |
+3 | def get_user_data() -> Any:
+  |                        ^^^
+4 |     return {"name": "John", "age": 30}
+  |
+info: rule `typing-any-used` was selected in the configuration file
+
+
+### Variable assignments with Any
+
+error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+ --> Variable assignments with Any.py:6:12
+  |
+4 |     return {"name": "John", "age": 30}
+5 |
+6 | user_info: Any = get_user()
+  |            ^^^
+  |
+info: rule `typing-any-used` was selected in the configuration file
+
+
+### Any in generic types
+
+error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+ --> Any in generic types.py:3:30
+  |
+1 | from typing import Any, List, Dict
+2 |
+3 | def process_list(items: List[Any]) -> None:
+  |                              ^^^
+4 |     pass
+  |
+info: rule `typing-any-used` was selected in the configuration file
+
+error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+ --> Any in generic types.py:6:34
+  |
+4 |     pass
+5 |
+6 | def process_dict(data: Dict[str, Any]) -> None:
+  |                                  ^^^
+7 |     pass
+  |
+info: rule `typing-any-used` was selected in the configuration file
+
+
+### Any in nested generics
+
+error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+ --> Any in nested generics.py:3:43
+  |
+1 | from typing import Any, Dict, List
+2 |
+3 | def complex_function(data: Dict[str, List[Any]]) -> None:
+  |                                           ^^^
+4 |     pass
+  |
+info: rule `typing-any-used` was selected in the configuration file
+
+
+### Any in class attributes
+
+error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+ --> Any in class attributes.py:4:11
+  |
+3 | class DataProcessor:
+4 |     data: Any
+  |           ^^^
+5 |
+6 |     def __init__(self, data: Any):
+  |
+info: rule `typing-any-used` was selected in the configuration file
+
+error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+ --> Any in class attributes.py:6:30
+  |
+4 |     data: Any
+5 |
+6 |     def __init__(self, data: Any):
+  |                              ^^^
+7 |         self.data = data
+  |
+info: rule `typing-any-used` was selected in the configuration file
+
+
+### Any in method signatures
+
+error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+ --> Any in method signatures.py:4:31
+  |
+3 | class Handler:
+4 |     def handle(self, request: Any) -> Any:
+  |                               ^^^
+5 |         return request
+  |
+info: rule `typing-any-used` was selected in the configuration file
+
+error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+ --> Any in method signatures.py:4:39
+  |
+3 | class Handler:
+4 |     def handle(self, request: Any) -> Any:
+  |                                       ^^^
+5 |         return request
+  |
+info: rule `typing-any-used` was selected in the configuration file
+
+
+### Any in lambda functions
+
+error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+ --> Any in lambda functions.py:3:22
+  |
+1 | from typing import Any, Callable
+2 |
+3 | processor: Callable[[Any], Any] = lambda x: x
+  |                      ^^^
+  |
+info: rule `typing-any-used` was selected in the configuration file
+
+error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+ --> Any in lambda functions.py:3:28
+  |
+1 | from typing import Any, Callable
+2 |
+3 | processor: Callable[[Any], Any] = lambda x: x
+  |                            ^^^
+  |
+info: rule `typing-any-used` was selected in the configuration file
+
+
+### Any with Optional
+
+error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+ --> Any with Optional.py:3:34
+  |
+1 | from typing import Any, Optional
+2 |
+3 | def maybe_process(data: Optional[Any]) -> str:
+  |                                  ^^^
+4 |     if data is None:
+5 |         return "None"
+  |
+info: rule `typing-any-used` was selected in the configuration file
+
+
+### Any with Union
+
+error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+ --> Any with Union.py:3:39
+  |
+1 | from typing import Any, Union
+2 |
+3 | def flexible_handler(data: Union[str, Any]) -> str:
+  |                                       ^^^
+4 |     return str(data)
+  |
+info: rule `typing-any-used` was selected in the configuration file
+
+
+### Any in tuple annotations
+
+error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+ --> Any in tuple annotations.py:3:34
+  |
+1 | from typing import Any, Tuple
+2 |
+3 | def return_tuple() -> Tuple[int, Any, str]:
+  |                                  ^^^
+4 |     return (1, "anything", "hello")
+  |
+info: rule `typing-any-used` was selected in the configuration file
+
+
+### Multiple Any usages in same function
+
+error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+ --> Multiple Any usages in same function.py:3:18
+  |
+1 | from typing import Any
+2 |
+3 | def multi_any(a: Any, b: Any) -> Any:
+  |                  ^^^
+4 |     return a if a else b
+  |
+info: rule `typing-any-used` was selected in the configuration file
+
+error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+ --> Multiple Any usages in same function.py:3:26
+  |
+1 | from typing import Any
+2 |
+3 | def multi_any(a: Any, b: Any) -> Any:
+  |                          ^^^
+4 |     return a if a else b
+  |
+info: rule `typing-any-used` was selected in the configuration file
+
+error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+ --> Multiple Any usages in same function.py:3:34
+  |
+1 | from typing import Any
+2 |
+3 | def multi_any(a: Any, b: Any) -> Any:
+  |                                  ^^^
+4 |     return a if a else b
+  |
+info: rule `typing-any-used` was selected in the configuration file
+
+
+### Any in property annotations
+
+error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+ --> Any in property annotations.py:5:24
+  |
+3 | class Container:
+4 |     @property
+5 |     def value(self) -> Any:
+  |                        ^^^
+6 |         return self._value
+  |
+info: rule `typing-any-used` was selected in the configuration file
+
+error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+  --> Any in property annotations.py:9:26
+   |
+ 8 |     @value.setter
+ 9 |     def value(self, val: Any) -> None:
+   |                          ^^^
+10 |         self._value = val
+   |
+info: rule `typing-any-used` was selected in the configuration file
+
+
+### Any with type aliases
+
+error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+ --> Any with type aliases.py:5:19
+  |
+3 | AnyData = Any
+4 |
+5 | def process(data: AnyData) -> str:
+  |                   ^^^^^^^
+6 |     return str(data)
+  |
+info: rule `typing-any-used` was selected in the configuration file

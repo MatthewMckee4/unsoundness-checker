@@ -1,0 +1,185 @@
+---
+source: crates/unsoundness_checker/tests/markdown_test.rs
+expression: combined_output
+---
+### Basic mutable list default
+
+error[mutable-generic-default]: Using a mutable default argument for a generic parameter in a function can lead to runtime type errors.
+ --> Basic mutable list default.py:1:45
+  |
+1 | def append_and_return[T](x: T, y: list[T] = []) -> list[T]:
+  |                                             ^^
+2 |     y.append(x)
+3 |     return y
+  |
+info: rule `mutable-generic-default` was selected in the configuration file
+
+
+### Mutable dict default
+
+error[mutable-generic-default]: Using a mutable default argument for a generic parameter in a function can lead to runtime type errors.
+ --> Mutable dict default.py:1:63
+  |
+1 | def add_to_dict[K, V](key: K, value: V, mapping: dict[K, V] = {}) -> dict[K, V]:
+  |                                                               ^^
+2 |     mapping[key] = value
+3 |     return mapping
+  |
+info: rule `mutable-generic-default` was selected in the configuration file
+
+
+### Mutable set default
+
+
+### Multiple mutable defaults
+
+error[mutable-generic-default]: Using a mutable default argument for a generic parameter in a function can lead to runtime type errors.
+ --> Multiple mutable defaults.py:1:44
+  |
+1 | def multi_defaults[T](x: T, lst: list[T] = [], dct: dict[str, T] = {}) -> tuple[list[T], dict[str, T]]:
+  |                                            ^^
+2 |     lst.append(x)
+3 |     dct["key"] = x
+  |
+info: rule `mutable-generic-default` was selected in the configuration file
+
+error[mutable-generic-default]: Using a mutable default argument for a generic parameter in a function can lead to runtime type errors.
+ --> Multiple mutable defaults.py:1:68
+  |
+1 | def multi_defaults[T](x: T, lst: list[T] = [], dct: dict[str, T] = {}) -> tuple[list[T], dict[str, T]]:
+  |                                                                    ^^
+2 |     lst.append(x)
+3 |     dct["key"] = x
+  |
+info: rule `mutable-generic-default` was selected in the configuration file
+
+
+### Nested generic with mutable default
+
+error[mutable-generic-default]: Using a mutable default argument for a generic parameter in a function can lead to runtime type errors.
+ --> Nested generic with mutable default.py:1:60
+  |
+1 | def nested_generic[T](items: T, container: list[list[T]] = [[]]) -> list[list[T]]:
+  |                                                            ^^^^
+2 |     container[0].append(items)
+3 |     return container
+  |
+info: rule `mutable-generic-default` was selected in the configuration file
+
+
+### Method with mutable default
+
+error[mutable-generic-default]: Using a mutable default argument for a generic parameter in a function can lead to runtime type errors.
+ --> Method with mutable default.py:2:51
+  |
+1 | class Container[T]:
+2 |     def add_items(self, item: T, items: list[T] = []) -> list[T]:
+  |                                                   ^^
+3 |         items.append(item)
+4 |         return items
+  |
+info: rule `mutable-generic-default` was selected in the configuration file
+
+
+### Classmethod with mutable default
+
+error[mutable-generic-default]: Using a mutable default argument for a generic parameter in a function can lead to runtime type errors.
+ --> Classmethod with mutable default.py:3:53
+  |
+1 | class Factory[T]:
+2 |     @classmethod
+3 |     def create(cls, value: T, cache: dict[str, T] = {}) -> dict[str, T]:
+  |                                                     ^^
+4 |         cache["last"] = value
+5 |         return cache
+  |
+info: rule `mutable-generic-default` was selected in the configuration file
+
+
+### Staticmethod with mutable default
+
+error[mutable-generic-default]: Using a mutable default argument for a generic parameter in a function can lead to runtime type errors.
+ --> Staticmethod with mutable default.py:3:45
+  |
+1 | class Processor[T]:
+2 |     @staticmethod
+3 |     def process(item: T, history: list[T] = []) -> list[T]:
+  |                                             ^^
+4 |         history.append(item)
+5 |         return history
+  |
+info: rule `mutable-generic-default` was selected in the configuration file
+
+
+### Multiple type parameters with mutable default
+
+error[mutable-generic-default]: Using a mutable default argument for a generic parameter in a function can lead to runtime type errors.
+ --> Multiple type parameters with mutable default.py:1:67
+  |
+1 | def pair_store[K, V](key: K, value: V, pairs: list[tuple[K, V]] = []) -> list[tuple[K, V]]:
+  |                                                                   ^^
+2 |     pairs.append((key, value))
+3 |     return pairs
+  |
+info: rule `mutable-generic-default` was selected in the configuration file
+
+
+### Generic with bound and mutable default
+
+error[mutable-generic-default]: Using a mutable default argument for a generic parameter in a function can lead to runtime type errors.
+ --> Generic with bound and mutable default.py:1:66
+  |
+1 | def numeric_accumulator[T: (int, float)](x: T, values: list[T] = []) -> list[T]:
+  |                                                                  ^^
+2 |     values.append(x)
+3 |     return values
+  |
+info: rule `mutable-generic-default` was selected in the configuration file
+
+
+### Mutable default with complex generic type
+
+error[mutable-generic-default]: Using a mutable default argument for a generic parameter in a function can lead to runtime type errors.
+ --> Mutable default with complex generic type.py:5:59
+  |
+3 | T = TypeVar('T')
+4 |
+5 | def complex_default(item: T, store: dict[type, list[T]] = {}) -> dict[type, list[T]]:
+  |                                                           ^^
+6 |     item_type = type(item)
+7 |     if item_type not in store:
+  |
+info: rule `mutable-generic-default` was selected in the configuration file
+
+
+### Lambda with mutable default (if generic)
+
+
+### Nested function with mutable default
+
+error[mutable-generic-default]: Using a mutable default argument for a generic parameter in a function can lead to runtime type errors.
+ --> Nested function with mutable default.py:2:41
+  |
+1 | def outer[T](value: T):
+2 |     def inner(item: T, items: list[T] = []) -> list[T]:
+  |                                         ^^
+3 |         items.append(item)
+4 |         return items
+  |
+info: rule `mutable-generic-default` was selected in the configuration file
+
+
+### Mutable bytearray default
+
+
+### Multiple generics with shared mutable
+
+error[mutable-generic-default]: Using a mutable default argument for a generic parameter in a function can lead to runtime type errors.
+ --> Multiple generics with shared mutable.py:1:65
+  |
+1 | def shared_store[T, U](t_val: T, u_val: U, store: list[T | U] = []) -> list[T | U]:
+  |                                                                 ^^
+2 |     store.append(t_val)
+3 |     store.append(u_val)
+  |
+info: rule `mutable-generic-default` was selected in the configuration file

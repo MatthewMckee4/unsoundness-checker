@@ -181,6 +181,7 @@ pub struct CodeSnippet {
     pub content: String,
     pub language: String,
     pub name: Option<String>,
+    pub heading_level: usize,
 }
 
 /// Contains test data parsed from markdown rule files
@@ -203,10 +204,22 @@ impl RuleTestFile {
         let mut snippets = Vec::new();
         let mut current_code_block: Option<String> = None;
         let mut current_language = String::new();
-        let mut snippet_counter = 0;
+        let mut current_heading = String::new();
+        let mut current_heading_level: usize = 2;
+        let mut reading_heading = false;
+        let mut heading_counter: std::collections::HashMap<String, usize> =
+            std::collections::HashMap::new();
 
         for event in parser {
             match event {
+                Event::Start(Tag::Heading { level, .. }) => {
+                    reading_heading = true;
+                    current_heading.clear();
+                    current_heading_level = level as usize;
+                }
+                Event::End(TagEnd::Heading { .. }) => {
+                    reading_heading = false;
+                }
                 Event::Start(Tag::CodeBlock(kind)) => {
                     let lang = match kind {
                         pulldown_cmark::CodeBlockKind::Fenced(lang) => lang.to_string(),
@@ -219,21 +232,41 @@ impl RuleTestFile {
                     if let Some(code) = current_code_block.take()
                         && matches!(current_language.as_str(), "python" | "py")
                     {
-                        snippet_counter += 1;
+                        let heading_name = if current_heading.is_empty() {
+                            "unnamed".to_string()
+                        } else {
+                            current_heading.clone()
+                        };
+
+                        // Track how many snippets we've seen for this heading
+                        let counter = heading_counter.entry(heading_name.clone()).or_insert(0);
+                        *counter += 1;
+
+                        let snippet_name = if *counter == 1 {
+                            heading_name
+                        } else {
+                            format!("{heading_name} ({counter})")
+                        };
+
                         snippets.push(CodeSnippet {
                             content: code,
                             language: current_language.clone(),
-                            name: Some(format!("snippet_{snippet_counter:02}")),
+                            name: Some(snippet_name),
+                            heading_level: current_heading_level,
                         });
                     }
                 }
                 Event::Text(text) => {
-                    if let Some(ref mut code) = current_code_block {
+                    if reading_heading {
+                        current_heading.push_str(&text);
+                    } else if let Some(ref mut code) = current_code_block {
                         code.push_str(&text);
                     }
                 }
                 Event::SoftBreak | Event::HardBreak => {
-                    if let Some(ref mut code) = current_code_block {
+                    if reading_heading {
+                        current_heading.push(' ');
+                    } else if let Some(ref mut code) = current_code_block {
                         code.push('\n');
                     }
                 }
@@ -252,9 +285,82 @@ impl RuleTestFile {
 }
 
 const RESOURCE_DIR: &str = "resources/rules";
+const RESOURCE_DIR_EXTENSIVE: &str = "resources/extensive";
 
-pub fn run_rule_tests(rule_name: &str) -> Vec<(PathBuf, String, String)> {
+pub fn run_rule_tests(rule_name: &str) -> Vec<(PathBuf, String, String, usize)> {
     let file_path = format!("{RESOURCE_DIR}/{rule_name}.md");
+    let rule_tests = RuleTestFile::from_markdown_file(file_path);
+
+    let mut results = Vec::new();
+
+    let rule_registry = default_rule_registry();
+
+    let rule_name_kebab = kebab_case(rule_name);
+
+    let rule_levels = rule_registry
+        .rules()
+        .iter()
+        .map(|rule| {
+            if rule.name.to_string() == rule_name_kebab {
+                (rule_name_kebab.clone(), Level::Error.to_string())
+            } else {
+                (rule.name.to_string(), Level::Ignore.to_string())
+            }
+        })
+        .collect::<Vec<_>>();
+
+    for (idx, snippet) in rule_tests.python_snippets().enumerate() {
+        let snippet_name = format!("snippet_{:02}", idx + 1);
+        let test_name = snippet.name.as_deref().unwrap_or("unnamed");
+        let filename = format!("{test_name}.py");
+        let heading_level = snippet.heading_level;
+
+        let mut test_runner = TestRunner::from_file(&filename, &snippet.content);
+
+        test_runner.with_rules(rule_levels.clone().into_iter());
+
+        let temp_path = test_runner.temp_dir().path().to_owned();
+
+        let output = test_runner.run_test();
+        results.push((
+            temp_path.clone(),
+            snippet_name.clone(),
+            output,
+            heading_level,
+        ));
+
+        if cfg!(unix) && rule_name != "type_checking_directive_used" {
+            let ty_output = test_runner.run_ty();
+            results.push((
+                temp_path.clone(),
+                format!("{snippet_name}_ty"),
+                ty_output,
+                heading_level,
+            ));
+
+            let mypy_output = test_runner.run_mypy();
+            results.push((
+                temp_path.clone(),
+                format!("{snippet_name}_mypy"),
+                mypy_output,
+                heading_level,
+            ));
+
+            let pyright_output = test_runner.run_pyright();
+            results.push((
+                temp_path.clone(),
+                format!("{snippet_name}_pyright"),
+                pyright_output,
+                heading_level,
+            ));
+        }
+    }
+
+    results
+}
+
+pub fn run_rule_tests_extensive(rule_name: &str) -> Vec<(PathBuf, String, String, usize)> {
+    let file_path = format!("{RESOURCE_DIR_EXTENSIVE}/{rule_name}.md");
     let rule_tests = RuleTestFile::from_markdown_file(file_path);
 
     let mut results = Vec::new();
@@ -278,6 +384,7 @@ pub fn run_rule_tests(rule_name: &str) -> Vec<(PathBuf, String, String)> {
     for snippet in rule_tests.python_snippets() {
         let test_name = snippet.name.as_deref().unwrap_or("unnamed");
         let filename = format!("{test_name}.py");
+        let heading_level = snippet.heading_level;
 
         let mut test_runner = TestRunner::from_file(&filename, &snippet.content);
 
@@ -286,22 +393,14 @@ pub fn run_rule_tests(rule_name: &str) -> Vec<(PathBuf, String, String)> {
         let temp_path = test_runner.temp_dir().path().to_owned();
 
         let output = test_runner.run_test();
-        results.push((temp_path.clone(), test_name.to_string(), output));
+        results.push((
+            temp_path.clone(),
+            test_name.to_string(),
+            output,
+            heading_level,
+        ));
 
-        if cfg!(unix) && rule_name != "type_checking_directive_used" {
-            let ty_output = test_runner.run_ty();
-            results.push((temp_path.clone(), format!("{test_name}_ty"), ty_output));
-
-            let mypy_output = test_runner.run_mypy();
-            results.push((temp_path.clone(), format!("{test_name}_mypy"), mypy_output));
-
-            let pyright_output = test_runner.run_pyright();
-            results.push((
-                temp_path.clone(),
-                format!("{test_name}_pyright"),
-                pyright_output,
-            ));
-        }
+        // For extensive tests, we don't run external type checkers
     }
 
     results

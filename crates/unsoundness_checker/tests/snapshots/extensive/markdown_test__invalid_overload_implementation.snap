@@ -1,0 +1,141 @@
+---
+source: crates/unsoundness_checker/tests/markdown_test.rs
+expression: combined_output
+---
+### Basic object return type
+
+error[invalid-overload-implementation]: Invalid overload implementation can lead to runtime errors.
+ --> Basic object return type.py:8:5
+  |
+6 | def bar(x: str) -> int: ...
+7 | def bar(x: int | str) -> object:
+8 |     return b""
+  |     ^^^^^^^^^^
+  |
+info: This overload implementation is invalid as `Literal[b""]` is not assignable to any of the overload return types (`str`, `int`)
+info: rule `invalid-overload-implementation` was selected in the configuration file
+
+
+### Wrong concrete return type
+
+error[invalid-overload-implementation]: Invalid overload implementation can lead to runtime errors.
+ --> Wrong concrete return type.py:8:5
+  |
+6 | def foo(x: str) -> int: ...
+7 | def foo(x: int | str) -> bytes:
+8 |     return b"bytes"
+  |     ^^^^^^^^^^^^^^^
+  |
+info: This overload implementation is invalid as `Literal[b"bytes"]` is not assignable to any of the overload return types (`str`, `int`)
+info: rule `invalid-overload-implementation` was selected in the configuration file
+
+
+### Return type too broad
+
+
+### Multiple overloads with object
+
+error[invalid-overload-implementation]: Invalid overload implementation can lead to runtime errors.
+  --> Multiple overloads with object.py:10:5
+   |
+ 8 | def multi(x: bool, y: bool) -> bool: ...
+ 9 | def multi(x: int | str | bool, y: int | str | bool) -> object:
+10 |     return None
+   |     ^^^^^^^^^^^
+   |
+info: This overload implementation is invalid as `None` is not assignable to any of the overload return types (`int`, `str`, `bool`)
+info: rule `invalid-overload-implementation` was selected in the configuration file
+
+
+### Class method with wrong return
+
+error[invalid-overload-implementation]: Invalid overload implementation can lead to runtime errors.
+ --> Class method with wrong return.py:9:9
+  |
+7 |     def process(self, x: str) -> int: ...
+8 |     def process(self, x: int | str) -> object:
+9 |         return []
+  |         ^^^^^^^^^
+  |
+info: This overload implementation is invalid as `list[Unknown]` is not assignable to any of the overload return types (`str`, `int`)
+info: rule `invalid-overload-implementation` was selected in the configuration file
+
+
+### Classmethod with object return
+
+error[invalid-overload-implementation]: Invalid overload implementation can lead to runtime errors.
+  --> Classmethod with object return.py:12:9
+   |
+10 |     @classmethod
+11 |     def create(cls, x: int | str) -> object:
+12 |         return object()
+   |         ^^^^^^^^^^^^^^^
+   |
+info: This overload implementation is invalid as `object` is not assignable to any of the overload return types (`Factory`, `Factory`)
+info: rule `invalid-overload-implementation` was selected in the configuration file
+
+
+### Staticmethod with wrong return
+
+error[invalid-overload-implementation]: Invalid overload implementation can lead to runtime errors.
+  --> Staticmethod with wrong return.py:12:9
+   |
+10 |     @staticmethod
+11 |     def convert(x: int | str) -> object:
+12 |         return None
+   |         ^^^^^^^^^^^
+   |
+info: This overload implementation is invalid as `None` is not assignable to any of the overload return types (`str`, `int`)
+info: rule `invalid-overload-implementation` was selected in the configuration file
+
+
+### Generic overload with object
+
+
+### Overload with None not in union
+
+error[invalid-overload-implementation]: Invalid overload implementation can lead to runtime errors.
+ --> Overload with None not in union.py:8:5
+  |
+6 | def maybe(x: str) -> str: ...
+7 | def maybe(x: int | str) -> int | str | None:
+8 |     return None
+  |     ^^^^^^^^^^^
+  |
+info: This overload implementation is invalid as `None` is not assignable to any of the overload return types (`int`, `str`)
+info: rule `invalid-overload-implementation` was selected in the configuration file
+
+
+### Dict return instead of specific
+
+
+### Tuple return too generic
+
+error[invalid-overload-implementation]: Invalid overload implementation can lead to runtime errors.
+ --> Tuple return too generic.py:8:5
+  |
+6 | def pair(x: str) -> tuple[str, str]: ...
+7 | def pair(x: int | str) -> tuple:
+8 |     return (x, x)
+  |     ^^^^^^^^^^^^^
+  |
+info: This overload implementation is invalid as `tuple[int | str, int | str]` is not assignable to any of the overload return types (`tuple[int, int]`, `tuple[str, str]`)
+info: rule `invalid-overload-implementation` was selected in the configuration file
+
+
+### Any as implementation return
+
+
+### Overload with list vs sequence
+
+
+### Overload return not matching callable
+
+
+### Protocol instead of concrete
+
+
+### Valid but complex implementation
+
+
+### Generic function loses type info
