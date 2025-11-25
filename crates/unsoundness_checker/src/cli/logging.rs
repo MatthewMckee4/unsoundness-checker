@@ -53,14 +53,8 @@ pub fn setup_tracing(level: VerbosityLevel) -> TracingGuard {
         level => {
             let level_filter = level.level_filter();
 
-            let filter = EnvFilter::default().add_directive(
-                format!("unsoundness-checker={level_filter}")
-                    .parse()
-                    .expect("Hardcoded directive to be valid"),
-            );
-
-            filter.add_directive(
-                format!("unsoundness-checker={level_filter}")
+            EnvFilter::default().add_directive(
+                format!("unsoundness_checker={level_filter}")
                     .parse()
                     .expect("Hardcoded directive to be valid"),
             )

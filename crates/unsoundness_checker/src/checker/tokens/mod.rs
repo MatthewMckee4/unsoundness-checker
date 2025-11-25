@@ -18,6 +18,7 @@ static TYPE_CHECKING_DIRECTIVES: &[&str] = &[
 ];
 
 pub fn check_tokens<'db>(db: &'db dyn Db, context: &Context<'db>, file: File) {
+    tracing::debug!("Checking tokens");
     let Ok(file_content) = file.read_to_string(db) else {
         return;
     };

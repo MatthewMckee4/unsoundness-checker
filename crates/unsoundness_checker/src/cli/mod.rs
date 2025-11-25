@@ -15,7 +15,7 @@ use ty_project::{
 };
 
 use crate::{
-    checker::check_file,
+    checker::check_project,
     cli::{
         args::{CheckCommand, Command, SummaryMode},
         logging::setup_tracing,
@@ -92,8 +92,6 @@ pub(crate) fn test(args: &CheckCommand) -> Result<ExitStatus> {
         db.project().set_included_paths(&mut db, check_paths);
     }
 
-    let files = db.project().files(&db);
-
     let display_config = DisplayDiagnosticConfig::default();
 
     let rule_registry = default_rule_registry();
@@ -109,11 +107,8 @@ pub(crate) fn test(args: &CheckCommand) -> Result<ExitStatus> {
         DisplayDiagnostics::new(&db, &display_config, &rule_diagnostics)
     )?;
 
-    let mut diagnostics = Vec::new();
-
-    for file in &files {
-        diagnostics.extend(check_file(&db, file, &rule_selection));
-    }
+    // Use rayon to check files in parallel
+    let diagnostics = check_project(&db, &rule_selection);
 
     if diagnostics.is_empty() {
         writeln!(stdout, "All checks passed")?;
