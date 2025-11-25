@@ -127,18 +127,6 @@ pub(crate) fn test(args: &CheckCommand) -> Result<ExitStatus> {
             )?;
         }
 
-        let num_diagnostics = diagnostics.len();
-
-        // Display diagnostic count unless summary mode is "only"
-        if !matches!(args.summary, SummaryMode::Only) {
-            writeln!(
-                stdout,
-                "Found {} diagnostic{}",
-                num_diagnostics,
-                if num_diagnostics > 1 { "s" } else { "" }
-            )?;
-        }
-
         // Display summary if summary mode is "true" or "only"
         if matches!(args.summary, SummaryMode::True | SummaryMode::Only) {
             // Count diagnostics by rule name
@@ -151,17 +139,24 @@ pub(crate) fn test(args: &CheckCommand) -> Result<ExitStatus> {
 
             // Display summary
             if !summary.is_empty() {
-                writeln!(stdout)?;
-                writeln!(stdout, "Summary:")?;
+                writeln!(stdout, "summary:")?;
                 for (rule_name, count) in &summary {
                     writeln!(stdout, "  {rule_name}: {count}")?;
                 }
-                writeln!(
-                    stdout,
-                    "\nTotal: {num_diagnostics} diagnostic{}",
-                    if num_diagnostics > 1 { "s" } else { "" }
-                )?;
+                writeln!(stdout)?;
             }
+        }
+
+        let num_diagnostics = diagnostics.len();
+
+        // Display diagnostic count unless summary mode is "only"
+        if !matches!(args.summary, SummaryMode::Only) {
+            writeln!(
+                stdout,
+                "Found {} diagnostic{}",
+                num_diagnostics,
+                if num_diagnostics > 1 { "s" } else { "" }
+            )?;
         }
     }
 
