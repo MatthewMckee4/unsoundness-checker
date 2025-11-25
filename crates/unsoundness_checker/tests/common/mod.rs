@@ -48,7 +48,8 @@ impl TestRunner {
             fs::create_dir_all(parent).expect("Failed to create directory");
         }
 
-        fs::write(&file_path, content).expect("Failed to write test file");
+        fs::write(&file_path, content)
+            .unwrap_or_else(|_| panic!("Failed to write test file: {}", file_path.display()));
         self
     }
 
