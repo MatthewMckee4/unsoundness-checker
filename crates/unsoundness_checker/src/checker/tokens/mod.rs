@@ -42,12 +42,12 @@ pub fn check_tokens<'db>(db: &'db dyn Db, context: &Context<'db>, file: File) {
 /// Finds a type checking directive in a comment line
 fn find_type_checking_directive(line: &str) -> Option<&'static str> {
     // Find the comment start
-    let comment_start = line.find('#')?;
-    let comment_content = &line[comment_start..];
+    let comment_start = line.find("# ")?;
+    let comment_content = &line[comment_start + 2..];
 
     // Check if any directive is present in the comment
     TYPE_CHECKING_DIRECTIVES
         .iter()
-        .find(|&&directive| comment_content.contains(directive))
+        .find(|&&directive| comment_content.starts_with(directive))
         .copied()
 }

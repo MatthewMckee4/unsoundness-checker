@@ -237,3 +237,11 @@ age = p.age  # type: ignore
 def get_number() -> int:
     return "not a number"  # type: ignore
 ```
+
+## Ensure we don't catch examples of "type: ignore" randomly in a comment
+
+```python
+class Foo:
+    # 'type: ignore'
+    # foo type: ignore
+    # foo 'type: ignore'
