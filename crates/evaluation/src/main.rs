@@ -64,7 +64,7 @@ fn run_performance_benchmarks(project_names: &[String]) -> Result<()> {
     println!();
 
     // All available benchmarks
-    let all_benchmarks = vec![
+    let all_benchmarks = [
         ("pydantic", Benchmark::pydantic()),
         ("pytest", Benchmark::pytest()),
     ];
