@@ -1,0 +1,14 @@
+---
+source: crates/unsoundness_checker/tests/markdown_test.rs
+expression: output
+---
+error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+ --> Function parameters.py:3:24
+  |
+1 | from typing import Any
+2 |
+3 | def process_data(data: Any) -> str:
+  |                        ^^^
+4 |     return str(data)
+  |
+info: rule `typing-any-used` was selected in the configuration file

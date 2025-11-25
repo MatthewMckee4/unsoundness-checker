@@ -1,0 +1,206 @@
+---
+source: crates/unsoundness_checker/tests/markdown_test.rs
+expression: combined_output
+---
+### Basic setattr with wrong type
+
+error[invalid-setattr]: Using `setattr()` bypasses type checking and can lead to runtime type errors.
+ --> Basic setattr with wrong type.py:6:1
+  |
+5 | foo = Foo()
+6 | setattr(foo, "x", 1)
+  | ^^^^^^^^^^^^^^^^^^^^
+  |
+info: Object of type Literal[1] is not assignable to type str
+info: rule `invalid-setattr` was selected in the configuration file
+
+
+### Setattr with multiple attributes
+
+error[invalid-setattr]: Using `setattr()` bypasses type checking and can lead to runtime type errors.
+ --> Setattr with multiple attributes.py:7:1
+  |
+6 | person = Person()
+7 | setattr(person, "name", 123)
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8 | setattr(person, "age", "thirty")
+  |
+info: Object of type Literal[123] is not assignable to type str
+info: rule `invalid-setattr` was selected in the configuration file
+
+error[invalid-setattr]: Using `setattr()` bypasses type checking and can lead to runtime type errors.
+ --> Setattr with multiple attributes.py:8:1
+  |
+6 | person = Person()
+7 | setattr(person, "name", 123)
+8 | setattr(person, "age", "thirty")
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+info: Object of type Literal["thirty"] is not assignable to type int
+info: rule `invalid-setattr` was selected in the configuration file
+
+
+### Setattr in method
+
+error[invalid-setattr]: Using `setattr()` bypasses type checking and can lead to runtime type errors.
+ --> Setattr in method.py:6:9
+  |
+5 |     def update(self, val: str) -> None:
+6 |         setattr(self, "value", val)
+  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+info: Object of type str is not assignable to type int
+info: rule `invalid-setattr` was selected in the configuration file
+
+
+### Setattr with computed attribute name
+
+
+### Setattr on different instances
+
+error[invalid-setattr]: Using `setattr()` bypasses type checking and can lead to runtime type errors.
+ --> Setattr on different instances.py:6:1
+  |
+4 | c1 = Container()
+5 | c2 = Container()
+6 | setattr(c1, "value", 123)
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^
+7 | setattr(c2, "value", True)
+  |
+info: Object of type Literal[123] is not assignable to type str
+info: rule `invalid-setattr` was selected in the configuration file
+
+error[invalid-setattr]: Using `setattr()` bypasses type checking and can lead to runtime type errors.
+ --> Setattr on different instances.py:7:1
+  |
+5 | c2 = Container()
+6 | setattr(c1, "value", 123)
+7 | setattr(c2, "value", True)
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+info: Object of type Literal[True] is not assignable to type str
+info: rule `invalid-setattr` was selected in the configuration file
+
+
+### Setattr in loop
+
+
+### Setattr with class variable
+
+error[invalid-setattr]: Using `setattr()` bypasses type checking and can lead to runtime type errors.
+ --> Setattr with class variable.py:4:1
+  |
+2 |     timeout: int = 30
+3 |
+4 | setattr(Settings, "timeout", "not_a_number")
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+info: Object of type Literal["not_a_number"] is not assignable to type int
+info: rule `invalid-setattr` was selected in the configuration file
+
+
+### Setattr creating new attribute
+
+
+### Nested setattr calls
+
+error[invalid-setattr]: Using `setattr()` bypasses type checking and can lead to runtime type errors.
+ --> Nested setattr calls.py:9:1
+  |
+8 | outer = Outer()
+9 | setattr(outer.inner, "value", "wrong")
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+info: Object of type Literal["wrong"] is not assignable to type int
+info: rule `invalid-setattr` was selected in the configuration file
+
+
+### Setattr with property
+
+error[invalid-setattr]: Using `setattr()` bypasses type checking and can lead to runtime type errors.
+  --> Setattr with property.py:14:1
+   |
+13 | obj = Managed()
+14 | setattr(obj, "value", "not_int")
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+info: Object of type Literal["not_int"] is not assignable to type int
+info: rule `invalid-setattr` was selected in the configuration file
+
+
+### Setattr in inheritance
+
+error[invalid-setattr]: Using `setattr()` bypasses type checking and can lead to runtime type errors.
+ --> Setattr in inheritance.py:8:1
+  |
+7 | child = Child()
+8 | setattr(child, "parent_attr", 123)
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+9 | setattr(child, "child_attr", "wrong")
+  |
+info: Object of type Literal[123] is not assignable to type str
+info: rule `invalid-setattr` was selected in the configuration file
+
+error[invalid-setattr]: Using `setattr()` bypasses type checking and can lead to runtime type errors.
+ --> Setattr in inheritance.py:9:1
+  |
+7 | child = Child()
+8 | setattr(child, "parent_attr", 123)
+9 | setattr(child, "child_attr", "wrong")
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+info: Object of type Literal["wrong"] is not assignable to type int
+info: rule `invalid-setattr` was selected in the configuration file
+
+
+### Setattr with generic class
+
+error[invalid-setattr]: Using `setattr()` bypasses type checking and can lead to runtime type errors.
+  --> Setattr with generic class.py:10:1
+   |
+ 9 | box = Box[int](42)
+10 | setattr(box, "value", "not_int")
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+info: Object of type Literal["not_int"] is not assignable to type int
+info: rule `invalid-setattr` was selected in the configuration file
+
+
+### Setattr in init
+
+error[invalid-setattr]: Using `setattr()` bypasses type checking and can lead to runtime type errors.
+ --> Setattr in init.py:5:9
+  |
+4 |     def __init__(self) -> None:
+5 |         setattr(self, "x", "wrong_type")
+  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+info: Object of type Literal["wrong_type"] is not assignable to type int
+info: rule `invalid-setattr` was selected in the configuration file
+
+
+### Conditional setattr
+
+error[invalid-setattr]: Using `setattr()` bypasses type checking and can lead to runtime type errors.
+ --> Conditional setattr.py:7:5
+  |
+5 | condition = True
+6 | if condition:
+7 |     setattr(obj, "flag", "not_bool")
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+info: Object of type Literal["not_bool"] is not assignable to type bool
+info: rule `invalid-setattr` was selected in the configuration file
+
+
+### Setattr with dict
+
+error[invalid-setattr]: Using `setattr()` bypasses type checking and can lead to runtime type errors.
+ --> Setattr with dict.py:5:1
+  |
+4 | obj = Direct()
+5 | setattr(obj, "__dict__", "not_a_dict")
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+info: Object of type Literal["not_a_dict"] is not assignable to type dict[str, Any]
+info: rule `invalid-setattr` was selected in the configuration file

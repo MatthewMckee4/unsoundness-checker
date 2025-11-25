@@ -1,0 +1,23 @@
+---
+source: crates/unsoundness_checker/tests/markdown_test.rs
+expression: output
+---
+error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
+ --> mypy / Standard (PEP 484).py:1:14
+  |
+1 | res = foo()  # type: ignore
+  |              ^^^^^^^^^^^^^^
+2 |
+3 | res = foo()  # type: ignore[name-defined]
+  |
+info: rule `type-checking-directive-used` was selected in the configuration file
+
+error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
+ --> mypy / Standard (PEP 484).py:3:14
+  |
+1 | res = foo()  # type: ignore
+2 |
+3 | res = foo()  # type: ignore[name-defined]
+  |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+info: rule `type-checking-directive-used` was selected in the configuration file
