@@ -64,4 +64,4 @@ jobs:
           uv run --no-project scripts/prepare_docs.py
 
       - name: Build docs
-        run: uv run --no-project mkdocs build
+        run: uv run --no-project zensical build
