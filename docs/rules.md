@@ -1,4 +1,7 @@
+# Rules
+
 ## `invalid-function-defaults`
+
 
 **What it does**
 
@@ -496,3 +499,4 @@ Categories: [`type-checking-suppression`](categories.md#type-checking-suppressio
 </small>
 
 [See more](rules/typing_type_is_used.md)
+
