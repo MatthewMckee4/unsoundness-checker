@@ -2,7 +2,14 @@ import glob
 import os
 import re
 import shutil
-from typing import Dict
+from pathlib import Path
+
+ROOT = Path(__file__).parent.parent
+
+
+def prepare_index_file() -> None:
+    """Copy root `README.md` to `docs/index.md`"""
+    (ROOT / "docs" / "index.md").write_text((ROOT / "README.md").read_text())
 
 
 def copy_rules_resources_to_docs():
@@ -39,7 +46,7 @@ def read_snapshot_file(filepath: str) -> str:
     return content.strip()
 
 
-def get_snapshots_for_rule(rule_name: str) -> Dict[str, Dict[str, str]]:
+def get_snapshots_for_rule(rule_name: str) -> dict[str, dict[str, str]]:
     """Get all snapshot files for a given rule and return their content."""
     snapshots_dir = f"crates/unsoundness_checker/tests/snapshots/{rule_name}"
 
@@ -173,6 +180,7 @@ def update_markdown_files_with_diagnostics():
 def main() -> None:
     copy_rules_resources_to_docs()
     update_markdown_files_with_diagnostics()
+    prepare_index_file()
 
 
 if __name__ == "__main__":
