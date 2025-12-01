@@ -48,7 +48,7 @@ def read_snapshot_file(filepath: str) -> str:
 
 def get_snapshots_for_rule(rule_name: str) -> dict[str, dict[str, str]]:
     """Get all snapshot files for a given rule and return their content."""
-    snapshots_dir = f"crates/unsoundness_checker/tests/snapshots/{rule_name}"
+    snapshots_dir = f"crates/unsoundness_checker/tests/snapshots/rules/{rule_name}"
 
     if not os.path.exists(snapshots_dir):
         print(f"Warning: No snapshots directory found for rule {rule_name}")
