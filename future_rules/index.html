@@ -1,0 +1,1105 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A Python unsoundness checker, written in Rust">
+      
+      
+        <meta name="author" content="Matthew McKee">
+      
+      
+        <link rel="canonical" href="https://matthewmckee4.github.io/unsoundness-checker/future_rules/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="zensical-0.0.10">
+    
+    
+      
+        <title>Future Rules - Unsoundness Checker</title>
+      
+    
+    
+      
+        
+      
+      <link rel="stylesheet" href="../assets/stylesheets/modern/main.eafc6f7f.min.css">
+      
+        
+          
+        
+        <link rel="stylesheet" href="../assets/stylesheets/modern/palette.dfe2e883.min.css">
+      
+      
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+  <style>:root{}</style>
+
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,500,500i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,a=__md_scope)=>JSON.parse(t.getItem(a.pathname+"."+e)),__md_set=(e,t,a=localStorage,_=__md_scope)=>{try{a.setItem(_.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#future-rules" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Unsoundness Checker" class="md-header__button md-logo" aria-label="Unsoundness Checker" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 7v14M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-menu" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Unsoundness Checker
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Future Rules
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-moon" viewBox="0 0 24 24"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog" aria-label="Search">
+  <button type="button" class="md-search__button">
+    Search
+  </button>
+</div>
+      
+    
+    <div class="md-header__source">
+      
+        <a href="https://github.com/MatthewMckee4/unsoundness-checker" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    MatthewMckee4/unsoundness-checker
+  </div>
+</a>
+      
+    </div>
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Unsoundness Checker" class="md-nav__button md-logo" aria-label="Unsoundness Checker" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 7v14M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>
+
+    </a>
+    Unsoundness Checker
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/MatthewMckee4/unsoundness-checker" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    MatthewMckee4/unsoundness-checker
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rules/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../categories/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Categories
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#typeguard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TypeGuard
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="TypeGuard">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#typing-typeguard-used" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        typing-typeguard-used
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#context-managers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Context Managers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Context Managers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#unsafe-exception-suppression" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        unsafe-exception-suppression
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unsafe-context-manager-binding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        unsafe-context-manager-binding
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#descriptors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Descriptors
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Descriptors">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#descriptor-instance-dict-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        descriptor-instance-dict-access
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#descriptor-protocol-override" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        descriptor-protocol-override
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#directives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Directives
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Directives">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#unsafe-override-used" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        unsafe-override-used
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metaclasses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Metaclasses
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Metaclasses">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#metaclass-new-override" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        metaclass-new-override
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#narrowing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Narrowing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Narrowing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#attribute-narrowing-used" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        attribute-narrowing-used
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#attribute-assignment-narrowing-used" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        attribute-assignment-narrowing-used
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isinstance-dict-used" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        isinstance-dict-used
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isinstance-list-used" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        isinstance-list-used
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#match-mapping-narrowing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        match-mapping-narrowing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#narrowing-descriptor-attribute" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        narrowing-descriptor-attribute
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overload" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overload
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overload">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#overlapping-overload-signatures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        overlapping-overload-signatures
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#override" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Override
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Override">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#override-descriptor-get" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        override-descriptor-get
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dataclass-replace-override" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dataclass-replace-override
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#override-init-signature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        override-init-signature
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#protocols" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Protocols
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Protocols">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#protocol-self-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        protocol-self-reference
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#runtime-checkable-protocol-used" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        runtime-checkable-protocol-used
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#runtime-modification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Runtime Modification
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Runtime Modification">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exec-used" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        exec-used
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stdlib" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stdlib
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Stdlib">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dict-constructor-unsound" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dict-constructor-unsound
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mutable-inplace-operation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        mutable-inplace-operation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pow-any-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pow-any-usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tuple" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tuple
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tuple">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tuple-subclass-constructor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tuple-subclass-constructor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tuple-iteration-unsound" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tuple-iteration-unsound
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#typeddict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TypedDict
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="TypedDict">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#typeddict-update-used" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        typeddict-update-used
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#typeddict-argument-unpacking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        typeddict-argument-unpacking
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#typeddict-or-equals-used" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        typeddict-or-equals-used
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#miscellaneous" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Miscellaneous
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Miscellaneous">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-instance-type-confusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        method-instance-type-confusion
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+<h1 id="future-rules">Future Rules</h1>
+<p>Potential rules to implement based on examples from https://github.com/JelleZijlstra/unsoundness</p>
+<h2 id="typeguard">TypeGuard</h2>
+<h3 id="typing-typeguard-used">typing-typeguard-used</h3>
+<p>Flag <code>TypeGuard</code> in return types. If you write a bad TypeGuard function that always returns True, type narrowing still happens even though the type is wrong at runtime.</p>
+<h2 id="context-managers">Context Managers</h2>
+<h3 id="unsafe-exception-suppression">unsafe-exception-suppression</h3>
+<p>Context managers that swallow exceptions are a problem. If a context manager catches and suppresses an exception, code inside the block might not execute fully - so variables end up with the wrong type.</p>
+<h3 id="unsafe-context-manager-binding">unsafe-context-manager-binding</h3>
+<p>Exceptions during <code>__enter__</code> can mess with control flow and break type contracts.</p>
+<h2 id="descriptors">Descriptors</h2>
+<h3 id="descriptor-instance-dict-access">descriptor-instance-dict-access</h3>
+<p>When you put a descriptor in an instance's <code>__dict__</code>, the descriptor protocol gets bypassed - <code>__get__</code>/<code>__set__</code> won't run.</p>
+<h3 id="descriptor-protocol-override">descriptor-protocol-override</h3>
+<p>Subclasses adding <code>__get__</code>, <code>__set__</code>, or <code>__delete__</code> change how attribute access works, but type checkers can't see this.</p>
+<h2 id="directives">Directives</h2>
+<h3 id="unsafe-override-used">unsafe-override-used</h3>
+<p>The <code>@unsafe_override</code> decorator literally tells the type checker to allow unsafe overrides.</p>
+<h2 id="metaclasses">Metaclasses</h2>
+<h3 id="metaclass-new-override">metaclass-new-override</h3>
+<p>Custom <code>__new__</code> in metaclasses can change how classes get created, breaking type annotations.</p>
+<h2 id="narrowing">Narrowing</h2>
+<h3 id="attribute-narrowing-used">attribute-narrowing-used</h3>
+<p>Type narrowing based on whether an attribute exists isn't always safe - no guarantee it matches runtime behavior.</p>
+<h3 id="attribute-assignment-narrowing-used">attribute-assignment-narrowing-used</h3>
+<p>Similar issue with narrowing from attribute assignments.</p>
+<h3 id="isinstance-dict-used">isinstance-dict-used</h3>
+<p><code>isinstance(x, dict)</code> doesn't properly narrow TypedDict types.</p>
+<h3 id="isinstance-list-used">isinstance-list-used</h3>
+<p><code>isinstance(x, list)</code> checks lose generic type parameters like <code>list[int]</code>.</p>
+<h3 id="match-mapping-narrowing">match-mapping-narrowing</h3>
+<p>Pattern matching on mappings can narrow types wrong.</p>
+<h3 id="narrowing-descriptor-attribute">narrowing-descriptor-attribute</h3>
+<p>Narrowing descriptor attributes doesn't account for how descriptors actually work.</p>
+<h2 id="overload">Overload</h2>
+<h3 id="overlapping-overload-signatures">overlapping-overload-signatures</h3>
+<p>When overloads overlap, the type checker picks one but runtime might use another, so you get the wrong return type.</p>
+<h2 id="override">Override</h2>
+<h3 id="override-descriptor-get">override-descriptor-get</h3>
+<p>Child classes overriding <code>__get__</code> changes descriptor behavior without type checkers noticing.</p>
+<h3 id="dataclass-replace-override">dataclass-replace-override</h3>
+<p><code>dataclasses.replace()</code> doesn't handle overridden fields properly.</p>
+<h3 id="override-init-signature">override-init-signature</h3>
+<p>Child <code>__init__</code> with different parameter types violates LSP.</p>
+<h2 id="protocols">Protocols</h2>
+<h3 id="protocol-self-reference">protocol-self-reference</h3>
+<p>Protocols that reference themselves have variance problems.</p>
+<h3 id="runtime-checkable-protocol-used">runtime-checkable-protocol-used</h3>
+<p><code>@runtime_checkable</code> only checks if methods exist, not their actual signatures. Wrong types slip through.</p>
+<h2 id="runtime-modification">Runtime Modification</h2>
+<h3 id="exec-used">exec-used</h3>
+<p><code>exec()</code> can redefine functions/classes at runtime, making type annotations lies.</p>
+<h2 id="stdlib">Stdlib</h2>
+<h3 id="dict-constructor-unsound">dict-constructor-unsound</h3>
+<p>Dict constructor loses TypedDict type info.</p>
+<h3 id="mutable-inplace-operation">mutable-inplace-operation</h3>
+<p>In-place ops like <code>+=</code> on lists don't preserve generic types.</p>
+<h3 id="pow-any-usage">pow-any-usage</h3>
+<p><code>pow()</code> with <code>Any</code> has weird type semantics that go unsound.</p>
+<h2 id="tuple">Tuple</h2>
+<h3 id="tuple-subclass-constructor">tuple-subclass-constructor</h3>
+<p>Tuple subclass constructors have variance issues.</p>
+<h3 id="tuple-iteration-unsound">tuple-iteration-unsound</h3>
+<p>When you iterate a tuple, you lose the per-element types and get a union instead.</p>
+<h2 id="typeddict">TypedDict</h2>
+<h3 id="typeddict-update-used">typeddict-update-used</h3>
+<p><code>.update()</code> on TypedDict can replace fields with incompatible types when using base class types.</p>
+<h3 id="typeddict-argument-unpacking">typeddict-argument-unpacking</h3>
+<p>Unpacking TypedDict into function args doesn't preserve required vs optional.</p>
+<h3 id="typeddict-or-equals-used">typeddict-or-equals-used</h3>
+<p><code>|=</code> on TypedDict merges incompatible types.</p>
+<h2 id="miscellaneous">Miscellaneous</h2>
+<h3 id="method-instance-type-confusion">method-instance-type-confusion</h3>
+<p>You can call class methods with instances of the wrong subclass type and the type checker doesn't catch it.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://zensical.org/" target="_blank" rel="noopener">
+      Zensical
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      
+      <script id="__config" type="application/json">{"annotate":null,"base":"..","features":["navigation.expand","navigation.instant","navigation.tracking","search.highlight","content.tabs.link"],"search":"../assets/javascripts/workers/search.5df7522c.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.21aa498e.min.js"></script>
+      
+    
+  </body>
+</html>
