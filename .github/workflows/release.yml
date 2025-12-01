@@ -29,6 +29,10 @@ jobs:
         run: |
           uv run --no-project scripts/prepare_docs.py
 
+      - name: Remove gitignores
+        run: |
+          find docs -name ".gitignore" -type f -delete
+
       - name: Build docs
         run: uv run --no-project zensical build
 
