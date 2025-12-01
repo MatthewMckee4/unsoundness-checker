@@ -34,7 +34,7 @@ We use the `ruff` python parser.
 
 We use `ty` to infer the types of expressions and statements.
 
-We also take the structure of the rules (in [`rule.rs`](crates/unsoundness_checker/src/rule.rs)) from `ty`.
+We also take the structure of the rules from `ty`.
 
 ## Contributing
 
