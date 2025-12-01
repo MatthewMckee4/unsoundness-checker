@@ -1,0 +1,54 @@
+[project]
+site_name = "Unsoundness Checker"
+site_url = "https://matthewmckee4.github.io/unsoundness-checker"
+site_description = "A Python unsoundness checker, written in Rust"
+site_author = "Matthew McKee"
+repo_url = "https://github.com/MatthewMckee4/unsoundness-checker"
+repo_name = "MatthewMckee4/unsoundness-checker"
+
+docs_dir = "docs"
+site_dir = "site"
+dev_addr = "localhost:3000"
+
+extra_css = ["stylesheets/extra.css"]
+
+nav = [
+    { "Home" = "index.md"},
+    { "Rules" = "rules.md"},
+    { "Categories" = "categories.md"},
+    { "Configuration" = "configuration.md"},
+]
+
+[project.theme]
+language = "en"
+features = [
+    "navigation.expand",
+    "navigation.instant",
+    "navigation.tracking",
+    "search.highlight",
+    "content.tabs.link"
+]
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+primary = "custom"
+scheme = "default"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+primary = "custom"
+scheme = "slate"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to light mode"
+
+[project.markdown_extensions.pymdownx.highlight]
+linenums = true
+auto_title = true
+
+[project.markdown_extensions.pymdownx.superfences]
+
+[project.markdown_extensions.pymdownx.tabbed.slugify]
+object = "pymdownx.slugs.slugify"
+kwds = { case = "lower" }
