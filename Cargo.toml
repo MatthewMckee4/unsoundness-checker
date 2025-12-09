@@ -4,7 +4,7 @@ resolver = "2"
 
 [workspace.package]
 edition = "2024"
-rust-version = "1.85"
+rust-version = "1.90"
 homepage = "https://github.com/MatthewMckee4/unsoundness-checker"
 documentation = "https://github.com/MatthewMckee4/unsoundness-checker"
 repository = "https://github.com/MatthewMckee4/unsoundness-checker"
