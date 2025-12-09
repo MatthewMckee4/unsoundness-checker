@@ -21,26 +21,27 @@ pub(super) fn check_call_expression(
 
     let func_ty = expr_call.func.inferred_type(model);
 
-    if let Type::FunctionLiteral(function_type) = func_ty {
-        if function_type.is_known(context.db(), KnownFunction::Cast) {
-            let Some(first_argument) = expr_call.arguments.find_positional(0) else {
-                return;
-            };
+    let Type::FunctionLiteral(function_type) = func_ty else {
+        return;
+    };
 
-            let Some(second_argument) = expr_call.arguments.find_positional(1) else {
-                return;
-            };
+    if function_type.is_known(context.db(), KnownFunction::Cast) {
+        let Some(first_argument) = expr_call.arguments.find_positional(0) else {
+            return;
+        };
 
-            let value_type = second_argument.inferred_type(model);
+        let Some(second_argument) = expr_call.arguments.find_positional(1) else {
+            return;
+        };
 
-            let casting_type = first_argument.inferred_type(model);
+        let value_type = second_argument.inferred_type(model);
 
-            let current_promotion =
-                casting_type.promote_literals(model.db(), TypeContext::default());
+        let casting_type = first_argument.inferred_type(model);
 
-            if !value_type.is_assignable_to(context.db(), current_promotion) {
-                report_typing_cast_used(context, &expr_call.func);
-            }
+        let current_promotion = casting_type.promote_literals(model.db(), TypeContext::default());
+
+        if !value_type.is_assignable_to(context.db(), current_promotion) {
+            report_typing_cast_used(context, &expr_call.func);
         }
     }
 }

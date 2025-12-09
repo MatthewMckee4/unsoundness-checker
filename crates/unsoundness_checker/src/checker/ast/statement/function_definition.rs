@@ -35,10 +35,13 @@ pub(super) fn check_overloads<'ast>(
 
             for decorator in &overload_stmt.decorator_list {
                 let decorator_ty = decorator.expression.inferred_type(model);
-                if let Type::FunctionLiteral(decorator_type_ty) = decorator_ty {
-                    if decorator_type_ty.is_known(context.db(), KnownFunction::Overload) {
-                        report_typing_overload_used(context, decorator);
-                    }
+
+                let Type::FunctionLiteral(decorator_type_ty) = decorator_ty else {
+                    continue;
+                };
+
+                if decorator_type_ty.is_known(context.db(), KnownFunction::Overload) {
+                    report_typing_overload_used(context, decorator);
                 }
             }
         }

@@ -1,4 +1,4 @@
-pub(crate) const REGENERATE_ALL_COMMAND: &str = "cargo dev generate-all";
+pub(crate) const REGENERATE_ALL_COMMAND: &str = "cargo run -p dev generate-all";
 
 #[derive(clap::Args)]
 pub(crate) struct Args {
