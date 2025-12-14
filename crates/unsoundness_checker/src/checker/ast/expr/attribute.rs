@@ -1,7 +1,9 @@
 use ruff_python_ast::ExprAttribute;
-use ty_python_semantic::{HasType, SemanticModel, types::Type};
+use ty_python_semantic::types::Type;
+use ty_python_semantic::{HasType, SemanticModel};
 
-use crate::{Context, rules::report_mangled_dunder_instance_variable};
+use crate::Context;
+use crate::rules::report_mangled_dunder_instance_variable;
 
 pub(super) fn check_attribute_expression(
     context: &Context,

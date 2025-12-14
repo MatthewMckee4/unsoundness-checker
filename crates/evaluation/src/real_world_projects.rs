@@ -1,12 +1,11 @@
 #![allow(clippy::print_stderr)]
 
-use std::{
-    path::{Path, PathBuf},
-    process::Command,
-    time::Instant,
-};
+use std::path::{Path, PathBuf};
+use std::process::Command;
+use std::time::Instant;
 
 use anyhow::{Context, Result};
+use ruff_db::diagnostic::Diagnostic;
 use ruff_db::system::{SystemPath, SystemPathBuf};
 use ruff_python_ast::PythonVersion;
 use unsoundness_checker::checker::check_project;
@@ -34,10 +33,8 @@ impl<'a> RealWorldProject<'a> {
         let start = Instant::now();
         tracing::debug!("Setting up project {}", self.name);
 
-        // Create project directory in cargo target
         let project_root = get_project_cache_dir(self.name)?;
 
-        // Clone the repository if it doesn't exist, or update if it does
         if project_root.exists() {
             tracing::debug!("Updating repository for project '{}'...", self.name);
             let start = std::time::Instant::now();
@@ -61,7 +58,6 @@ impl<'a> RealWorldProject<'a> {
             project: self,
         };
 
-        // Install dependencies if specified
         tracing::debug!(
             "Installing {} dependencies for project '{}'...",
             checkout.project().dependencies.len(),
@@ -150,7 +146,6 @@ fn update_repository(project_root: &Path, commit: &str) -> Result<()> {
         );
     }
 
-    // Checkout specific commit
     let output = Command::new("git")
         .args(["checkout", commit])
         .current_dir(project_root)
@@ -169,12 +164,10 @@ fn update_repository(project_root: &Path, commit: &str) -> Result<()> {
 
 /// Clone a git repository to the specified directory
 fn clone_repository(repo_url: &str, target_dir: &Path, commit: &str) -> Result<()> {
-    // Create parent directory if it doesn't exist
     if let Some(parent) = target_dir.parent() {
         std::fs::create_dir_all(parent).context("Failed to create parent directory for clone")?;
     }
 
-    // Clone with minimal depth and fetch only the specific commit
     let output = Command::new("git")
         .args([
             "clone",
@@ -395,17 +388,12 @@ impl<'a> Benchmark<'a> {
     }
 }
 
-/// Run the unsoundness checker on the installed project
-pub fn run_checker(installed_project: &InstalledProject) -> Result<usize> {
+pub fn run_checker(installed_project: &InstalledProject) -> Result<Vec<Diagnostic>> {
     use ruff_db::system::OsSystem;
-    use ty_project::{
-        Db, ProjectDatabase, ProjectMetadata,
-        metadata::{
-            Options,
-            options::EnvironmentOptions,
-            value::{RangedValue, RelativePathBuf},
-        },
-    };
+    use ty_project::metadata::Options;
+    use ty_project::metadata::options::EnvironmentOptions;
+    use ty_project::metadata::value::{RangedValue, RelativePathBuf};
+    use ty_project::{Db, ProjectDatabase, ProjectMetadata};
 
     let root = SystemPathBuf::from_path_buf(installed_project.path.clone())
         .map_err(|p| anyhow::anyhow!("Failed to convert path to SystemPathBuf: {}", p.display()))?;
@@ -423,7 +411,6 @@ pub fn run_checker(installed_project: &InstalledProject) -> Result<usize> {
         ..Options::default()
     });
 
-    // Get rules before moving metadata
     let rules = metadata.options().rules.clone();
 
     let mut db =
@@ -438,9 +425,6 @@ pub fn run_checker(installed_project: &InstalledProject) -> Result<usize> {
 
     db.project().set_included_paths(&mut db, check_paths);
 
-    // Get all files in the project
-
-    // Get the default rule registry and selection
     let rule_registry = unsoundness_checker::default_rule_registry();
     let (rule_selection, _rule_diagnostics) =
         unsoundness_checker::rule::RuleSelection::from_rules_selection(
@@ -451,5 +435,5 @@ pub fn run_checker(installed_project: &InstalledProject) -> Result<usize> {
 
     let diagnostics = check_project(&db, &rule_selection);
 
-    Ok(diagnostics.len())
+    Ok(diagnostics)
 }

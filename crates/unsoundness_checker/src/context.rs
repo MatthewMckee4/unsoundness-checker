@@ -1,12 +1,10 @@
 use std::cell::RefCell;
 
-use ruff_db::{
-    diagnostic::{
-        Annotation, Diagnostic, DiagnosticId, Severity, Span, SubDiagnostic, SubDiagnosticSeverity,
-    },
-    files::File,
-    parsed::{ParsedModuleRef, parsed_module},
+use ruff_db::diagnostic::{
+    Annotation, Diagnostic, DiagnosticId, Severity, Span, SubDiagnostic, SubDiagnosticSeverity,
 };
+use ruff_db::files::File;
+use ruff_db::parsed::{ParsedModuleRef, parsed_module};
 use ruff_text_size::{Ranged, TextRange};
 use ty_project::Db;
 

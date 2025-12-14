@@ -1,11 +1,11 @@
-use ruff_db::{diagnostic::Diagnostic, files::File};
+use ruff_db::diagnostic::Diagnostic;
+use ruff_db::files::File;
 use ty_project::{Db, ProjectDatabase};
 
-use crate::{
-    Context,
-    checker::{ast::check_ast, tokens::check_tokens},
-    rule::RuleSelection,
-};
+use crate::Context;
+use crate::checker::ast::check_ast;
+use crate::checker::tokens::check_tokens;
+use crate::rule::RuleSelection;
 
 mod ast;
 mod tokens;

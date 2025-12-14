@@ -1,7 +1,8 @@
 pub use checker::check_file;
 
+pub(crate) use crate::context::Context;
 use crate::rule::{RuleRegistry, RuleRegistryBuilder};
-pub(crate) use crate::{context::Context, rules::register_rules};
+pub(crate) use crate::rules::register_rules;
 
 pub mod categories;
 pub mod checker;

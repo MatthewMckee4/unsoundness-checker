@@ -1,15 +1,12 @@
-use ruff_python_ast::{Expr, StmtAssign, name::Name};
-use ty_python_semantic::{
-    HasType, SemanticModel,
-    types::{Type, TypeContext},
-};
+use ruff_python_ast::name::Name;
+use ruff_python_ast::{Expr, StmtAssign};
+use ty_python_semantic::types::{Type, TypeContext};
+use ty_python_semantic::{HasType, SemanticModel};
 
-use crate::{
-    Context,
-    rules::{
-        report_mutating_function_code_attribute, report_mutating_globals_dict,
-        report_setting_function_defaults_attribute,
-    },
+use crate::Context;
+use crate::rules::{
+    report_mutating_function_code_attribute, report_mutating_globals_dict,
+    report_setting_function_defaults_attribute,
 };
 
 pub(super) fn check_assignment<'ast>(

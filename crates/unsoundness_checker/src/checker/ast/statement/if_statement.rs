@@ -1,7 +1,8 @@
 use ruff_python_ast::{Expr, StmtIf};
 use ty_python_semantic::SemanticModel;
 
-use crate::{Context, rules::report_if_type_checking_used};
+use crate::Context;
+use crate::rules::report_if_type_checking_used;
 
 pub(super) fn check_if_statement<'ast>(
     context: &Context<'_>,

@@ -1,13 +1,10 @@
 use ruff_python_ast::{Expr, ExprCall};
-use ty_python_semantic::{
-    HasType, SemanticModel,
-    types::{KnownFunction, Type, TypeContext, ide_support::all_members},
-};
+use ty_python_semantic::types::ide_support::all_members;
+use ty_python_semantic::types::{KnownFunction, Type, TypeContext};
+use ty_python_semantic::{HasType, SemanticModel};
 
-use crate::{
-    Context,
-    rules::{report_invalid_setattr, report_typing_cast_used},
-};
+use crate::Context;
+use crate::rules::{report_invalid_setattr, report_typing_cast_used};
 
 pub(super) fn check_call_expression(
     context: &Context,

@@ -1,9 +1,11 @@
-use ruff_db::{files::File, parsed::parsed_module};
+use ruff_db::files::File;
+use ruff_db::parsed::parsed_module;
 use ruff_linter::Locator;
 use ruff_python_index::Indexer;
 use ty_project::Db;
 
-use crate::{Context, rules::report_type_checking_directive_used};
+use crate::Context;
+use crate::rules::report_type_checking_directive_used;
 
 /// Type checking directives from various Python type checkers
 static TYPE_CHECKING_DIRECTIVES: &[&str] = &[

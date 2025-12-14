@@ -1,19 +1,14 @@
 use core::fmt;
-use std::{fmt::Formatter, hash::Hasher};
+use std::fmt::Formatter;
+use std::hash::Hasher;
 
 use itertools::Itertools;
-use ruff_db::{
-    diagnostic::{Annotation, Diagnostic, DiagnosticId, LintName, Severity, Span},
-    files::system_path_to_file,
-};
+use ruff_db::diagnostic::{Annotation, Diagnostic, DiagnosticId, LintName, Severity, Span};
+use ruff_db::files::system_path_to_file;
 use rustc_hash::FxHashMap;
-use ty_project::{
-    Db,
-    metadata::{
-        options::{OptionDiagnostic, Rules},
-        value::ValueSource,
-    },
-};
+use ty_project::Db;
+use ty_project::metadata::options::{OptionDiagnostic, Rules};
+use ty_project::metadata::value::ValueSource;
 
 use crate::categories::CategoryMetadata;
 
