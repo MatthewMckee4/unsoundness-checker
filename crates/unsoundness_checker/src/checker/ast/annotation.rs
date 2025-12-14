@@ -1,16 +1,10 @@
-use ruff_python_ast::{
-    Expr,
-    visitor::source_order::{self, SourceOrderVisitor},
-};
-use ty_python_semantic::{
-    HasType, SemanticModel,
-    types::{DynamicType, Type},
-};
+use ruff_python_ast::Expr;
+use ruff_python_ast::visitor::source_order::{self, SourceOrderVisitor};
+use ty_python_semantic::types::{DynamicType, Type};
+use ty_python_semantic::{HasType, SemanticModel};
 
-use crate::{
-    checker::Context,
-    rules::{report_callable_ellipsis_used, report_typing_any_used},
-};
+use crate::checker::Context;
+use crate::rules::{report_callable_ellipsis_used, report_typing_any_used};
 
 struct DynamicAnnotationChecker<'db, 'ctx> {
     context: &'ctx Context<'db>,

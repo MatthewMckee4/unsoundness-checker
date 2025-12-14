@@ -1,16 +1,14 @@
 use annotation::check_annotation;
-use ruff_db::{files::File, parsed::parsed_module};
-use ruff_python_ast::{
-    Expr, Stmt,
-    visitor::source_order::{self, SourceOrderVisitor},
-};
+use ruff_db::files::File;
+use ruff_db::parsed::parsed_module;
+use ruff_python_ast::visitor::source_order::{self, SourceOrderVisitor};
+use ruff_python_ast::{Expr, Stmt};
 use ty_project::Db;
 use ty_python_semantic::SemanticModel;
 
-use crate::{
-    Context,
-    checker::ast::{expr::check_expr, statement::check_statement},
-};
+use crate::Context;
+use crate::checker::ast::expr::check_expr;
+use crate::checker::ast::statement::check_statement;
 
 mod annotation;
 mod expr;

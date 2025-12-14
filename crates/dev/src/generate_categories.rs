@@ -1,12 +1,12 @@
-use std::{fmt::Write as _, fs, path::PathBuf};
+use std::fmt::Write as _;
+use std::fs;
+use std::path::PathBuf;
 
 use anyhow::{Result, bail};
 use pretty_assertions::StrComparison;
 
-use crate::{
-    ROOT_DIR,
-    generate_all::{Mode, REGENERATE_ALL_COMMAND},
-};
+use crate::ROOT_DIR;
+use crate::generate_all::{Mode, REGENERATE_ALL_COMMAND};
 
 #[derive(clap::Args)]
 pub(crate) struct Args {

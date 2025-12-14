@@ -1,4 +1,6 @@
-use std::{fmt::Write, fs, panic, path::Path};
+use std::fmt::Write;
+use std::path::Path;
+use std::{fs, panic};
 
 use dir_test::{Fixture, dir_test};
 

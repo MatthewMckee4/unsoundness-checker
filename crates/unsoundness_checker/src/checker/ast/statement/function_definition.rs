@@ -1,19 +1,15 @@
-use ruff_python_ast::{
-    Stmt, StmtFunctionDef, StmtReturn,
-    visitor::source_order::{self, SourceOrderVisitor},
-};
-use ty_python_semantic::{
-    HasType, SemanticModel,
-    types::{KnownFunction, Type, UnionBuilder},
-};
+use ruff_python_ast::visitor::source_order::{self, SourceOrderVisitor};
+use ruff_python_ast::{Stmt, StmtFunctionDef, StmtReturn};
+use ty_python_semantic::types::{KnownFunction, Type, UnionBuilder};
+use ty_python_semantic::{HasType, SemanticModel};
 
-use crate::{
-    Context,
-    checker::ast::{annotation::is_generic_annotation, check_annotation, utils::is_mutable_expr},
-    rules::{
-        report_invalid_overload_implementation, report_mutable_generic_default,
-        report_typing_overload_used, report_typing_type_is_used,
-    },
+use crate::Context;
+use crate::checker::ast::annotation::is_generic_annotation;
+use crate::checker::ast::check_annotation;
+use crate::checker::ast::utils::is_mutable_expr;
+use crate::rules::{
+    report_invalid_overload_implementation, report_mutable_generic_default,
+    report_typing_overload_used, report_typing_type_is_used,
 };
 
 pub(super) fn check_overloads<'ast>(

@@ -1,29 +1,20 @@
-use std::{
-    collections::BTreeMap,
-    io::{self, BufWriter, Write},
-    process::{ExitCode, Termination},
-};
+use std::collections::BTreeMap;
+use std::io::{self, BufWriter, Write};
+use std::process::{ExitCode, Termination};
 
 use anyhow::{Context, Result, anyhow};
 use clap::Parser;
-use ruff_db::{
-    diagnostic::{DiagnosticId, DisplayDiagnosticConfig, DisplayDiagnostics},
-    system::{OsSystem, SystemPath, SystemPathBuf},
-};
-use ty_project::{
-    Db, ProjectDatabase, ProjectMetadata, metadata::options::ProjectOptionsOverrides,
-};
+use ruff_db::diagnostic::{DiagnosticId, DisplayDiagnosticConfig, DisplayDiagnostics};
+use ruff_db::system::{OsSystem, SystemPath, SystemPathBuf};
+use ty_project::metadata::options::ProjectOptionsOverrides;
+use ty_project::{Db, ProjectDatabase, ProjectMetadata};
 
-use crate::{
-    checker::check_project,
-    cli::{
-        args::{CheckCommand, Command, SummaryMode},
-        logging::setup_tracing,
-    },
-    default_rule_registry,
-    rule::RuleSelection,
-    version::{self},
-};
+use crate::checker::check_project;
+use crate::cli::args::{CheckCommand, Command, SummaryMode};
+use crate::cli::logging::setup_tracing;
+use crate::default_rule_registry;
+use crate::rule::RuleSelection;
+use crate::version::{self};
 
 mod args;
 mod logging;

@@ -1,13 +1,14 @@
-use std::{fmt, fs::File, io::BufWriter};
+use std::fmt;
+use std::fs::File;
+use std::io::BufWriter;
 
 use colored::Colorize;
 use tracing::{Event, Subscriber};
-use tracing_subscriber::{
-    EnvFilter,
-    filter::LevelFilter,
-    fmt::{FmtContext, FormatEvent, FormatFields, format::Writer},
-    registry::LookupSpan,
-};
+use tracing_subscriber::EnvFilter;
+use tracing_subscriber::filter::LevelFilter;
+use tracing_subscriber::fmt::format::Writer;
+use tracing_subscriber::fmt::{FmtContext, FormatEvent, FormatFields};
+use tracing_subscriber::registry::LookupSpan;
 
 #[derive(clap::Args, Debug, Clone, Default, PartialEq, Eq)]
 #[command(about = None, long_about = None)]

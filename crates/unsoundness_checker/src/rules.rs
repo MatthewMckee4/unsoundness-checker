@@ -2,12 +2,9 @@ use ruff_python_ast::{Expr, ExprAttribute, ExprCall, StmtReturn};
 use ruff_text_size::Ranged;
 use ty_python_semantic::types::Type;
 
-use crate::{
-    Context,
-    categories::{RUNTIME_MODIFICATION, TYPE_CHECKING_SUPPRESSION},
-    declare_rule,
-    rule::{Level, RuleRegistryBuilder, RuleStatus},
-};
+use crate::categories::{RUNTIME_MODIFICATION, TYPE_CHECKING_SUPPRESSION};
+use crate::rule::{Level, RuleRegistryBuilder, RuleStatus};
+use crate::{Context, declare_rule};
 
 pub(crate) fn register_rules(registry: &mut RuleRegistryBuilder) {
     registry.register_rule(&TYPING_ANY_USED);
@@ -42,7 +39,7 @@ declare_rule! {
     ///
     /// foo("1")
     /// ```
-    pub (crate) static TYPING_ANY_USED = {
+    pub static TYPING_ANY_USED = {
         summary: "detects usage of `typing.Any` in type annotations",
         status: RuleStatus::stable("1.0.0"),
         categories: &[&TYPE_CHECKING_SUPPRESSION],
@@ -72,7 +69,7 @@ declare_rule! {
     /// # This passes type checking but fails at runtime.
     /// foo(bar)
     /// ```
-    pub (crate) static CALLABLE_ELLIPSIS_USED = {
+    pub static CALLABLE_ELLIPSIS_USED = {
         summary: "detects usage of `...` in the first argument of `Callable` type annotations",
         status: RuleStatus::stable("1.0.0"),
         categories: &[&TYPE_CHECKING_SUPPRESSION],
@@ -105,7 +102,7 @@ declare_rule! {
     /// # This is a int at runtime but str at type check time.
     /// value: str = str_list[0]
     /// ```
-    pub (crate) static MUTABLE_GENERIC_DEFAULT = {
+    pub static MUTABLE_GENERIC_DEFAULT = {
         summary: "detects mutable default arguments in generic functions",
         status: RuleStatus::stable("1.0.0"),
         default_level: Level::Error,
@@ -132,7 +129,7 @@ declare_rule! {
     ///
     /// foo("1")
     /// ```
-    pub (crate) static INVALID_OVERLOAD_IMPLEMENTATION = {
+    pub static INVALID_OVERLOAD_IMPLEMENTATION = {
         summary: "detects invalid overload implementation",
         status: RuleStatus::stable("1.0.0"),
         default_level: Level::Error,
@@ -158,7 +155,7 @@ declare_rule! {
     /// def foo(x: int | str) -> int | str:
     ///     return x
     /// ```
-    pub (crate) static TYPING_OVERLOAD_USED = {
+    pub static TYPING_OVERLOAD_USED = {
         summary: "detects usage of overloaded functions",
         status: RuleStatus::stable("1.0.0"),
         default_level: Level::Warn,
@@ -180,7 +177,7 @@ declare_rule! {
     /// x = "string" + 123  # type: ignore
     /// y = foo()  # type: ignore[attr-defined]
     /// ```
-    pub (crate) static TYPE_CHECKING_DIRECTIVE_USED = {
+    pub static TYPE_CHECKING_DIRECTIVE_USED = {
         summary: "detects usage of type checking directives in comments",
         status: RuleStatus::stable("1.0.0"),
         categories: &[&TYPE_CHECKING_SUPPRESSION],
@@ -211,7 +208,7 @@ declare_rule! {
     ///
     /// result: int = get_value()  # Type checks, but returns str at runtime!
     /// ```
-    pub (crate) static IF_TYPE_CHECKING_USED = {
+    pub static IF_TYPE_CHECKING_USED = {
         summary: "detects usage of `if TYPE_CHECKING:` blocks",
         status: RuleStatus::stable("1.0.0"),
         categories: &[&TYPE_CHECKING_SUPPRESSION],
@@ -235,7 +232,7 @@ declare_rule! {
     /// foo.__defaults__ = ("string",)
     /// result = foo()  # Returns "string" but type checker thinks it's int
     /// ```
-    pub (crate) static INVALID_FUNCTION_DEFAULTS = {
+    pub static INVALID_FUNCTION_DEFAULTS = {
         summary: "detects invalid mutation of the `__defaults__` attribute of a function",
         status: RuleStatus::stable("1.0.0"),
         categories: &[&RUNTIME_MODIFICATION],
@@ -263,7 +260,7 @@ declare_rule! {
     /// foo.__code__ = bar.__code__
     /// # Now foo will return a string
     /// ```
-    pub (crate) static MUTATING_FUNCTION_CODE_ATTRIBUTE = {
+    pub static MUTATING_FUNCTION_CODE_ATTRIBUTE = {
         summary: "detects mutating the `__code__` attribute of a function",
         status: RuleStatus::stable("1.0.0"),
         categories: &[&RUNTIME_MODIFICATION],
@@ -291,7 +288,7 @@ declare_rule! {
     /// result = cast(int, get_value())
     /// result + 1  # Type checks, but fails at runtime!
     /// ```
-    pub (crate) static TYPING_CAST_USED = {
+    pub static TYPING_CAST_USED = {
         summary: "detects usage of `typing.cast()` function calls",
         status: RuleStatus::stable("1.0.0"),
         categories: &[&TYPE_CHECKING_SUPPRESSION],
@@ -317,7 +314,7 @@ declare_rule! {
     /// # Type checker thinks `x` is an `int`, but it is now a string
     /// result: int = x
     /// ```
-    pub (crate) static MUTATING_GLOBALS_DICT = {
+    pub static MUTATING_GLOBALS_DICT = {
         summary: "detects mutations to the `globals()` dictionary",
         status: RuleStatus::stable("1.0.0"),
         categories: &[&RUNTIME_MODIFICATION],
@@ -346,7 +343,7 @@ declare_rule! {
     /// if is_int(value):
     ///     result = value + 1  # Type checks but fails at runtime!
     /// ```
-    pub (crate) static TYPING_TYPE_IS_USED = {
+    pub static TYPING_TYPE_IS_USED = {
         summary: "detects usage of `typing.TypeIs` in return type annotations",
         status: RuleStatus::stable("1.0.0"),
         categories: &[&TYPE_CHECKING_SUPPRESSION],
@@ -377,7 +374,7 @@ declare_rule! {
     /// # Here, x is a string at type check time, but an integer at runtime.
     /// x = hidden_dunder_variables.get_str_x()
     /// ```
-    pub (crate) static MANGLED_DUNDER_INSTANCE_VARIABLE = {
+    pub static MANGLED_DUNDER_INSTANCE_VARIABLE = {
         summary: "detects explicit usage of mangled dunder instance variables",
         status: RuleStatus::stable("1.0.0"),
         categories: &[&TYPE_CHECKING_SUPPRESSION],
@@ -403,7 +400,7 @@ declare_rule! {
     /// foo = Foo()
     /// setattr(foo, "x", 1)
     /// ```
-    pub (crate) static INVALID_SETATTR = {
+    pub static INVALID_SETATTR = {
         summary: "detects invalid usage of `setattr()` built-in function",
         status: RuleStatus::stable("1.0.0"),
         categories: &[&RUNTIME_MODIFICATION],

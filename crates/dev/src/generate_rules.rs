@@ -20,17 +20,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-use std::{borrow::Cow, fmt::Write as _, fs, path::PathBuf};
+use std::borrow::Cow;
+use std::fmt::Write as _;
+use std::fs;
+use std::path::PathBuf;
 
 use anyhow::{Result, bail};
 use heck::ToSnakeCase;
 use itertools::Itertools as _;
 use pretty_assertions::StrComparison;
 
-use crate::{
-    ROOT_DIR,
-    generate_all::{Mode, REGENERATE_ALL_COMMAND},
-};
+use crate::ROOT_DIR;
+use crate::generate_all::{Mode, REGENERATE_ALL_COMMAND};
 
 #[derive(clap::Args)]
 pub(crate) struct Args {

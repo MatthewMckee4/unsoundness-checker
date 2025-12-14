@@ -1,11 +1,10 @@
 #![allow(clippy::significant_drop_tightening)]
 
-use std::{
-    path::{Path, PathBuf},
-    process::Command,
-};
+use std::path::{Path, PathBuf};
+use std::process::Command;
 
-use insta::{Settings, internals::SettingsBindDropGuard};
+use insta::Settings;
+use insta::internals::SettingsBindDropGuard;
 use insta_cmd::assert_cmd_snapshot;
 use tempfile::TempDir;
 

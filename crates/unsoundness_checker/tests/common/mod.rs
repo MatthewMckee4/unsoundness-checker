@@ -1,17 +1,16 @@
-use std::{fmt::Write, fs, path::PathBuf, process::Command, sync::OnceLock};
+use std::fmt::Write;
+use std::fs;
+use std::path::PathBuf;
+use std::process::Command;
+use std::sync::OnceLock;
 
-use ruff_db::{
-    diagnostic::{DisplayDiagnosticConfig, DisplayDiagnostics},
-    system::{OsSystem, SystemPathBuf},
-};
+use ruff_db::diagnostic::{DisplayDiagnosticConfig, DisplayDiagnostics};
+use ruff_db::system::{OsSystem, SystemPathBuf};
 use tempfile::TempDir;
-use ty_project::{
-    Db, ProjectDatabase, ProjectMetadata, metadata::options::ProjectOptionsOverrides,
-};
-use unsoundness_checker::{
-    check_file, default_rule_registry,
-    rule::{Level, RuleSelection},
-};
+use ty_project::metadata::options::ProjectOptionsOverrides;
+use ty_project::{Db, ProjectDatabase, ProjectMetadata};
+use unsoundness_checker::rule::{Level, RuleSelection};
+use unsoundness_checker::{check_file, default_rule_registry};
 
 static DISPLAY_CONFIG: OnceLock<DisplayDiagnosticConfig> = OnceLock::new();
 static PROJECT_OPTIONS: OnceLock<ProjectOptionsOverrides> = OnceLock::new();
