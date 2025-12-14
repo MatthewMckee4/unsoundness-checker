@@ -41,3 +41,13 @@ We also take the structure of the rules from `ty`.
 This project is my 4th year individual project at the University of Glasgow.
 This repository is only public to show my progress.
 Please do not attempt to contribute to this.
+
+## Submission
+
+Below states how I need to submit my project.
+
+I must submit a zip file of all of my code, this can be done with the following command:
+
+```
+zip -r archive.zip . -x 'target/*' -x '.git/*' -x 'dissertation/*';
+```
