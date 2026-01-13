@@ -215,6 +215,36 @@ def fmt(x: int | str) -> Stringable:
     return x
 ```
 
+### Inner functions
+
+We must ensure we do not emit diagnostics for returns statements inside inner functions.
+
+Regression: https://github.com/MatthewMckee4/unsoundness-checker/issues/71
+
+```python
+from typing import overload
+
+@overload
+def foo() -> str: ...
+@overload
+def foo() -> int: ...
+def foo() -> str | int:
+    def inner():
+        return []
+    return 1
+
+ @overload
+ def bar() -> str: ...
+ @overload
+ def bar() -> int: ...
+ def bar() -> str | int:
+    def inner1():
+        def inner2():
+            return []
+        return []
+    return 3
+```
+
 ## What we can't catch
 
 ### Valid but complex implementation
