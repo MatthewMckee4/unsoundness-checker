@@ -56,11 +56,11 @@ fn generate_markdown() -> Result<String> {
 
     writeln!(
         &mut output,
-        "This page describes the different categories of type system unsoundness that the checker can detect.\n"
+        "This page describes the different categories of type system unsoundness that the checker can detect."
     )?;
 
     for category in categories {
-        writeln!(&mut output, "## {}\n", category.name)?;
+        writeln!(&mut output, "\n## {}\n", category.name)?;
 
         // Write category documentation - strip leading whitespace from each line
         for line in category.documentation.lines() {
@@ -94,8 +94,6 @@ fn generate_markdown() -> Result<String> {
                 )?;
             }
         }
-
-        writeln!(&mut output)?;
     }
 
     Ok(output)
