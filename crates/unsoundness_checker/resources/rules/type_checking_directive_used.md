@@ -55,6 +55,7 @@ result = calculate_total("not a list")  # type: ignore
 ## When directives might be necessary
 
 There are legitimate cases where type checking directives are needed:
+
 - Working with dynamic third-party libraries that lack type stubs
 - Temporary workarounds during incremental type adoption
 

@@ -1,6 +1,7 @@
 # Unsoundness Checker
 
 We have a few aims with the tool and the site:
+
 - To formally document unsoundness in the Python type system.
 - To discuss why type checkers don't detect certain unsoundness.
 - To provide a tool for detecting (some) unsoundness in Python code.
@@ -48,6 +49,6 @@ Below states how I need to submit my project.
 
 I must submit a zip file of all of my code, this can be done with the following command:
 
-```
+```bash
 zip -r archive.zip . -x 'target/*' -x '.git/*' -x 'dissertation/*';
 ```

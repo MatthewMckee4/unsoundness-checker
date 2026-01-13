@@ -15,7 +15,7 @@ unsoundness_checker = { workspace = true }
 
 anyhow = { workspace = true }
 clap = { workspace = true, features = ["wrap_help", "env"] }
-itertools = { workspace = true }
-pretty_assertions = { workspace = true }
-markdown = { workspace = true }
 heck = { workspace = true }
+itertools = { workspace = true }
+markdown = { workspace = true }
+pretty_assertions = { workspace = true }
