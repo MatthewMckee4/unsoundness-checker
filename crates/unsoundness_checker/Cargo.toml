@@ -25,12 +25,12 @@ colored = { workspace = true }
 itertools = { workspace = true }
 rayon = { workspace = true }
 ruff_db = { workspace = true }
+ruff_linter = { workspace = true }
 ruff_macros = { workspace = true }
 ruff_python_ast = { workspace = true }
+ruff_python_index = { workspace = true }
 ruff_python_parser = { workspace = true }
 ruff_text_size = { workspace = true }
-ruff_linter = { workspace = true }
-ruff_python_index = { workspace = true }
 rustc-hash = { workspace = true }
 tracing = { workspace = true }
 tracing-flame = { workspace = true }
@@ -41,12 +41,12 @@ ty_python_semantic = { workspace = true }
 wild = { workspace = true }
 
 [dev-dependencies]
-insta-cmd = { workspace = true }
+dir-test = { workspace = true }
 insta = { workspace = true, features = ["filters"] }
+insta-cmd = { workspace = true }
 pulldown-cmark = { workspace = true }
 regex = { workspace = true }
 tempfile = { workspace = true }
-dir-test = { workspace = true }
 
 [lints]
 workspace = true

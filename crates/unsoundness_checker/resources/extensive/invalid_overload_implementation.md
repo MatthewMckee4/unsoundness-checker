@@ -219,7 +219,7 @@ def fmt(x: int | str) -> Stringable:
 
 We must ensure we do not emit diagnostics for returns statements inside inner functions.
 
-Regression: https://github.com/MatthewMckee4/unsoundness-checker/issues/71
+Regression: <https://github.com/MatthewMckee4/unsoundness-checker/issues/71>
 
 ```python
 from typing import overload

@@ -12,6 +12,8 @@ authors = ["Matthew McKee <matthewmckee4@yahoo.co.uk>"]
 license = "MIT"
 
 [workspace.dependencies]
+unsoundness_checker = { path = "crates/unsoundness_checker" }
+
 anyhow = "1.0.100"
 argfile = "0.2.1"
 camino = "1.1.9"
@@ -44,7 +46,6 @@ tracing-subscriber = { version = "0.3.20", features = ["env-filter", "fmt"] }
 tracing-tree = "0.4.1"
 ty_project = { git = "https://github.com/MatthewMckee4/ruff/", branch = "unsoundness-checker" }
 ty_python_semantic = { git = "https://github.com/MatthewMckee4/ruff/", branch = "unsoundness-checker" }
-unsoundness_checker = { path = "crates/unsoundness_checker" }
 wild = "2.2.1"
 
 [workspace.lints.clippy]

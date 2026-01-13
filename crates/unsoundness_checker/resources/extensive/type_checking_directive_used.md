@@ -245,3 +245,4 @@ class Foo:
     # 'type: ignore'
     # foo type: ignore
     # foo 'type: ignore'
+```
