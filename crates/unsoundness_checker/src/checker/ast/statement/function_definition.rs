@@ -112,23 +112,35 @@ fn get_return_statements(stmt_function_def: &StmtFunctionDef) -> Vec<&StmtReturn
 
 struct ReturnStatementFinder<'ast> {
     return_statements: Vec<&'ast StmtReturn>,
+    inside_inner_function: bool,
 }
 
 impl ReturnStatementFinder<'_> {
     pub(crate) const fn new() -> Self {
         Self {
             return_statements: Vec::new(),
+            inside_inner_function: false,
         }
     }
 }
 
 impl<'ast> SourceOrderVisitor<'ast> for ReturnStatementFinder<'ast> {
     fn visit_stmt(&mut self, stmt: &'ast Stmt) {
-        if let Stmt::Return(stmt_return) = stmt {
-            self.return_statements.push(stmt_return);
+        match stmt {
+            Stmt::Return(stmt_return) => {
+                if !self.inside_inner_function {
+                    self.return_statements.push(stmt_return);
+                }
+            }
+            Stmt::FunctionDef(stmt_function_def) => {
+                self.inside_inner_function = true;
+                source_order::walk_body(self, &stmt_function_def.body);
+                self.inside_inner_function = false;
+            }
+            _ => {
+                source_order::walk_stmt(self, stmt);
+            }
         }
-
-        source_order::walk_stmt(self, stmt);
     }
 }
 

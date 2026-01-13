@@ -135,6 +135,9 @@ info: rule `invalid-overload-implementation` was selected in the configuration f
 ### Protocol instead of concrete
 
 
+### Inner functions
+
+
 ### Valid but complex implementation
 
 
