@@ -1,6 +1,7 @@
 exclude: |
   (?x)^(
-    docs/rules.md
+    docs/rules.md|
+    .*.snap
   )$
 
 repos:
