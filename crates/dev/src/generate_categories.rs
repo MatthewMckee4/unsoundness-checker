@@ -15,7 +15,7 @@ pub(crate) struct Args {
 }
 
 pub(crate) fn main(args: &Args) -> Result<()> {
-    let markdown = generate_markdown();
+    let markdown = generate_markdown()?;
     let filename = "docs/categories.md";
     let schema_path = PathBuf::from(ROOT_DIR).join(filename);
 
@@ -46,27 +46,28 @@ pub(crate) fn main(args: &Args) -> Result<()> {
     Ok(())
 }
 
-fn generate_markdown() -> String {
+fn generate_markdown() -> Result<String> {
     let registry = unsoundness_checker::default_rule_registry();
     let categories = unsoundness_checker::categories::ALL_CATEGORIES;
 
     let mut output = String::new();
 
-    let _ = writeln!(&mut output, "# Categories\n");
-    let _ = writeln!(
+    writeln!(&mut output, "# Categories\n")?;
+
+    writeln!(
         &mut output,
         "This page describes the different categories of type system unsoundness that the checker can detect.\n"
-    );
+    )?;
 
     for category in categories {
-        let _ = writeln!(&mut output, "## {}\n", category.name);
+        writeln!(&mut output, "## {}\n", category.name)?;
 
         // Write category documentation - strip leading whitespace from each line
         for line in category.documentation.lines() {
             let trimmed = line.trim_start();
-            let _ = writeln!(&mut output, "{}", trimmed);
+            writeln!(&mut output, "{}", trimmed)?;
         }
-        let _ = writeln!(&mut output);
+        writeln!(&mut output)?;
 
         // Find all rules that belong to this category
         let rules_in_category: Vec<_> = registry
@@ -80,22 +81,24 @@ fn generate_markdown() -> String {
             .collect();
 
         if rules_in_category.is_empty() {
-            let _ = writeln!(&mut output, "*No rules in this category.*\n");
+            writeln!(&mut output, "*No rules in this category.*\n")?;
         } else {
-            let _ = writeln!(&mut output, "### Rules in this category\n");
+            writeln!(&mut output, "### Rules in this category\n")?;
             for rule in rules_in_category {
-                let _ = writeln!(
+                writeln!(
                     &mut output,
                     "- [`{}`](rules.md#{}) - {}",
                     rule.name(),
                     rule.name(),
                     rule.summary
-                );
+                )?;
             }
         }
+
+        writeln!(&mut output)?;
     }
 
-    output
+    Ok(output)
 }
 
 #[cfg(test)]
