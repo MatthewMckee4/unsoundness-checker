@@ -31,11 +31,16 @@ UnsoundnessSuiteFile {
 
 This is due to the inferred type of an instance variable.
 In the code in this file we have the following line:
+
 ```python
 class ToString:
     def __init__(self, x: int) -> None:
       self.str_x = str(x)
+
+foo = ToString(1)
+setattr(foo, "str_x", 1)
 ```
+
 Here `ty` infers `Unknown | str` for `self.str_x`.
 This means when we make the call to setattr str_x to an integer it is okay because `int` is assignable to `Unknown`.
 
@@ -53,7 +58,6 @@ Here is the code from the file:
 ```py
 def func(x: int) -> str:
     return str(x)
-
 
 globals()["func"] = lambda x: x
 ```

@@ -9,7 +9,7 @@ use ty_project::metadata::options::EnvironmentOptions;
 use ty_project::metadata::value::RangedValue;
 use ty_project::{Db, ProjectDatabase, ProjectMetadata};
 use unsoundness_checker::checker::check_project;
-use unsoundness_checker::rules::{self};
+use unsoundness_checker::rules;
 
 use crate::real_world_projects::{InstalledProject, RealWorldProject};
 

@@ -10,20 +10,13 @@ repos:
       - id: check-added-large-files
       - id: check-case-conflict
       - id: check-merge-conflict
-      - id: check-symlinks
       - id: check-yaml
-      - id: check-json
       - id: check-toml
       - id: debug-statements
       - id: end-of-file-fixer
       - id: mixed-line-ending
       - id: trailing-whitespace
       - id: detect-private-key
-
-  - repo: https://github.com/abravalheri/validate-pyproject
-    rev: v0.24.1
-    hooks:
-      - id: validate-pyproject
 
   - repo: https://github.com/doublify/pre-commit-rust
     rev: v1.0
@@ -37,7 +30,7 @@ repos:
     hooks:
       - id: cargo-fmt
         name: cargo fmt
-        entry: cargo +nightly fmt --
+        entry: cargo fmt --
         language: system
         types: [rust]
         pass_filenames: false
