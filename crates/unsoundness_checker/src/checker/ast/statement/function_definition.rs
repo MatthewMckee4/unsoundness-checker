@@ -133,9 +133,10 @@ impl<'ast> SourceOrderVisitor<'ast> for ReturnStatementFinder<'ast> {
                 }
             }
             Stmt::FunctionDef(stmt_function_def) => {
+                let previous = self.inside_inner_function;
                 self.inside_inner_function = true;
                 source_order::walk_body(self, &stmt_function_def.body);
-                self.inside_inner_function = false;
+                self.inside_inner_function = previous;
             }
             _ => {
                 source_order::walk_stmt(self, stmt);

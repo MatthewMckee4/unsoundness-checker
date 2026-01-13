@@ -231,8 +231,18 @@ def foo() -> int: ...
 def foo() -> str | int:
     def inner():
         return []
-
     return 1
+
+ @overload
+ def bar() -> str: ...
+ @overload
+ def bar() -> int: ...
+ def bar() -> str | int:
+    def inner1():
+        def inner2():
+            return []
+        return []
+    return 3
 ```
 
 ## What we can't catch
