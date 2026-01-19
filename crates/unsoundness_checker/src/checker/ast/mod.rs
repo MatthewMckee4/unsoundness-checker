@@ -42,8 +42,9 @@ impl SourceOrderVisitor<'_> for ASTChecker<'_, '_> {
     }
 }
 
-pub fn check_ast<'db>(db: &'db dyn Db, context: &Context<'db>, file: File) {
-    tracing::debug!("Checking ast");
+pub fn check_ast(context: &Context) {
+    let db = context.db();
+    let file = context.file();
 
     let mut ast_checker = ASTChecker::new(db, context, file);
 

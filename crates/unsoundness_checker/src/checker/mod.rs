@@ -15,9 +15,9 @@ pub fn check_file(db: &dyn Db, file: File, rule_selection: &RuleSelection) -> Ve
 
     let context = Context::new(db, file, rule_selection);
 
-    check_ast(db, &context, file);
+    check_ast(&context);
 
-    check_tokens(db, &context, file);
+    check_tokens(&context);
 
     context.into_diagnostics()
 }
@@ -34,7 +34,7 @@ pub fn check_project(db: &ProjectDatabase, rule_selection: &RuleSelection) -> Ve
         .map(|&file| (file, db.clone()))
         .collect::<Vec<_>>()
         .into_par_iter()
-        .flat_map(|(file, thread_db)| check_file(&thread_db, file, rule_selection))
+        .flat_map(|(file, db)| check_file(&db, file, rule_selection))
         .collect();
 
     tracing::debug!(

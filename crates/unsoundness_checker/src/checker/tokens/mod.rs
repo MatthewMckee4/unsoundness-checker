@@ -1,8 +1,6 @@
-use ruff_db::files::File;
 use ruff_db::parsed::parsed_module;
 use ruff_linter::Locator;
 use ruff_python_index::Indexer;
-use ty_project::Db;
 
 use crate::Context;
 use crate::rules::report_type_checking_directive_used;
@@ -19,8 +17,10 @@ static TYPE_CHECKING_DIRECTIVES: &[&str] = &[
     "pyrefly: ignore",
 ];
 
-pub fn check_tokens<'db>(db: &'db dyn Db, context: &Context<'db>, file: File) {
-    tracing::debug!("Checking tokens");
+pub fn check_tokens(context: &Context) {
+    let db = context.db();
+    let file = context.file();
+
     let Ok(file_content) = file.read_to_string(db) else {
         return;
     };
