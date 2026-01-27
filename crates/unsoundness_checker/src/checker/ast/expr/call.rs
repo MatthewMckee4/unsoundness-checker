@@ -1,5 +1,5 @@
 use ruff_python_ast::{Expr, ExprCall};
-use ty_python_semantic::types::ide_support::all_members;
+use ty_python_semantic::types::list_members::all_members;
 use ty_python_semantic::types::{KnownFunction, Type, TypeContext};
 use ty_python_semantic::{HasType, SemanticModel};
 
@@ -16,7 +16,9 @@ pub(super) fn check_call_expression(
         return;
     }
 
-    let func_ty = expr_call.func.inferred_type(model);
+    let Some(func_ty) = expr_call.func.inferred_type(model) else {
+        return;
+    };
 
     let Type::FunctionLiteral(function_type) = func_ty else {
         return;
@@ -31,9 +33,13 @@ pub(super) fn check_call_expression(
             return;
         };
 
-        let value_type = second_argument.inferred_type(model);
+        let Some(value_type) = second_argument.inferred_type(model) else {
+            return;
+        };
 
-        let casting_type = first_argument.inferred_type(model);
+        let Some(casting_type) = first_argument.inferred_type(model) else {
+            return;
+        };
 
         let current_promotion = casting_type.promote_literals(model.db(), TypeContext::default());
 
@@ -68,7 +74,9 @@ fn check_setattr_call(context: &Context, model: &SemanticModel, expr_call: &Expr
         return;
     };
 
-    let first_ty = first_argument.inferred_type(model);
+    let Some(first_ty) = first_argument.inferred_type(model) else {
+        return;
+    };
 
     let members = all_members(context.db(), first_ty);
 
@@ -83,7 +91,9 @@ fn check_setattr_call(context: &Context, model: &SemanticModel, expr_call: &Expr
     let current_attribute_promotion =
         type_of_attribute.promote_literals(model.db(), TypeContext::default());
 
-    let value_type = third_argument.inferred_type(model);
+    let Some(value_type) = third_argument.inferred_type(model) else {
+        return;
+    };
 
     if !value_type.is_assignable_to(context.db(), current_attribute_promotion) {
         report_invalid_setattr(context, expr_call, current_attribute_promotion, value_type);

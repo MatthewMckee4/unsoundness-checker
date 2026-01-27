@@ -18,7 +18,9 @@ fn check_possibly_mangled_dunder_variable_access(
     model: &SemanticModel,
     expr_attribute: &ExprAttribute,
 ) {
-    let inferred_type = expr_attribute.value.inferred_type(model);
+    let Some(inferred_type) = expr_attribute.value.inferred_type(model) else {
+        return;
+    };
     let class_name = match inferred_type {
         // Possibly in an instance method where `self` is inferred as `Self@__init__` for example
         Type::TypeVar(inferred_value_type) => {

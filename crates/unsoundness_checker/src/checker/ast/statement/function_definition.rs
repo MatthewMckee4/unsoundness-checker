@@ -1,6 +1,6 @@
 use ruff_python_ast::visitor::source_order::{self, SourceOrderVisitor};
 use ruff_python_ast::{Stmt, StmtFunctionDef, StmtReturn};
-use ty_python_semantic::types::{KnownFunction, Type, UnionBuilder};
+use ty_python_semantic::types::{DynamicType, KnownFunction, Type, UnionBuilder};
 use ty_python_semantic::{HasType, SemanticModel};
 
 use crate::Context;
@@ -19,7 +19,7 @@ pub(super) fn check_overloads<'ast>(
 ) {
     let function_ty = stmt_function_def.inferred_type(model);
 
-    let Type::FunctionLiteral(function_type_ty) = function_ty else {
+    let Some(Type::FunctionLiteral(function_type_ty)) = function_ty else {
         return;
     };
 
@@ -32,7 +32,7 @@ pub(super) fn check_overloads<'ast>(
             for decorator in &overload_stmt.decorator_list {
                 let decorator_ty = decorator.expression.inferred_type(model);
 
-                let Type::FunctionLiteral(decorator_type_ty) = decorator_ty else {
+                let Some(Type::FunctionLiteral(decorator_type_ty)) = decorator_ty else {
                     continue;
                 };
 
@@ -59,45 +59,39 @@ pub(super) fn check_overloads<'ast>(
 
     let union_of_overload_return_type = overload_return_types
         .iter()
-        .filter_map(|ty| ty.as_ref())
         .fold(UnionBuilder::new(context.db()), |builder, ty| {
             builder.add(*ty)
         })
         .build();
 
-    let is_any_overload_return_type_none = overload_return_types.iter().any(Option::is_none);
+    if overload_return_types
+        .iter()
+        .any(|ty| matches!(ty, Type::Dynamic(DynamicType::Any | DynamicType::Unknown)))
+    {
+        return;
+    }
 
     let return_statements = get_return_statements(stmt_function_def);
 
     for return_statement in return_statements {
-        let return_type = return_statement
+        let Some(return_type) = return_statement
             .value
             .as_ref()
-            .map(|value| value.inferred_type(model));
+            .and_then(|value| value.inferred_type(model))
+        else {
+            continue;
+        };
 
-        match (return_type, is_any_overload_return_type_none) {
-            (Some(_), true) | (None, false) => {
-                report_invalid_overload_implementation(
-                    context,
-                    return_statement,
-                    return_type.as_ref(),
-                    &overload_return_types,
-                );
-            }
-            (Some(return_type), false) => {
-                let is_return_type_assignable_to_an_overload =
-                    return_type.is_assignable_to(model.db(), union_of_overload_return_type);
+        let is_return_type_assignable_to_an_overload =
+            return_type.is_assignable_to(model.db(), union_of_overload_return_type);
 
-                if !is_return_type_assignable_to_an_overload {
-                    report_invalid_overload_implementation(
-                        context,
-                        return_statement,
-                        Some(&return_type),
-                        &overload_return_types,
-                    );
-                }
-            }
-            (None, true) => {}
+        if !is_return_type_assignable_to_an_overload {
+            report_invalid_overload_implementation(
+                context,
+                return_statement,
+                Some(&return_type),
+                &overload_return_types,
+            );
         }
     }
 }
@@ -154,7 +148,7 @@ pub(super) fn check_function_definition_statement(
 
     if let Some(return_type) = stmt_function_def.returns.as_ref() {
         let inferred_return_type = return_type.inferred_type(model);
-        if let Type::TypeIs(_) = inferred_return_type {
+        if let Some(Type::TypeIs(_)) = inferred_return_type {
             report_typing_type_is_used(context, return_type);
         }
     }
