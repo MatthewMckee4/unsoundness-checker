@@ -25,6 +25,10 @@ enum Command {
         /// If not specified, all projects will be run.
         #[arg(long = "project")]
         projects: Vec<String>,
+
+        /// Show summary of results
+        #[arg(long, default_value_t = false)]
+        show_summary: bool,
     },
     /// Run unsoundness suite
     UnsoundnessSuite,
@@ -48,8 +52,11 @@ fn main() -> Result<()> {
     let cli = Cli::parse();
 
     match cli.command {
-        Some(Command::Benchmark { projects }) => {
-            run_performance_benchmarks(&projects)?;
+        Some(Command::Benchmark {
+            projects,
+            show_summary,
+        }) => {
+            run_performance_benchmarks(&projects, show_summary)?;
         }
         Some(Command::UnsoundnessSuite) => run_unsoundness_suite()?,
         _ => (),
