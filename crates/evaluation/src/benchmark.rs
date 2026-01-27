@@ -1,19 +1,23 @@
+use std::collections::BTreeMap;
 use std::time::Instant;
 
 use anyhow::Result;
 use colored::Colorize;
+use ruff_db::diagnostic::DiagnosticId;
 
 use crate::real_world_projects::Benchmark;
 
+use crate::real_world_projects::CheckResult;
 use crate::real_world_projects::run_checker;
 
 struct BenchmarkResult {
     project_name: String,
     check_duration: std::time::Duration,
-    diagnostics: usize,
+    diagnostics: BTreeMap<String, usize>,
+    lines_of_code: usize,
 }
 
-pub fn run_performance_benchmarks(project_names: &[String]) -> Result<()> {
+pub fn run_performance_benchmarks(project_names: &[String], show_summary: bool) -> Result<()> {
     println!("{}", "Running performance benchmarks...".bold().blue());
     println!();
 
@@ -67,7 +71,20 @@ pub fn run_performance_benchmarks(project_names: &[String]) -> Result<()> {
             result.project_name.bold().green()
         );
         println!("  Check time:  {:.2}s", result.check_duration.as_secs_f64());
-        println!("  Diagnostics: {}", result.diagnostics);
+        println!("  Lines of code: {}", result.lines_of_code);
+
+        if show_summary {
+            println!("  Diagnostic summary:");
+            let mut sorted_diagnostics: Vec<_> = result.diagnostics.iter().collect();
+            sorted_diagnostics.sort_by(|a, b| b.1.cmp(a.1));
+
+            for (kind, count) in &sorted_diagnostics {
+                println!("    {kind}: {count}");
+            }
+        } else {
+            let total: usize = result.diagnostics.values().sum();
+            println!("  Total diagnostics: {total}");
+        }
         println!();
     }
 
@@ -83,14 +100,25 @@ fn run_single_benchmark(benchmark: &Benchmark) -> Result<BenchmarkResult> {
 
     println!("  {} unsoundness checker...", "Running".dimmed());
     let check_start = Instant::now();
-    let diagnostics = run_checker(&installed_project)?;
+    let CheckResult {
+        diagnostics,
+        lines_of_code,
+    } = run_checker(&installed_project)?;
     let check_duration = check_start.elapsed();
     println!("  {}", "done".green(),);
     println!();
 
+    let mut summary: BTreeMap<String, usize> = BTreeMap::new();
+    for diagnostic in diagnostics {
+        if let DiagnosticId::Lint(lint_name) = diagnostic.id() {
+            *summary.entry(lint_name.as_str().to_string()).or_insert(0) += 1;
+        }
+    }
+
     Ok(BenchmarkResult {
         project_name: project_name.to_string(),
         check_duration,
-        diagnostics: diagnostics.len(),
+        diagnostics: summary,
+        lines_of_code,
     })
 }

@@ -5,9 +5,15 @@ use std::process::Command;
 use std::time::Instant;
 
 use anyhow::{Context, Result};
+use ruff_db::Db as _;
 use ruff_db::diagnostic::Diagnostic;
+use ruff_db::system::OsSystem;
 use ruff_db::system::{SystemPath, SystemPathBuf};
 use ruff_python_ast::PythonVersion;
+use ty_project::metadata::Options;
+use ty_project::metadata::options::EnvironmentOptions;
+use ty_project::metadata::value::{RangedValue, RelativePathBuf};
+use ty_project::{Db, ProjectDatabase, ProjectMetadata};
 use unsoundness_checker::checker::check_project;
 
 /// Configuration for a real-world project to benchmark
@@ -388,13 +394,13 @@ impl<'a> Benchmark<'a> {
     }
 }
 
-pub fn run_checker(installed_project: &InstalledProject) -> Result<Vec<Diagnostic>> {
-    use ruff_db::system::OsSystem;
-    use ty_project::metadata::Options;
-    use ty_project::metadata::options::EnvironmentOptions;
-    use ty_project::metadata::value::{RangedValue, RelativePathBuf};
-    use ty_project::{Db, ProjectDatabase, ProjectMetadata};
+pub struct CheckResult {
+    pub diagnostics: Vec<Diagnostic>,
+    pub lines_of_code: usize,
+}
 
+/// Run the checker on the installed project
+pub fn run_checker(installed_project: &InstalledProject) -> Result<CheckResult> {
     let root = SystemPathBuf::from_path_buf(installed_project.path.clone())
         .map_err(|p| anyhow::anyhow!("Failed to convert path to SystemPathBuf: {}", p.display()))?;
     let system = OsSystem::new(&root);
@@ -435,5 +441,24 @@ pub fn run_checker(installed_project: &InstalledProject) -> Result<Vec<Diagnosti
 
     let diagnostics = check_project(&db, &rule_selection);
 
-    Ok(diagnostics)
+    let lines_of_code = count_lines_of_code(&db);
+
+    Ok(CheckResult {
+        diagnostics,
+        lines_of_code,
+    })
+}
+
+fn count_lines_of_code(db: &ProjectDatabase) -> usize {
+    let mut count = 0;
+    for file in &db.project().files(db) {
+        let Some(system_path) = file.path(db).as_system_path() else {
+            continue;
+        };
+        let Ok(content) = db.system().read_to_string(system_path) else {
+            continue;
+        };
+        count += content.lines().count();
+    }
+    count
 }
