@@ -25,7 +25,9 @@ pub(super) fn check_assignment<'ast>(
                     if let Some(current_symbol_definition) =
                         members.get(&Name::new(expr_string_literal.value.to_str()))
                     {
-                        let value_type = target.inferred_type(model);
+                        let Some(value_type) = target.inferred_type(model) else {
+                            continue;
+                        };
 
                         let current_type = current_symbol_definition.ty;
 
@@ -42,7 +44,9 @@ pub(super) fn check_assignment<'ast>(
                 }
             }
             Expr::Attribute(attr_expr) => {
-                let inferred_value_type = attr_expr.value.inferred_type(model);
+                let Some(inferred_value_type) = attr_expr.value.inferred_type(model) else {
+                    continue;
+                };
 
                 if let Type::FunctionLiteral(function_ty) = inferred_value_type {
                     match attr_expr.attr.as_str() {
@@ -64,7 +68,9 @@ pub(super) fn check_assignment<'ast>(
                                 .filter(|default_type| default_type.is_some())
                                 .collect();
 
-                            let inferred_target_type = target.inferred_type(model);
+                            let Some(inferred_target_type) = target.inferred_type(model) else {
+                                continue;
+                            };
 
                             // Setting `__default__` to an object of type `None` on a function with no default parameters
                             // is fine as the current `__default__` is of type `tuple[None]`
@@ -101,10 +107,6 @@ pub(super) fn check_assignment<'ast>(
                             for (target_ty, annotated_ty) in
                                 target_tuple_elements.iter().zip(annotated_types.iter())
                             {
-                                let Some(annotated_ty) = annotated_ty else {
-                                    continue;
-                                };
-
                                 // If we want to "replace" a default argument, it must be assignable to the annotated type.
                                 if !target_ty.is_assignable_to(context.db(), *annotated_ty) {
                                     report_setting_function_defaults_attribute(

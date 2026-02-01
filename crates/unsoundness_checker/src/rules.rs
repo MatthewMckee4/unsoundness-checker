@@ -420,7 +420,7 @@ pub(crate) fn report_invalid_overload_implementation<'db>(
     context: &Context<'db>,
     return_statement: &StmtReturn,
     return_type: Option<&'db Type<'db>>,
-    overload_return_types: &[Option<Type<'db>>],
+    overload_return_types: &[Type<'db>],
 ) {
     let Some(builder) =
         context.report_lint(&INVALID_OVERLOAD_IMPLEMENTATION, return_statement.range())
@@ -445,7 +445,7 @@ pub(crate) fn report_invalid_overload_implementation<'db>(
 
     let overload_return_types_display = overload_return_types
         .iter()
-        .map(|ty| get_return_type_display(ty.as_ref()))
+        .map(|ty| format!("`{}`", ty.display(context.db())))
         .collect::<Vec<_>>()
         .join(", ");
 

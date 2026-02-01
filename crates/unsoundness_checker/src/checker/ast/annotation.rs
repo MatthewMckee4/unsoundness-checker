@@ -22,11 +22,11 @@ impl SourceOrderVisitor<'_> for DynamicAnnotationChecker<'_, '_> {
     fn visit_expr(&mut self, expr: &'_ Expr) {
         let ty = expr.inferred_type(self.model);
 
-        if matches!(ty, Type::Dynamic(DynamicType::Any)) {
+        if matches!(ty, Some(Type::Dynamic(DynamicType::Any))) {
             report_typing_any_used(self.context, expr);
         }
 
-        if matches!(ty, Type::Callable(_))
+        if matches!(ty, Some(Type::Callable(_)))
             && let Expr::Subscript(expr_subscript) = expr
             && let slice = expr_subscript.slice.as_ref()
             && let Expr::Tuple(tuple) = slice
@@ -59,7 +59,7 @@ impl SourceOrderVisitor<'_> for GenericAnnotationChecker<'_> {
     fn visit_expr(&mut self, expr: &'_ Expr) {
         let ty = expr.inferred_type(self.model);
 
-        if matches!(ty, Type::TypeVar(_)) {
+        if matches!(ty, Some(Type::TypeVar(_))) {
             self.contains_generic = true;
         }
 
