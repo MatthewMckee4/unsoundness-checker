@@ -247,7 +247,7 @@ class Foo:
     # foo 'type: ignore'
 ```
 
-# Ensure we still catch cases where extra whitespace is added
+## Ensure we still catch cases where extra whitespace is added
 
 ```python
 def get_number() -> int:
