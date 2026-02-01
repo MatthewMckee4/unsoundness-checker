@@ -396,3 +396,15 @@ info: rule `type-checking-directive-used` was selected in the configuration file
 
 
 ## Ensure we don't catch examples of "type: ignore" randomly in a comment
+
+
+# Ensure we still catch cases where extra whitespace is added
+
+error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
+ --> main.py:2:28
+  |
+1 | def get_number() -> int:
+2 |     return "not a number"  #   type: ignore
+  |                            ^^^^^^^^^^^^^^^^
+  |
+info: rule `type-checking-directive-used` was selected in the configuration file

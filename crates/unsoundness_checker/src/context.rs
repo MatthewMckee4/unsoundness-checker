@@ -15,11 +15,11 @@ pub(crate) struct Context<'db> {
     db: &'db dyn Db,
     /// The file being checked.
     file: File,
-    /// The diagnostics collected so far.
+    /// The collected diagnostics.
     diagnostics: RefCell<Vec<Diagnostic>>,
-    /// The rule selection.
+    /// The rule selected by the user.
     rule_selection: &'db RuleSelection,
-    /// The ast.
+    /// The parsed AST of the Python file.
     ast: ParsedModuleRef,
 }
 

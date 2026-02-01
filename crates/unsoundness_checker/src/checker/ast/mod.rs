@@ -1,9 +1,6 @@
 use annotation::check_annotation;
-use ruff_db::files::File;
-use ruff_db::parsed::parsed_module;
 use ruff_python_ast::visitor::source_order::{self, SourceOrderVisitor};
 use ruff_python_ast::{Expr, Stmt};
-use ty_project::Db;
 use ty_python_semantic::SemanticModel;
 
 use crate::Context;
@@ -17,15 +14,14 @@ mod utils;
 
 pub struct ASTChecker<'db, 'ctx> {
     context: &'ctx Context<'db>,
-
     model: SemanticModel<'db>,
 }
 
 impl<'db, 'ctx> ASTChecker<'db, 'ctx> {
-    pub(crate) fn new(db: &'db dyn Db, context: &'ctx Context<'db>, file: File) -> Self {
+    pub(crate) fn new(context: &'ctx Context<'db>) -> Self {
         Self {
             context,
-            model: SemanticModel::new(db, file),
+            model: SemanticModel::new(context.db(), context.file()),
         }
     }
 }
@@ -43,12 +39,7 @@ impl SourceOrderVisitor<'_> for ASTChecker<'_, '_> {
 }
 
 pub fn check_ast(context: &Context) {
-    let db = context.db();
-    let file = context.file();
+    let mut ast_checker = ASTChecker::new(context);
 
-    let mut ast_checker = ASTChecker::new(db, context, file);
-
-    let ast = parsed_module(db, file).load(db);
-
-    ast_checker.visit_body(ast.suite());
+    ast_checker.visit_body(context.ast().suite());
 }
