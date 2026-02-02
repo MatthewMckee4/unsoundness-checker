@@ -1,4 +1,3 @@
-use ruff_db::parsed::parsed_module;
 use ruff_linter::Locator;
 use ruff_python_index::Indexer;
 
@@ -17,22 +16,17 @@ static TYPE_CHECKING_DIRECTIVES: &[&str] = &[
     "pyrefly: ignore",
 ];
 
-pub fn check_tokens(context: &Context) {
-    let db = context.db();
-    let file = context.file();
-
-    let Ok(file_content) = file.read_to_string(db) else {
+pub fn check_comments(context: &Context) {
+    let Ok(file_content) = context.file().read_to_string(context.db()) else {
         return;
     };
 
-    let ast = parsed_module(db, file).load(db);
-
     let locator = Locator::new(&file_content);
 
-    let indexer = Indexer::from_tokens(ast.tokens(), locator.contents());
+    let indexer = Indexer::from_tokens(context.ast().tokens(), locator.contents());
 
     for range in indexer.comment_ranges() {
-        let line = locator.line_str(range.start());
+        let line = locator.slice(range);
 
         // Check if the comment contains any type checking directive
         if let Some(directive) = find_type_checking_directive(line) {
@@ -43,13 +37,17 @@ pub fn check_tokens(context: &Context) {
 
 /// Finds a type checking directive in a comment line
 fn find_type_checking_directive(line: &str) -> Option<&'static str> {
-    // Find the comment start
+    // Find the content of the comment.
+    // It is assumed that all comments start with "# ".
+    // But we be safe here and explicitly check for it.
     let comment_start = line.find("# ")?;
     let comment_content = &line[comment_start + 2..];
+
+    let comment_content = comment_content.trim();
 
     // Check if any directive is present in the comment
     TYPE_CHECKING_DIRECTIVES
         .iter()
-        .find(|&&directive| comment_content.starts_with(directive))
+        .find(|&directive| comment_content.starts_with(directive))
         .copied()
 }

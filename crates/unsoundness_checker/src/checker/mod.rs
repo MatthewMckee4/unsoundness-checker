@@ -4,11 +4,11 @@ use ty_project::{Db, ProjectDatabase};
 
 use crate::Context;
 use crate::checker::ast::check_ast;
-use crate::checker::tokens::check_tokens;
+use crate::checker::comments::check_comments;
 use crate::rule::RuleSelection;
 
 mod ast;
-mod tokens;
+mod comments;
 
 pub fn check_file(db: &dyn Db, file: File, rule_selection: &RuleSelection) -> Vec<Diagnostic> {
     tracing::info!("Checking file: {}", file.path(db));
@@ -17,7 +17,7 @@ pub fn check_file(db: &dyn Db, file: File, rule_selection: &RuleSelection) -> Ve
 
     check_ast(&context);
 
-    check_tokens(&context);
+    check_comments(&context);
 
     context.into_diagnostics()
 }
