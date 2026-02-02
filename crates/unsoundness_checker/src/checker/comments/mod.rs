@@ -48,6 +48,6 @@ fn find_type_checking_directive(line: &str) -> Option<&'static str> {
     // Check if any directive is present in the comment
     TYPE_CHECKING_DIRECTIVES
         .iter()
-        .find(|&&directive| comment_content.starts_with(directive))
+        .find(|&directive| comment_content.starts_with(directive))
         .copied()
 }
