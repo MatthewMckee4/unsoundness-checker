@@ -8,7 +8,6 @@ Runtime code modifications that escape static type checker analysis.
 
 ### Rules in this category
 
-- [`invalid-overload-implementation`](rules.md#invalid-overload-implementation) - detects invalid overload implementation
 - [`invalid-function-defaults`](rules.md#invalid-function-defaults) - detects invalid mutation of the `__defaults__` attribute of a function
 - [`mutating-function-code-attribute`](rules.md#mutating-function-code-attribute) - detects mutating the `__code__` attribute of a function
 - [`mutating-globals-dict`](rules.md#mutating-globals-dict) - detects mutations to the `globals()` dictionary
@@ -22,6 +21,8 @@ Mechanisms that suppress or bypass type checker warnings.
 ### Rules in this category
 
 - [`typing-any-used`](rules.md#typing-any-used) - detects usage of `typing.Any` in type annotations
+- [`invalid-overload-implementation`](rules.md#invalid-overload-implementation) - detects invalid overload implementation
+- [`typing-overload-used`](rules.md#typing-overload-used) - detects usage of overloaded functions
 - [`type-checking-directive-used`](rules.md#type-checking-directive-used) - detects usage of type checking directives in comments
 - [`if-type-checking-used`](rules.md#if-type-checking-used) - detects usage of `if TYPE_CHECKING:` blocks
 - [`typing-cast-used`](rules.md#typing-cast-used) - detects usage of `typing.cast()` function calls
