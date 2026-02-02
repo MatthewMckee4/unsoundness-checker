@@ -422,7 +422,7 @@ pub(crate) fn report_typing_any_used(context: &Context, expr: &Expr) {
 pub(crate) fn report_invalid_overload_implementation<'db>(
     context: &Context<'db>,
     return_statement: &StmtReturn,
-    return_type: Option<&'db Type<'db>>,
+    return_type: &Type<'db>,
     overload_return_types: &[Type<'db>],
 ) {
     let Some(builder) =
@@ -434,17 +434,7 @@ pub(crate) fn report_invalid_overload_implementation<'db>(
     let mut diagnostic =
         builder.into_diagnostic("Invalid overload implementation can lead to runtime errors.");
 
-    let get_return_type_display = |ty: Option<&Type<'_>>| {
-        format!(
-            "`{}`",
-            ty.map_or_else(
-                || "None".to_string(),
-                |ty| ty.display(context.db()).to_string(),
-            )
-        )
-    };
-
-    let return_type_display = get_return_type_display(return_type);
+    let return_type_display = return_type.display(context.db()).to_string();
 
     let overload_return_types_display = overload_return_types
         .iter()
@@ -453,7 +443,7 @@ pub(crate) fn report_invalid_overload_implementation<'db>(
         .join(", ");
 
     diagnostic.info(format_args!(
-        "This overload implementation is invalid as {return_type_display} is not \
+        "This overload implementation is invalid as `{return_type_display}` is not \
         assignable to any of the overload return types ({overload_return_types_display})"
     ));
 }

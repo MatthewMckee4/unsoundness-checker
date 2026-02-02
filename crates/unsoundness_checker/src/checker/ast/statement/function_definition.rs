@@ -47,22 +47,10 @@ pub(super) fn check_overloads<'ast>(
         return;
     }
 
-    let overload_signatures = overloads
+    let overload_return_types = overloads
         .iter()
-        .map(|overload| overload.signature(context.db()))
+        .map(|overload| overload.signature(context.db()).return_ty)
         .collect::<Vec<_>>();
-
-    let overload_return_types = overload_signatures
-        .iter()
-        .map(|overload| overload.return_ty)
-        .collect::<Vec<_>>();
-
-    let union_of_overload_return_type = overload_return_types
-        .iter()
-        .fold(UnionBuilder::new(context.db()), |builder, ty| {
-            builder.add(*ty)
-        })
-        .build();
 
     if overload_return_types
         .iter()
@@ -70,6 +58,13 @@ pub(super) fn check_overloads<'ast>(
     {
         return;
     }
+
+    let union_of_overload_return_type = overload_return_types
+        .iter()
+        .fold(UnionBuilder::new(context.db()), |builder, ty| {
+            builder.add(*ty)
+        })
+        .build();
 
     let return_statements = get_return_statements(stmt_function_def);
 
@@ -89,7 +84,7 @@ pub(super) fn check_overloads<'ast>(
             report_invalid_overload_implementation(
                 context,
                 return_statement,
-                Some(&return_type),
+                &return_type,
                 &overload_return_types,
             );
         }
