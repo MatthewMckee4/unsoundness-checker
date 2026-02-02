@@ -133,6 +133,7 @@ declare_rule! {
     pub static INVALID_OVERLOAD_IMPLEMENTATION = {
         summary: "detects invalid overload implementation",
         status: RuleStatus::stable("1.0.0"),
+        categories: &[&RUNTIME_MODIFICATION],
         default_level: Level::Error,
     }
 }
