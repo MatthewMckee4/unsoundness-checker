@@ -63,7 +63,7 @@ Default level: `error`.
 </small>
 
 <small>
-Categories: None.
+Categories: [`runtime-modification`](categories.md#runtime-modification).
 </small>
 
 [See more](rules/invalid_overload_implementation.md)
