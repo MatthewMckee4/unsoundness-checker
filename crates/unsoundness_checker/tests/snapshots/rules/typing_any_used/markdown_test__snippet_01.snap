@@ -2,7 +2,7 @@
 source: crates/unsoundness_checker/tests/markdown_test.rs
 expression: output
 ---
-error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+warning[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
  --> main.py:3:24
   |
 1 | from typing import Any

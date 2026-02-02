@@ -4,7 +4,7 @@ expression: combined_output
 ---
 ### Basic incorrect TypeIs
 
-error[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
+warning[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
  --> main.py:3:26
   |
 1 | from typing_extensions import TypeIs
@@ -18,7 +18,7 @@ info: rule `typing-type-is-used` was selected in the configuration file
 
 ### TypeIs always returning False
 
-error[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
+warning[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
  --> main.py:3:29
   |
 1 | from typing_extensions import TypeIs
@@ -32,7 +32,7 @@ info: rule `typing-type-is-used` was selected in the configuration file
 
 ### TypeIs with wrong check
 
-error[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
+warning[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
  --> main.py:3:35
   |
 1 | from typing_extensions import TypeIs
@@ -46,7 +46,7 @@ info: rule `typing-type-is-used` was selected in the configuration file
 
 ### Multiple TypeIs functions
 
-error[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
+warning[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
  --> main.py:3:26
   |
 1 | from typing_extensions import TypeIs
@@ -57,7 +57,7 @@ error[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type error
   |
 info: rule `typing-type-is-used` was selected in the configuration file
 
-error[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
+warning[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
  --> main.py:6:26
   |
 4 |     return True
@@ -71,7 +71,7 @@ info: rule `typing-type-is-used` was selected in the configuration file
 
 ### TypeIs in class method
 
-error[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
+warning[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
  --> main.py:5:35
   |
 3 | class Validator:
@@ -85,7 +85,7 @@ info: rule `typing-type-is-used` was selected in the configuration file
 
 ### TypeIs with generic
 
-error[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
+warning[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
  --> main.py:6:27
   |
 4 | T = TypeVar('T')
@@ -99,7 +99,7 @@ info: rule `typing-type-is-used` was selected in the configuration file
 
 ### TypeIs narrowing to wrong subtype
 
-error[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
+warning[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
   --> main.py:10:26
    |
  8 |         pass
@@ -113,7 +113,7 @@ info: rule `typing-type-is-used` was selected in the configuration file
 
 ### TypeIs with union
 
-error[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
+warning[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
  --> main.py:3:33
   |
 1 | from typing_extensions import TypeIs
@@ -127,7 +127,7 @@ info: rule `typing-type-is-used` was selected in the configuration file
 
 ### TypeIs in conditional
 
-error[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
+warning[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
  --> main.py:3:43
   |
 1 | from typing_extensions import TypeIs
@@ -141,7 +141,7 @@ info: rule `typing-type-is-used` was selected in the configuration file
 
 ### TypeIs with complex type
 
-error[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
+warning[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
  --> main.py:3:35
   |
 1 | from typing_extensions import TypeIs
@@ -155,7 +155,7 @@ info: rule `typing-type-is-used` was selected in the configuration file
 
 ### Nested TypeIs checks
 
-error[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
+warning[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
  --> main.py:3:26
   |
 1 | from typing_extensions import TypeIs
@@ -166,7 +166,7 @@ error[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type error
   |
 info: rule `typing-type-is-used` was selected in the configuration file
 
-error[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
+warning[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
  --> main.py:6:35
   |
 4 |     return True
@@ -180,7 +180,7 @@ info: rule `typing-type-is-used` was selected in the configuration file
 
 ### TypeIs with Protocol
 
-error[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
+warning[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
  --> main.py:6:31
   |
 4 |     def draw(self) -> None: ...
@@ -197,7 +197,7 @@ info: rule `typing-type-is-used` was selected in the configuration file
 
 ### TypeIs with Literal
 
-error[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
+warning[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
  --> main.py:4:27
   |
 2 | from typing import Literal
@@ -211,7 +211,7 @@ info: rule `typing-type-is-used` was selected in the configuration file
 
 ### TypeIs narrowing from Any
 
-error[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
+warning[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
  --> main.py:4:23
   |
 2 | from typing_extensions import TypeIs
@@ -225,7 +225,7 @@ info: rule `typing-type-is-used` was selected in the configuration file
 
 ### Multiple parameters with TypeIs
 
-error[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
+warning[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
  --> main.py:3:44
   |
 1 | from typing_extensions import TypeIs
@@ -239,7 +239,7 @@ info: rule `typing-type-is-used` was selected in the configuration file
 
 ### Correct TypeIs implementation
 
-error[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
+warning[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
  --> main.py:3:26
   |
 1 | from typing_extensions import TypeIs
@@ -253,7 +253,7 @@ info: rule `typing-type-is-used` was selected in the configuration file
 
 ### TypeIs with proper validation
 
-error[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
+warning[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
  --> main.py:3:35
   |
 1 | from typing_extensions import TypeIs
@@ -267,7 +267,7 @@ info: rule `typing-type-is-used` was selected in the configuration file
 
 ### TypeIs narrowing with isinstance
 
-error[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
+warning[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
   --> main.py:10:26
    |
  8 |         pass

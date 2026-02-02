@@ -4,7 +4,7 @@ expression: combined_output
 ---
 ### Basic ellipsis in callback
 
-error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+warning[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
  --> main.py:3:19
   |
 1 | from typing import Callable
@@ -18,7 +18,7 @@ info: rule `callable-ellipsis-used` was selected in the configuration file
 
 ### Ellipsis with multiple callbacks
 
-error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+warning[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
  --> main.py:4:15
   |
 3 | def process(
@@ -29,7 +29,7 @@ error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can le
   |
 info: rule `callable-ellipsis-used` was selected in the configuration file
 
-error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+warning[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
  --> main.py:5:15
   |
 3 | def process(
@@ -44,7 +44,7 @@ info: rule `callable-ellipsis-used` was selected in the configuration file
 
 ### Ellipsis in variable annotation
 
-error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+warning[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
  --> main.py:3:12
   |
 1 | from typing import Callable
@@ -57,7 +57,7 @@ info: rule `callable-ellipsis-used` was selected in the configuration file
 
 ### Ellipsis in class attribute
 
-error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+warning[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
  --> main.py:4:15
   |
 3 | class Handler:
@@ -68,7 +68,7 @@ error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can le
   |
 info: rule `callable-ellipsis-used` was selected in the configuration file
 
-error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+warning[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
  --> main.py:6:28
   |
 4 |     callback: Callable[..., str]
@@ -82,7 +82,7 @@ info: rule `callable-ellipsis-used` was selected in the configuration file
 
 ### Ellipsis in return type
 
-error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+warning[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
  --> main.py:3:24
   |
 1 | from typing import Callable
@@ -96,7 +96,7 @@ info: rule `callable-ellipsis-used` was selected in the configuration file
 
 ### Ellipsis with generic return
 
-error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+warning[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
  --> main.py:5:16
   |
 3 | T = TypeVar('T')
@@ -107,7 +107,7 @@ error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can le
   |
 info: rule `callable-ellipsis-used` was selected in the configuration file
 
-error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+warning[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
  --> main.py:5:37
   |
 3 | T = TypeVar('T')
@@ -121,7 +121,7 @@ info: rule `callable-ellipsis-used` was selected in the configuration file
 
 ### Ellipsis in list of callables
 
-error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+warning[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
  --> main.py:3:16
   |
 1 | from typing import Callable
@@ -136,7 +136,7 @@ info: rule `callable-ellipsis-used` was selected in the configuration file
 
 ### Ellipsis in dict values
 
-error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+warning[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
  --> main.py:3:23
   |
 1 | from typing import Callable
@@ -151,7 +151,7 @@ info: rule `callable-ellipsis-used` was selected in the configuration file
 
 ### Ellipsis with Optional
 
-error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+warning[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
  --> main.py:3:25
   |
 1 | from typing import Callable, Optional
@@ -164,7 +164,7 @@ info: rule `callable-ellipsis-used` was selected in the configuration file
 
 ### Ellipsis in Union
 
-error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+warning[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
  --> main.py:3:16
   |
 1 | from typing import Callable, Union
@@ -174,7 +174,7 @@ error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can le
   |
 info: rule `callable-ellipsis-used` was selected in the configuration file
 
-error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+warning[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
  --> main.py:3:36
   |
 1 | from typing import Callable, Union
@@ -187,7 +187,7 @@ info: rule `callable-ellipsis-used` was selected in the configuration file
 
 ### Ellipsis in method signature
 
-error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+warning[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
  --> main.py:4:29
   |
 3 | class Processor:
@@ -200,7 +200,7 @@ info: rule `callable-ellipsis-used` was selected in the configuration file
 
 ### Ellipsis in nested callable
 
-error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+warning[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
  --> main.py:4:12
   |
 3 | def higher_order(
@@ -211,7 +211,7 @@ error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can le
   |
 info: rule `callable-ellipsis-used` was selected in the configuration file
 
-error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+warning[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
  --> main.py:4:26
   |
 3 | def higher_order(
@@ -222,7 +222,7 @@ error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can le
   |
 info: rule `callable-ellipsis-used` was selected in the configuration file
 
-error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+warning[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
  --> main.py:5:6
   |
 3 | def higher_order(
@@ -236,7 +236,7 @@ info: rule `callable-ellipsis-used` was selected in the configuration file
 
 ### Ellipsis with Protocol
 
-error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+warning[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
  --> main.py:4:15
   |
 3 | class HandlerProtocol(Protocol):
@@ -248,7 +248,7 @@ info: rule `callable-ellipsis-used` was selected in the configuration file
 
 ### Ellipsis in lambda type
 
-error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+warning[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
  --> main.py:3:31
   |
 1 | from typing import Callable
@@ -261,7 +261,7 @@ info: rule `callable-ellipsis-used` was selected in the configuration file
 
 ### Multiple ellipsis in same function
 
-error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+warning[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
  --> main.py:4:17
   |
 3 | def multi_handler(
@@ -272,7 +272,7 @@ error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can le
   |
 info: rule `callable-ellipsis-used` was selected in the configuration file
 
-error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+warning[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
  --> main.py:5:15
   |
 3 | def multi_handler(
@@ -284,7 +284,7 @@ error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can le
   |
 info: rule `callable-ellipsis-used` was selected in the configuration file
 
-error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+warning[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
  --> main.py:6:18
   |
 4 |     on_success: Callable[..., None],

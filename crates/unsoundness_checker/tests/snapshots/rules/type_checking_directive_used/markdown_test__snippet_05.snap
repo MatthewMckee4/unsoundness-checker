@@ -2,7 +2,7 @@
 source: crates/unsoundness_checker/tests/markdown_test.rs
 expression: output
 ---
-error[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
+warning[type-checking-directive-used]: Type checking directive `type: ignore` suppresses type checker warnings, which may hide potential type errors.
  --> main.py:5:41
   |
 4 | # This will fail at runtime, but the directive hides the error

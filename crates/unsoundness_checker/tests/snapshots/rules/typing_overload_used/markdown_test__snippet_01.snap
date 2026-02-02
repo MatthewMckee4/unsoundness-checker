@@ -2,7 +2,7 @@
 source: crates/unsoundness_checker/tests/markdown_test.rs
 expression: output
 ---
-error[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
+warning[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
  --> main.py:3:1
   |
 1 | from typing import overload
@@ -13,7 +13,7 @@ error[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
   |
 info: rule `typing-overload-used` was selected in the configuration file
 
-error[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
+warning[typing-overload-used]: Using `typing.overload` can lead to runtime errors.
  --> main.py:6:1
   |
 4 | def foo(x: int) -> str: ...
