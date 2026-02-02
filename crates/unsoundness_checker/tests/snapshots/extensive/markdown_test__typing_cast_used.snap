@@ -4,7 +4,7 @@ expression: combined_output
 ---
 ### Basic unsafe cast
 
-error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+warning[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
  --> main.py:4:12
   |
 3 | def foo() -> int:
@@ -17,7 +17,7 @@ info: rule `typing-cast-used` was selected in the configuration file
 
 ### Casting between incompatible types
 
-error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+warning[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
  --> main.py:4:13
   |
 3 | def get_value() -> str:
@@ -31,7 +31,7 @@ info: rule `typing-cast-used` was selected in the configuration file
 
 ### Casting in variable assignment
 
-error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+warning[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
  --> main.py:3:10
   |
 1 | from typing import cast
@@ -45,7 +45,7 @@ info: rule `typing-cast-used` was selected in the configuration file
 
 ### Casting with complex types
 
-error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+warning[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
  --> main.py:3:8
   |
 1 | from typing import cast, List, Dict
@@ -57,7 +57,7 @@ error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can le
 info: Consider using `isinstance` checks to ensure types at runtime.
 info: rule `typing-cast-used` was selected in the configuration file
 
-error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+warning[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
  --> main.py:4:11
   |
 3 | data = cast(List[int], ["a", "b", "c"])
@@ -70,7 +70,7 @@ info: rule `typing-cast-used` was selected in the configuration file
 
 ### Nested casts
 
-error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+warning[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
  --> main.py:3:9
   |
 1 | from typing import cast
@@ -81,7 +81,7 @@ error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can le
 info: Consider using `isinstance` checks to ensure types at runtime.
 info: rule `typing-cast-used` was selected in the configuration file
 
-error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+warning[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
  --> main.py:3:19
   |
 1 | from typing import cast
@@ -95,7 +95,7 @@ info: rule `typing-cast-used` was selected in the configuration file
 
 ### Casting with generics
 
-error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+warning[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
  --> main.py:6:12
   |
 5 | def unsafe_cast(value: object) -> T:
@@ -108,7 +108,7 @@ info: rule `typing-cast-used` was selected in the configuration file
 
 ### Casting None to non-optional
 
-error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+warning[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
  --> main.py:3:14
   |
 1 | from typing import cast
@@ -122,7 +122,7 @@ info: rule `typing-cast-used` was selected in the configuration file
 
 ### Casting in return statements
 
-error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+warning[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
  --> main.py:5:12
   |
 3 | def get_number() -> int:
@@ -138,7 +138,7 @@ info: rule `typing-cast-used` was selected in the configuration file
 
 ### Casting with union types
 
-error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+warning[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
  --> main.py:4:12
   |
 3 | def process(value: Union[int, str]) -> int:
@@ -151,7 +151,7 @@ info: rule `typing-cast-used` was selected in the configuration file
 
 ### Casting in list comprehension
 
-error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+warning[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
  --> main.py:3:12
   |
 1 | from typing import cast
@@ -168,7 +168,7 @@ info: rule `typing-cast-used` was selected in the configuration file
 
 ### Casting with custom classes
 
-error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+warning[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
   --> main.py:13:12
    |
 11 | def wrong_pet() -> Dog:
@@ -182,7 +182,7 @@ info: rule `typing-cast-used` was selected in the configuration file
 
 ### Multiple casts in same function
 
-error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+warning[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
  --> main.py:4:9
   |
 3 | def multi_cast():
@@ -194,7 +194,7 @@ error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can le
 info: Consider using `isinstance` checks to ensure types at runtime.
 info: rule `typing-cast-used` was selected in the configuration file
 
-error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+warning[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
  --> main.py:5:9
   |
 3 | def multi_cast():
@@ -207,7 +207,7 @@ error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can le
 info: Consider using `isinstance` checks to ensure types at runtime.
 info: rule `typing-cast-used` was selected in the configuration file
 
-error[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
+warning[typing-cast-used]: Using `typing.cast()` bypasses type checking and can lead to runtime type errors.
  --> main.py:6:9
   |
 4 |     a = cast(int, "hello")

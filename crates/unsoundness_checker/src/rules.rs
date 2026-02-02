@@ -404,7 +404,7 @@ declare_rule! {
         summary: "detects invalid usage of `setattr()` built-in function",
         status: RuleStatus::stable("1.0.0"),
         categories: &[&RUNTIME_MODIFICATION],
-        default_level: Level::Warn,
+        default_level: Level::Error,
     }
 }
 

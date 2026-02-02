@@ -2,7 +2,7 @@
 source: crates/unsoundness_checker/tests/markdown_test.rs
 expression: output
 ---
-error[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
+warning[callable-ellipsis-used]: Using `...` in `Callable` type annotations can lead to runtime type errors.
  --> main.py:3:19
   |
 1 | from typing import Callable

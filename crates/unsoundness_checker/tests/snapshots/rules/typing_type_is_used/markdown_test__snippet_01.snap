@@ -2,7 +2,7 @@
 source: crates/unsoundness_checker/tests/markdown_test.rs
 expression: output
 ---
-error[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
+warning[typing-type-is-used]: Using `typing.TypeIs` can lead to runtime type errors.
  --> main.py:3:26
   |
 1 | from typing_extensions import TypeIs

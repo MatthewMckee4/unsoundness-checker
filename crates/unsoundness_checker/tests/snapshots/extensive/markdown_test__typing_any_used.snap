@@ -4,7 +4,7 @@ expression: combined_output
 ---
 ### Function parameters with Any
 
-error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+warning[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
  --> main.py:3:24
   |
 1 | from typing import Any
@@ -18,7 +18,7 @@ info: rule `typing-any-used` was selected in the configuration file
 
 ### Multiple parameters with Any
 
-error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+warning[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
  --> main.py:3:25
   |
 1 | from typing import Any
@@ -29,7 +29,7 @@ error[typing-any-used]: Using `typing.Any` in type annotations can lead to runti
   |
 info: rule `typing-any-used` was selected in the configuration file
 
-error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+warning[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
  --> main.py:3:33
   |
 1 | from typing import Any
@@ -43,7 +43,7 @@ info: rule `typing-any-used` was selected in the configuration file
 
 ### Return types with Any
 
-error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+warning[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
  --> main.py:3:24
   |
 1 | from typing import Any
@@ -57,7 +57,7 @@ info: rule `typing-any-used` was selected in the configuration file
 
 ### Variable assignments with Any
 
-error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+warning[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
  --> main.py:6:12
   |
 4 |     return {"name": "John", "age": 30}
@@ -70,7 +70,7 @@ info: rule `typing-any-used` was selected in the configuration file
 
 ### Any in generic types
 
-error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+warning[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
  --> main.py:3:30
   |
 1 | from typing import Any, List, Dict
@@ -81,7 +81,7 @@ error[typing-any-used]: Using `typing.Any` in type annotations can lead to runti
   |
 info: rule `typing-any-used` was selected in the configuration file
 
-error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+warning[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
  --> main.py:6:34
   |
 4 |     pass
@@ -95,7 +95,7 @@ info: rule `typing-any-used` was selected in the configuration file
 
 ### Any in nested generics
 
-error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+warning[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
  --> main.py:3:43
   |
 1 | from typing import Any, Dict, List
@@ -109,7 +109,7 @@ info: rule `typing-any-used` was selected in the configuration file
 
 ### Any in class attributes
 
-error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+warning[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
  --> main.py:4:11
   |
 3 | class DataProcessor:
@@ -120,7 +120,7 @@ error[typing-any-used]: Using `typing.Any` in type annotations can lead to runti
   |
 info: rule `typing-any-used` was selected in the configuration file
 
-error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+warning[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
  --> main.py:6:30
   |
 4 |     data: Any
@@ -134,7 +134,7 @@ info: rule `typing-any-used` was selected in the configuration file
 
 ### Any in method signatures
 
-error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+warning[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
  --> main.py:4:31
   |
 3 | class Handler:
@@ -144,7 +144,7 @@ error[typing-any-used]: Using `typing.Any` in type annotations can lead to runti
   |
 info: rule `typing-any-used` was selected in the configuration file
 
-error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+warning[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
  --> main.py:4:39
   |
 3 | class Handler:
@@ -157,7 +157,7 @@ info: rule `typing-any-used` was selected in the configuration file
 
 ### Any in lambda functions
 
-error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+warning[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
  --> main.py:3:22
   |
 1 | from typing import Any, Callable
@@ -167,7 +167,7 @@ error[typing-any-used]: Using `typing.Any` in type annotations can lead to runti
   |
 info: rule `typing-any-used` was selected in the configuration file
 
-error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+warning[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
  --> main.py:3:28
   |
 1 | from typing import Any, Callable
@@ -180,7 +180,7 @@ info: rule `typing-any-used` was selected in the configuration file
 
 ### Any with Optional
 
-error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+warning[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
  --> main.py:3:34
   |
 1 | from typing import Any, Optional
@@ -195,7 +195,7 @@ info: rule `typing-any-used` was selected in the configuration file
 
 ### Any with Union
 
-error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+warning[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
  --> main.py:3:39
   |
 1 | from typing import Any, Union
@@ -209,7 +209,7 @@ info: rule `typing-any-used` was selected in the configuration file
 
 ### Any in tuple annotations
 
-error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+warning[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
  --> main.py:3:34
   |
 1 | from typing import Any, Tuple
@@ -223,7 +223,7 @@ info: rule `typing-any-used` was selected in the configuration file
 
 ### Multiple Any usages in same function
 
-error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+warning[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
  --> main.py:3:18
   |
 1 | from typing import Any
@@ -234,7 +234,7 @@ error[typing-any-used]: Using `typing.Any` in type annotations can lead to runti
   |
 info: rule `typing-any-used` was selected in the configuration file
 
-error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+warning[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
  --> main.py:3:26
   |
 1 | from typing import Any
@@ -245,7 +245,7 @@ error[typing-any-used]: Using `typing.Any` in type annotations can lead to runti
   |
 info: rule `typing-any-used` was selected in the configuration file
 
-error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+warning[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
  --> main.py:3:34
   |
 1 | from typing import Any
@@ -259,7 +259,7 @@ info: rule `typing-any-used` was selected in the configuration file
 
 ### Any in property annotations
 
-error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+warning[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
  --> main.py:5:24
   |
 3 | class Container:
@@ -270,7 +270,7 @@ error[typing-any-used]: Using `typing.Any` in type annotations can lead to runti
   |
 info: rule `typing-any-used` was selected in the configuration file
 
-error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+warning[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
   --> main.py:9:26
    |
  8 |     @value.setter
@@ -283,7 +283,7 @@ info: rule `typing-any-used` was selected in the configuration file
 
 ### Any with type aliases
 
-error[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
+warning[typing-any-used]: Using `typing.Any` in type annotations can lead to runtime errors.
  --> main.py:5:19
   |
 3 | AnyData = Any

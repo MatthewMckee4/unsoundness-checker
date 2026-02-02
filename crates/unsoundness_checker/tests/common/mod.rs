@@ -302,7 +302,7 @@ pub fn run_rule_tests(rule_name: &str) -> Vec<(PathBuf, String, String, usize)> 
         .iter()
         .map(|rule| {
             if rule.name.to_string() == rule_name_kebab {
-                (rule_name_kebab.clone(), Level::Error.to_string())
+                (rule_name_kebab.clone(), rule.default_level().to_string())
             } else {
                 (rule.name.to_string(), Level::Ignore.to_string())
             }
@@ -377,7 +377,7 @@ pub fn run_rule_tests_extensive(rule_name: &str) -> Vec<(PathBuf, String, String
         .iter()
         .map(|rule| {
             if rule.name.to_string() == rule_name_kebab {
-                (rule_name_kebab.clone(), Level::Error.to_string())
+                (rule_name_kebab.clone(), rule.default_level().to_string())
             } else {
                 (rule.name.to_string(), Level::Ignore.to_string())
             }
