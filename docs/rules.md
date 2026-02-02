@@ -63,7 +63,7 @@ Default level: `error`.
 </small>
 
 <small>
-Categories: None.
+Categories: [`type-checking-suppression`](categories.md#type-checking-suppression).
 </small>
 
 [See more](rules/invalid_overload_implementation.md)
@@ -138,7 +138,7 @@ Default level: `error`.
 </small>
 
 <small>
-Categories: None.
+Categories: [`runtime-modification`](categories.md#runtime-modification).
 </small>
 
 [See more](rules/mutable_generic_default.md)
@@ -458,7 +458,7 @@ Default level: `warn`.
 </small>
 
 <small>
-Categories: None.
+Categories: [`type-checking-suppression`](categories.md#type-checking-suppression).
 </small>
 
 [See more](rules/typing_overload_used.md)

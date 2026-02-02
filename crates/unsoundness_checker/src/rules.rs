@@ -105,6 +105,7 @@ declare_rule! {
     pub static MUTABLE_GENERIC_DEFAULT = {
         summary: "detects mutable default arguments in generic functions",
         status: RuleStatus::stable("1.0.0"),
+        categories: &[&RUNTIME_MODIFICATION],
         default_level: Level::Error,
     }
 }
@@ -132,6 +133,7 @@ declare_rule! {
     pub static INVALID_OVERLOAD_IMPLEMENTATION = {
         summary: "detects invalid overload implementation",
         status: RuleStatus::stable("1.0.0"),
+        categories: &[&TYPE_CHECKING_SUPPRESSION],
         default_level: Level::Error,
     }
 }
@@ -158,6 +160,7 @@ declare_rule! {
     pub static TYPING_OVERLOAD_USED = {
         summary: "detects usage of overloaded functions",
         status: RuleStatus::stable("1.0.0"),
+        categories: &[&TYPE_CHECKING_SUPPRESSION],
         default_level: Level::Warn,
     }
 }
