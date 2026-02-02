@@ -105,6 +105,7 @@ declare_rule! {
     pub static MUTABLE_GENERIC_DEFAULT = {
         summary: "detects mutable default arguments in generic functions",
         status: RuleStatus::stable("1.0.0"),
+        categories: &[&RUNTIME_MODIFICATION],
         default_level: Level::Error,
     }
 }

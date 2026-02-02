@@ -183,9 +183,6 @@ macro_rules! declare_rule {
 }
 
 /// A unique identifier for a rule.
-///
-/// Implements `PartialEq`, `Eq`, and `Hash` based on the `RuleMetadata` pointer
-/// for fast comparison and lookup.
 #[derive(Debug, Clone, Copy)]
 pub struct RuleId {
     definition: &'static RuleMetadata,

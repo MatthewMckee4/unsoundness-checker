@@ -11,6 +11,7 @@ Runtime code modifications that escape static type checker analysis.
 - [`invalid-function-defaults`](rules.md#invalid-function-defaults) - detects invalid mutation of the `__defaults__` attribute of a function
 - [`mutating-function-code-attribute`](rules.md#mutating-function-code-attribute) - detects mutating the `__code__` attribute of a function
 - [`mutating-globals-dict`](rules.md#mutating-globals-dict) - detects mutations to the `globals()` dictionary
+- [`mutable-generic-default`](rules.md#mutable-generic-default) - detects mutable default arguments in generic functions
 - [`invalid-setattr`](rules.md#invalid-setattr) - detects invalid usage of `setattr()` built-in function
 
 ## type-checking-suppression
