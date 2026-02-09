@@ -1,22 +1,18 @@
 use ruff_python_ast::{Expr, ExprCall};
+use ty_python_semantic::HasType;
 use ty_python_semantic::types::list_members::all_members;
 use ty_python_semantic::types::{KnownFunction, Type, TypeContext};
-use ty_python_semantic::{HasType, SemanticModel};
 
 use crate::Context;
 use crate::rules::{report_invalid_setattr, report_typing_cast_used};
 
-pub(super) fn check_call_expression(
-    context: &Context,
-    model: &SemanticModel,
-    expr_call: &ExprCall,
-) {
+pub(super) fn check_call_expression(context: &Context, expr_call: &ExprCall) {
     if is_setattr_call(&expr_call.func) {
-        check_setattr_call(context, model, expr_call);
+        check_setattr_call(context, expr_call);
         return;
     }
 
-    let Some(func_ty) = expr_call.func.inferred_type(model) else {
+    let Some(func_ty) = expr_call.func.inferred_type(context.model()) else {
         return;
     };
 
@@ -33,15 +29,15 @@ pub(super) fn check_call_expression(
             return;
         };
 
-        let Some(value_type) = second_argument.inferred_type(model) else {
+        let Some(value_type) = second_argument.inferred_type(context.model()) else {
             return;
         };
 
-        let Some(casting_type) = first_argument.inferred_type(model) else {
+        let Some(casting_type) = first_argument.inferred_type(context.model()) else {
             return;
         };
 
-        let current_promotion = casting_type.promote_literals(model.db(), TypeContext::default());
+        let current_promotion = casting_type.promote_literals(context.db(), TypeContext::default());
 
         if !value_type.is_assignable_to(context.db(), current_promotion) {
             report_typing_cast_used(context, &expr_call.func);
@@ -57,7 +53,7 @@ fn is_setattr_call(expr: &Expr) -> bool {
     }
 }
 
-fn check_setattr_call(context: &Context, model: &SemanticModel, expr_call: &ExprCall) {
+fn check_setattr_call(context: &Context, expr_call: &ExprCall) {
     let Some(first_argument) = expr_call.arguments.find_positional(0) else {
         return;
     };
@@ -74,7 +70,7 @@ fn check_setattr_call(context: &Context, model: &SemanticModel, expr_call: &Expr
         return;
     };
 
-    let Some(first_ty) = first_argument.inferred_type(model) else {
+    let Some(first_ty) = first_argument.inferred_type(context.model()) else {
         return;
     };
 
@@ -89,9 +85,9 @@ fn check_setattr_call(context: &Context, model: &SemanticModel, expr_call: &Expr
     };
 
     let current_attribute_promotion =
-        type_of_attribute.promote_literals(model.db(), TypeContext::default());
+        type_of_attribute.promote_literals(context.db(), TypeContext::default());
 
-    let Some(value_type) = third_argument.inferred_type(model) else {
+    let Some(value_type) = third_argument.inferred_type(context.model()) else {
         return;
     };
 

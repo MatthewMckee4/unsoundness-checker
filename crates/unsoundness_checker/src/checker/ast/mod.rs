@@ -1,7 +1,6 @@
 use annotation::check_annotation;
 use ruff_python_ast::visitor::source_order::{self, SourceOrderVisitor};
 use ruff_python_ast::{Expr, Stmt};
-use ty_python_semantic::SemanticModel;
 
 use crate::Context;
 use crate::checker::ast::expr::check_expr;
@@ -14,26 +13,22 @@ mod utils;
 
 pub struct ASTChecker<'db, 'ctx> {
     context: &'ctx Context<'db>,
-    model: SemanticModel<'db>,
 }
 
 impl<'db, 'ctx> ASTChecker<'db, 'ctx> {
-    pub(crate) fn new(context: &'ctx Context<'db>) -> Self {
-        Self {
-            context,
-            model: SemanticModel::new(context.db(), context.file()),
-        }
+    pub(crate) const fn new(context: &'ctx Context<'db>) -> Self {
+        Self { context }
     }
 }
 
 impl SourceOrderVisitor<'_> for ASTChecker<'_, '_> {
     fn visit_stmt(&mut self, stmt: &'_ Stmt) {
-        check_statement(self.context, &self.model, stmt);
+        check_statement(self.context, stmt);
         source_order::walk_stmt(self, stmt);
     }
 
     fn visit_expr(&mut self, expr: &'_ Expr) {
-        check_expr(self.context, &self.model, expr);
+        check_expr(self.context, expr);
         source_order::walk_expr(self, expr);
     }
 }

@@ -7,6 +7,7 @@ use ruff_db::files::File;
 use ruff_db::parsed::{ParsedModuleRef, parsed_module};
 use ruff_text_size::{Ranged, TextRange};
 use ty_project::Db;
+use ty_python_semantic::SemanticModel;
 
 use crate::rule::{RuleId, RuleMetadata, RuleSelection, RuleSource};
 
@@ -21,17 +22,21 @@ pub(crate) struct Context<'db> {
     rule_selection: &'db RuleSelection,
     /// The parsed AST of the Python file.
     ast: ParsedModuleRef,
+    /// The semantic model of the Python file.
+    model: SemanticModel<'db>,
 }
 
 impl<'db> Context<'db> {
     pub(crate) fn new(db: &'db dyn Db, file: File, rule_selection: &'db RuleSelection) -> Self {
         let ast = parsed_module(db, file).load(db);
+        let model = SemanticModel::new(db, file);
         Self {
             db,
             file,
             diagnostics: RefCell::new(Vec::new()),
             rule_selection,
             ast,
+            model,
         }
     }
 
@@ -61,6 +66,10 @@ impl<'db> Context<'db> {
 
     pub(crate) const fn ast(&self) -> &ParsedModuleRef {
         &self.ast
+    }
+
+    pub(crate) const fn model(&self) -> &SemanticModel<'db> {
+        &self.model
     }
 }
 

@@ -1,24 +1,19 @@
 use ruff_python_ast::ExprAttribute;
+use ty_python_semantic::HasType;
 use ty_python_semantic::types::Type;
-use ty_python_semantic::{HasType, SemanticModel};
 
 use crate::Context;
 use crate::rules::report_mangled_dunder_instance_variable;
 
-pub(super) fn check_attribute_expression(
-    context: &Context,
-    model: &SemanticModel,
-    attr_expr: &ExprAttribute,
-) {
-    check_possibly_mangled_dunder_variable_access(context, model, attr_expr);
+pub(super) fn check_attribute_expression(context: &Context, attr_expr: &ExprAttribute) {
+    check_possibly_mangled_dunder_variable_access(context, attr_expr);
 }
 
 fn check_possibly_mangled_dunder_variable_access(
     context: &Context,
-    model: &SemanticModel,
     expr_attribute: &ExprAttribute,
 ) {
-    let Some(inferred_type) = expr_attribute.value.inferred_type(model) else {
+    let Some(inferred_type) = expr_attribute.value.inferred_type(context.model()) else {
         return;
     };
     let class_name = match inferred_type {

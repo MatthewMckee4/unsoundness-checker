@@ -1,7 +1,7 @@
 use ruff_python_ast::name::Name;
 use ruff_python_ast::{Expr, StmtAssign};
+use ty_python_semantic::HasType;
 use ty_python_semantic::types::{Type, TypeContext};
-use ty_python_semantic::{HasType, SemanticModel};
 
 use crate::Context;
 use crate::rules::{
@@ -9,23 +9,19 @@ use crate::rules::{
     report_setting_function_defaults_attribute,
 };
 
-pub(super) fn check_assignment<'ast>(
-    context: &Context<'_>,
-    model: &'ast SemanticModel<'ast>,
-    stmt_assign: &'ast StmtAssign,
-) {
+pub(super) fn check_assignment(context: &Context<'_>, stmt_assign: &StmtAssign) {
     for target in &stmt_assign.targets {
         match target {
             Expr::Subscript(subscript_expr) => {
                 if is_globals_call(&subscript_expr.value)
                     && let Some(expr_string_literal) = subscript_expr.slice.as_string_literal_expr()
                 {
-                    let members = model.members_in_scope_at(stmt_assign.into());
+                    let members = context.model().members_in_scope_at(stmt_assign.into());
 
                     if let Some(current_symbol_definition) =
                         members.get(&Name::new(expr_string_literal.value.to_str()))
                     {
-                        let Some(value_type) = target.inferred_type(model) else {
+                        let Some(value_type) = target.inferred_type(context.model()) else {
                             continue;
                         };
 
@@ -35,7 +31,7 @@ pub(super) fn check_assignment<'ast>(
                         //
                         // A definition like `x = 1` gives x type `Literal[1]`. But we want to be able to assign `Literal[2]` to it.
                         let current_promotion =
-                            current_type.promote_literals(model.db(), TypeContext::default());
+                            current_type.promote_literals(context.db(), TypeContext::default());
 
                         if !value_type.is_assignable_to(context.db(), current_promotion) {
                             report_mutating_globals_dict(context, target);
@@ -44,7 +40,8 @@ pub(super) fn check_assignment<'ast>(
                 }
             }
             Expr::Attribute(attr_expr) => {
-                let Some(inferred_value_type) = attr_expr.value.inferred_type(model) else {
+                let Some(inferred_value_type) = attr_expr.value.inferred_type(context.model())
+                else {
                     continue;
                 };
 
@@ -68,7 +65,8 @@ pub(super) fn check_assignment<'ast>(
                                 .filter(|default_type| default_type.is_some())
                                 .collect();
 
-                            let Some(inferred_target_type) = target.inferred_type(model) else {
+                            let Some(inferred_target_type) = target.inferred_type(context.model())
+                            else {
                                 continue;
                             };
 
