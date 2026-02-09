@@ -1,7 +1,7 @@
 use ruff_python_ast::visitor::source_order::{self, SourceOrderVisitor};
 use ruff_python_ast::{Stmt, StmtFunctionDef, StmtReturn};
+use ty_python_semantic::HasType;
 use ty_python_semantic::types::{DynamicType, KnownFunction, Type, UnionBuilder};
-use ty_python_semantic::{HasType, SemanticModel};
 
 use crate::Context;
 use crate::checker::ast::annotation::is_generic_annotation;
@@ -12,12 +12,8 @@ use crate::rules::{
     report_typing_overload_used, report_typing_type_is_used,
 };
 
-pub(super) fn check_overloads<'ast>(
-    context: &Context,
-    model: &'ast SemanticModel<'ast>,
-    stmt_function_def: &StmtFunctionDef,
-) {
-    let function_ty = stmt_function_def.inferred_type(model);
+pub(super) fn check_overloads(context: &Context, stmt_function_def: &StmtFunctionDef) {
+    let function_ty = stmt_function_def.inferred_type(context.model());
 
     let Some(Type::FunctionLiteral(function_type_ty)) = function_ty else {
         return;
@@ -30,7 +26,7 @@ pub(super) fn check_overloads<'ast>(
             let overload_stmt = overload.node(context.db(), context.file(), context.ast());
 
             for decorator in &overload_stmt.decorator_list {
-                let decorator_ty = decorator.expression.inferred_type(model);
+                let decorator_ty = decorator.expression.inferred_type(context.model());
 
                 let Some(Type::FunctionLiteral(decorator_type_ty)) = decorator_ty else {
                     continue;
@@ -72,13 +68,13 @@ pub(super) fn check_overloads<'ast>(
         let Some(return_type) = return_statement
             .value
             .as_ref()
-            .and_then(|value| value.inferred_type(model))
+            .and_then(|value| value.inferred_type(context.model()))
         else {
             continue;
         };
 
         let is_return_type_assignable_to_an_overload =
-            return_type.is_assignable_to(model.db(), union_of_overload_return_type);
+            return_type.is_assignable_to(context.db(), union_of_overload_return_type);
 
         if !is_return_type_assignable_to_an_overload {
             report_invalid_overload_implementation(
@@ -136,13 +132,12 @@ impl<'ast> SourceOrderVisitor<'ast> for ReturnStatementFinder<'ast> {
 
 pub(super) fn check_function_definition_statement(
     context: &Context,
-    model: &SemanticModel,
     stmt_function_def: &StmtFunctionDef,
 ) {
-    check_overloads(context, model, stmt_function_def);
+    check_overloads(context, stmt_function_def);
 
     if let Some(return_type) = stmt_function_def.returns.as_ref() {
-        let inferred_return_type = return_type.inferred_type(model);
+        let inferred_return_type = return_type.inferred_type(context.model());
         if let Some(Type::TypeIs(_)) = inferred_return_type {
             report_typing_type_is_used(context, return_type);
         }
@@ -150,11 +145,11 @@ pub(super) fn check_function_definition_statement(
 
     for parameter in &stmt_function_def.parameters {
         if let Some(annotation) = parameter.annotation() {
-            check_annotation(context, model, annotation);
+            check_annotation(context, annotation);
 
             if let Some(default) = parameter.default()
                 && is_mutable_expr(default)
-                && is_generic_annotation(model, annotation)
+                && is_generic_annotation(context.model(), annotation)
             {
                 report_mutable_generic_default(context, default);
             }
@@ -162,6 +157,6 @@ pub(super) fn check_function_definition_statement(
     }
 
     if let Some(return_annotation) = stmt_function_def.returns.as_ref() {
-        check_annotation(context, model, return_annotation);
+        check_annotation(context, return_annotation);
     }
 }

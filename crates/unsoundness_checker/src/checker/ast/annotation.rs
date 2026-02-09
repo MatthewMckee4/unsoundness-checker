@@ -8,19 +8,17 @@ use crate::rules::{report_callable_ellipsis_used, report_typing_any_used};
 
 struct DynamicAnnotationChecker<'db, 'ctx> {
     context: &'ctx Context<'db>,
-
-    model: &'db SemanticModel<'db>,
 }
 
 impl<'db, 'ctx> DynamicAnnotationChecker<'db, 'ctx> {
-    pub(crate) const fn new(context: &'ctx Context<'db>, model: &'db SemanticModel<'db>) -> Self {
-        Self { context, model }
+    pub(crate) const fn new(context: &'ctx Context<'db>) -> Self {
+        Self { context }
     }
 }
 
 impl SourceOrderVisitor<'_> for DynamicAnnotationChecker<'_, '_> {
     fn visit_expr(&mut self, expr: &'_ Expr) {
-        let ty = expr.inferred_type(self.model);
+        let ty = expr.inferred_type(self.context.model());
 
         if matches!(ty, Some(Type::Dynamic(DynamicType::Any))) {
             report_typing_any_used(self.context, expr);
@@ -67,12 +65,8 @@ impl SourceOrderVisitor<'_> for GenericAnnotationChecker<'_> {
     }
 }
 
-pub(super) fn check_annotation<'ast>(
-    context: &Context<'_>,
-    model: &'ast SemanticModel<'ast>,
-    expr: &'ast Expr,
-) {
-    let mut annotation_checker = DynamicAnnotationChecker::new(context, model);
+pub(super) fn check_annotation(context: &Context<'_>, expr: &Expr) {
+    let mut annotation_checker = DynamicAnnotationChecker::new(context);
 
     annotation_checker.visit_expr(expr);
 }

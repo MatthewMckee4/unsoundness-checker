@@ -1,14 +1,9 @@
 use ruff_python_ast::{Expr, StmtIf};
-use ty_python_semantic::SemanticModel;
 
 use crate::Context;
 use crate::rules::report_if_type_checking_used;
 
-pub(super) fn check_if_statement<'ast>(
-    context: &Context<'_>,
-    _model: &'ast SemanticModel<'ast>,
-    stmt_if: &'ast StmtIf,
-) {
+pub(super) fn check_if_statement(context: &Context<'_>, stmt_if: &StmtIf) {
     if is_type_checking_test(&stmt_if.test) {
         report_if_type_checking_used(context, &stmt_if.test);
     }
