@@ -111,12 +111,8 @@ pub struct InstalledProject<'a> {
 
 impl InstalledProject<'_> {
     /// Get the benchmark paths
-    pub fn check_paths(&self) -> Vec<PathBuf> {
-        self.config
-            .paths
-            .iter()
-            .map(|p| self.path.join(p))
-            .collect()
+    pub const fn check_paths(&self) -> &[&str] {
+        self.config.paths
     }
 }
 
@@ -394,19 +390,12 @@ impl<'a> Benchmark<'a> {
     }
 }
 
-pub struct CheckResult {
-    pub diagnostics: Vec<Diagnostic>,
-    pub lines_of_code: usize,
-}
-
-/// Run the checker on the installed project
-pub fn run_checker(installed_project: &InstalledProject) -> Result<CheckResult> {
-    let root = SystemPathBuf::from_path_buf(installed_project.path.clone())
-        .map_err(|p| anyhow::anyhow!("Failed to convert path to SystemPathBuf: {}", p.display()))?;
+/// Set up a [`ProjectDatabase`] for an installed project.
+pub fn setup_project_db(installed_project: &InstalledProject) -> ProjectDatabase {
+    let root = SystemPathBuf::from_path_buf(installed_project.path.clone()).unwrap();
     let system = OsSystem::new(&root);
 
-    let mut metadata =
-        ProjectMetadata::discover(&root, &system).context("Failed to discover project metadata")?;
+    let mut metadata = ProjectMetadata::discover(&root, &system).unwrap();
 
     metadata.apply_options(Options {
         environment: Some(EnvironmentOptions {
@@ -417,39 +406,41 @@ pub fn run_checker(installed_project: &InstalledProject) -> Result<CheckResult> 
         ..Options::default()
     });
 
-    let rules = metadata.options().rules.clone();
+    let mut db = ProjectDatabase::new(metadata, system).unwrap();
 
-    let mut db =
-        ProjectDatabase::new(metadata, system).context("Failed to create project database")?;
+    db.project().set_included_paths(
+        &mut db,
+        installed_project
+            .check_paths()
+            .iter()
+            .map(|path| SystemPath::absolute(path, &root))
+            .collect(),
+    );
 
-    let check_paths: Vec<_> = installed_project
-        .check_paths()
-        .iter()
-        .filter_map(|path| SystemPathBuf::from_path_buf(path.clone()).ok())
-        .map(|path| SystemPath::absolute(&path, &root))
-        .collect();
+    db
+}
 
-    db.project().set_included_paths(&mut db, check_paths);
+/// Run the unsoundness checker on an already-setup database.
+pub fn run_checker(db: &ProjectDatabase) -> Vec<Diagnostic> {
+    let rules = db.project().metadata(db).options().rules.clone();
 
     let rule_registry = unsoundness_checker::default_rule_registry();
     let (rule_selection, _rule_diagnostics) =
         unsoundness_checker::rule::RuleSelection::from_rules_selection(
             rule_registry,
             rules.as_ref(),
-            &db,
+            db,
         );
 
-    let diagnostics = check_project(&db, &rule_selection);
-
-    let lines_of_code = count_lines_of_code(&db);
-
-    Ok(CheckResult {
-        diagnostics,
-        lines_of_code,
-    })
+    check_project(db, &rule_selection)
 }
 
-fn count_lines_of_code(db: &ProjectDatabase) -> usize {
+/// Run the type checker on an already-setup database.
+pub fn run_type_checker(db: &ProjectDatabase) -> Vec<Diagnostic> {
+    db.check()
+}
+
+pub fn count_lines_of_code(db: &ProjectDatabase) -> usize {
     let mut count = 0;
     for file in &db.project().files(db) {
         let Some(system_path) = file.path(db).as_system_path() else {

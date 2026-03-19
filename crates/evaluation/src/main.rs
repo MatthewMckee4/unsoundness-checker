@@ -26,9 +26,17 @@ enum Command {
         #[arg(long = "project")]
         projects: Vec<String>,
 
+        /// Number of times to run each project
+        #[arg(short = 'n', long = "iterations", default_value_t = 1)]
+        iterations: usize,
+
         /// Show summary of results
         #[arg(long, default_value_t = false)]
         show_summary: bool,
+
+        /// Output a LaTeX table of results
+        #[arg(long, default_value_t = false)]
+        latex: bool,
     },
     /// Run unsoundness suite
     UnsoundnessSuite,
@@ -54,9 +62,11 @@ fn main() -> Result<()> {
     match cli.command {
         Some(Command::Benchmark {
             projects,
+            iterations,
             show_summary,
+            latex,
         }) => {
-            run_performance_benchmarks(&projects, show_summary)?;
+            run_performance_benchmarks(&projects, iterations, show_summary, latex)?;
         }
         Some(Command::UnsoundnessSuite) => run_unsoundness_suite()?,
         _ => (),
