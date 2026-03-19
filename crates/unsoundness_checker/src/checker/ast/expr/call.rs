@@ -21,19 +21,19 @@ pub(super) fn check_call_expression(context: &Context, expr_call: &ExprCall) {
     };
 
     if function_type.is_known(context.db(), KnownFunction::Cast) {
-        let Some(first_argument) = expr_call.arguments.find_positional(0) else {
+        let Some(casting_type) = expr_call
+            .arguments
+            .find_positional(0)
+            .and_then(|arg| arg.inferred_type(context.model()))
+        else {
             return;
         };
 
-        let Some(second_argument) = expr_call.arguments.find_positional(1) else {
-            return;
-        };
-
-        let Some(value_type) = second_argument.inferred_type(context.model()) else {
-            return;
-        };
-
-        let Some(casting_type) = first_argument.inferred_type(context.model()) else {
+        let Some(value_type) = expr_call
+            .arguments
+            .find_positional(1)
+            .and_then(|arg| arg.inferred_type(context.model()))
+        else {
             return;
         };
 
@@ -54,44 +54,28 @@ fn is_setattr_call(expr: &Expr) -> bool {
 }
 
 fn check_setattr_call(context: &Context, expr_call: &ExprCall) {
-    let Some(first_argument) = expr_call.arguments.find_positional(0) else {
-        return;
-    };
+    let _ = check_setattr_call_inner(context, expr_call);
+}
 
-    let Some(second_argument) = expr_call.arguments.find_positional(1) else {
-        return;
-    };
+fn check_setattr_call_inner(context: &Context, expr_call: &ExprCall) -> Option<()> {
+    let first_argument = expr_call.arguments.find_positional(0)?;
+    let second_argument = expr_call.arguments.find_positional(1)?;
+    let third_argument = expr_call.arguments.find_positional(2)?;
 
-    let Some(third_argument) = expr_call.arguments.find_positional(2) else {
-        return;
-    };
+    let attr_name = second_argument.as_string_literal_expr()?;
+    let first_ty = first_argument.inferred_type(context.model())?;
 
-    let Some(second_argument_string) = second_argument.as_string_literal_expr() else {
-        return;
-    };
-
-    let Some(first_ty) = first_argument.inferred_type(context.model()) else {
-        return;
-    };
-
-    let members = all_members(context.db(), first_ty);
-
-    let Some(type_of_attribute) = members
+    let type_of_attribute = all_members(context.db(), first_ty)
         .iter()
-        .find(|member| member.name == second_argument_string.value.to_str())
-        .map(|member| member.ty)
-    else {
-        return;
-    };
+        .find(|m| m.name == attr_name.value.to_str())
+        .map(|m| m.ty)?;
 
-    let current_attribute_promotion =
-        type_of_attribute.promote_literals(context.db(), TypeContext::default());
+    let promoted = type_of_attribute.promote_literals(context.db(), TypeContext::default());
+    let value_type = third_argument.inferred_type(context.model())?;
 
-    let Some(value_type) = third_argument.inferred_type(context.model()) else {
-        return;
-    };
-
-    if !value_type.is_assignable_to(context.db(), current_attribute_promotion) {
-        report_invalid_setattr(context, expr_call, current_attribute_promotion, value_type);
+    if !value_type.is_assignable_to(context.db(), promoted) {
+        report_invalid_setattr(context, expr_call, promoted, value_type);
     }
+
+    Some(())
 }

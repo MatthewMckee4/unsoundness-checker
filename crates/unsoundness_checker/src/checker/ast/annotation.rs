@@ -38,6 +38,12 @@ impl SourceOrderVisitor<'_> for DynamicAnnotationChecker<'_, '_> {
     }
 }
 
+pub(super) fn check_annotation(context: &Context<'_>, expr: &Expr) {
+    let mut annotation_checker = DynamicAnnotationChecker::new(context);
+
+    annotation_checker.visit_expr(expr);
+}
+
 struct GenericAnnotationChecker<'db> {
     model: &'db SemanticModel<'db>,
 
@@ -63,12 +69,6 @@ impl SourceOrderVisitor<'_> for GenericAnnotationChecker<'_> {
 
         source_order::walk_expr(self, expr);
     }
-}
-
-pub(super) fn check_annotation(context: &Context<'_>, expr: &Expr) {
-    let mut annotation_checker = DynamicAnnotationChecker::new(context);
-
-    annotation_checker.visit_expr(expr);
 }
 
 pub(super) fn is_generic_annotation(model: &SemanticModel<'_>, expr: &Expr) -> bool {
